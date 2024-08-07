@@ -79,11 +79,12 @@ export default function BeachListLayout({ navigation, route }) {
                         title={title}
                         key={`_chip_${title}`}
                         color={
-                            selected === title ? styles.chipFilter.color
+                            selected === title ? styles.chipFilterContainer.color
                                 : styles.chipFilterDisabled.color
                         }
                         onPress={() => handleChipClick(title)}
-                        containerStyle={styles.chipFilter}
+                        containerStyle={styles.chipFilterContainer}
+                        titleStyle={styles.chipFilterTitle}
                     />
                 ))}
             </ScrollView>
@@ -126,11 +127,13 @@ const styles = StyleSheet.create({
     container1: {
         flexDirection: "column"
     },
-    chipFilter: {
-        fontFamily: DefaultFont.fontFamily,
+    chipFilterContainer: {
         marginVertical: 15,
         marginHorizontal: 2,
         color: 'green',
+    },
+    chipFilterTitle: {
+        fontFamily: DefaultFont.fontFamily
     },
     chipFilterDisabled: {
         fontFamily: DefaultFont.fontFamily,
@@ -142,5 +145,7 @@ const styles = StyleSheet.create({
         fontFamily: DefaultFont.fontFamily,
         fontSize: 18,
         fontWeight: 'bold',
+        color: 'green',
+        marginVertical: 10,
     },
 })

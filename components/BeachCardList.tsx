@@ -8,6 +8,7 @@ import {
     TouchableOpacity
 } from "react-native";
 import { Beach, BeachList } from "@/data/beach";
+import { DefaultFont } from "@/constants/Fonts";
 
 export default function BeachCardList(props) {
     // Written like this to prevent 
@@ -20,7 +21,7 @@ export default function BeachCardList(props) {
         >
             <View style={styles.card}>
                 <View style={styles.item}>
-                    <Text>{item.name}</Text>
+                    <Text style={styles.title}>{item.name}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -49,5 +50,8 @@ const styles = StyleSheet.create({
     },
     item: {
         margin: 10
+    },
+    title: {
+        fontFamily: DefaultFont.fontFamily
     }
 });
