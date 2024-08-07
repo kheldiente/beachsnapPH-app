@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import {
     StyleSheet,
     View,
-    Text,
-    Image,
-    FlatList,
-    ScrollView
+    ScrollView,
+    Text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import SegmentedButton from "@/components/SegmentedButton";
 import { gridRegions } from "@/data/beach";
-import BeachCardList from "@/components/BeachCardList";
 import BeachGridList from "@/components/BeachGridList";
 import { DefaultFont } from "@/constants/Fonts";
+import { router } from "expo-router";
 
 export default function PricesScreen(props: any) {
     const getItemId = (item: { id: any; }) => (item.id)
@@ -35,6 +33,13 @@ export default function PricesScreen(props: any) {
 
     const handleSegmentButtonClick = (index: number) => {};
 
+    const handleRegionClick = (key) => {
+        router.navigate({
+            pathname: '/region/[region]',
+            params: { region: key }
+          })
+    };
+
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
             <ScrollView 
@@ -47,10 +52,11 @@ export default function PricesScreen(props: any) {
                     onPress={handleSegmentButtonClick}
                 /> */}
                 <View style={styles.container1}>
-                    <Text style={styles.header1}>Regions</Text>
+                    {/* <Text style={styles.header1}>Regions</Text> */}
                     {/* <BeachCardList data={mockBeachListData.data} /> */}
                     <BeachGridList
-                        data={getGridData()} 
+                        data={getGridData()}
+                        onClick={(key) => handleRegionClick(key)}
                     />
                 </View>
             </ScrollView>

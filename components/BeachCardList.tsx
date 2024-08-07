@@ -4,20 +4,22 @@ import {
     FlatList,
     ListRenderItem,
     View,
-    Text
+    Text,
+    TouchableOpacity
 } from "react-native";
-import { Card } from "react-native-elements";
 import { Beach, BeachList } from "@/data/beach";
 
 export default function BeachCardList(props) {
     // Written like this to prevent 
     // renderItem complaining for a type
-    const renderItem = ({ item } : { item: Beach }) => ( 
-        <Card containerStyle={styles.card}>
-            <View>
-                <Text>{item.name}</Text>
+    const renderItem = ({ item }: { item: Beach }) => (
+        <TouchableOpacity>
+            <View style={styles.card}>
+                <View style={styles.item}>
+                    <Text>{item.name}</Text>
+                </View>
             </View>
-        </Card>
+        </TouchableOpacity>
     )
 
     return (
@@ -32,13 +34,16 @@ export default function BeachCardList(props) {
 
 const styles = StyleSheet.create({
     card: {
+        height: 40,
+        backgroundColor: 'white',
         borderColor: "white",
         borderRadius: 5,
-        shadowColor: "transparent"
-
+        shadowColor: "transparent",
+        marginVertical: 5,
+        flexDirection: "row",
+        alignItems: 'center'
     },
     item: {
-        flexDirection: "row",
         margin: 10
     }
 });

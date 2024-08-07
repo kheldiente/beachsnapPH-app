@@ -9,7 +9,7 @@ import {
 export default function TabHeaderBar(props) {
     return (
         <View style={styles.toolbar}>
-            <Text style={styles.title}>BeachSnap PH</Text>
+            <Text style={styles.title}>{props.title}</Text>
         </View>
     )
 };
@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
-        marginLeft: 5,
-        marginRight: 20,
+        paddingLeft: 5,
+        paddingRight: 20,
         paddingBottom: 50,
     },
     title: {
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'flex-start',
         position: 'absolute',
-        margin: 5
+        paddingVertical: 5,
+        paddingLeft: -2,
     },
 });

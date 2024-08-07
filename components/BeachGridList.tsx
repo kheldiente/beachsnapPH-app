@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import {
     StyleSheet,
     FlatList,
-    ListRenderItem,
     Image,
-    Button,
-    Icon,
     View,
     Text,
     TouchableOpacity,
@@ -29,12 +26,16 @@ export default function BeachGridList(props) {
         )
     }
 
+    const handleOnClickCard = (key) => {
+        props.onClick(key);
+    }
+
     const renderGridCard = (item) => {
         const showData = item !== ''
         const thumbnailImg = getThumbnail(item)
 
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleOnClickCard(item)}>
                 <View
                     style={
                         showData ? styles.card : styles.cardInvisible
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     },
     gridItemTxt: {
         fontFamily: DefaultFont.fontFamily,
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: 'bold',
         color: 'white',
         margin: 5,

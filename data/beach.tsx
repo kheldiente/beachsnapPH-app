@@ -43,7 +43,7 @@ export const gridRegions = [
     ["Western Visayas", "Zamboanga Peninsula", ""]
 ]
 
-export const mockBeachListData: BeachList = {
+export const mockData: BeachList = {
     "data": [
         {
             id: "L-B-CN-D-Bag001",
@@ -85,30 +85,13 @@ export const mockBeachListData: BeachList = {
             region: "Bicol",
             islandGroup: "Luzon"
         },
-        {
-            id: "L-B-CN-M-Par001",
-            name: "Maculabo Island",
-            municipality: "Paracale",
-            province: "Camarines Norte",
-            region: "Bicol",
-            islandGroup: "Luzon"
-        },
-        {
-            id: "L-B-CN-M-Par001",
-            name: "Maculabo Island",
-            municipality: "Paracale",
-            province: "Camarines Norte",
-            region: "Bicol",
-            islandGroup: "Luzon"
-        },
-
     ]
 }
 
 export const getThumbnail = (regionKey) => {
     // Note: require() doesn't work with dynamic values. 
     // Hence, we're using static strings here
-    console.log(`getThumbnail: ${regionKey}`)
+    // console.log(`getThumbnail: ${regionKey}`)
     switch (regionKey) {
         case "Bicol":
             return require('@/assets/images/thumbnail/bicol-thumbnail.jpeg')
@@ -140,6 +123,10 @@ export const getThumbnail = (regionKey) => {
             return require('@/assets/images/thumbnail/mimaropa-thumbnail.jpeg')
         case 'Calabarzon':
             return require('@/assets/images/thumbnail/calabarzon-thumbnail.jpeg')
+        case 'Western Visayas':
+            return require('@/assets/images/thumbnail/western-visayas-thumbnail.jpeg')
+        case 'Zamboanga Peninsula':
+            return require('@/assets/images/thumbnail/zamboanga-peninsula-thumbnail.jpeg')
         default:
             return require('@/assets/images/thumbnail/beach-thumbnail.jpeg')
     }
