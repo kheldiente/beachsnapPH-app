@@ -22,7 +22,7 @@ export default function PricesScreen(props: any) {
 
     const getGridData = () => {
         return gridRegions.map((arr) => (
-            {gridItemArray: arr}
+            { gridItemArray: arr }
         ))
     }
 
@@ -31,29 +31,26 @@ export default function PricesScreen(props: any) {
         // console.log(event.nativeEvent.contentOffset.y);
     };
 
-    const handleSegmentButtonClick = (index: number) => {};
+    const handleSegmentButtonClick = (index: number) => { };
 
     const handleRegionClick = (key) => {
+        if (key === '') {
+            return;
+        }
+        
         router.navigate({
             pathname: '/region/[region]',
             params: { region: key }
-          })
+        })
     };
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
-            <ScrollView 
+            <ScrollView
                 onScroll={handleScroll}
                 showsVerticalScrollIndicator={false}
             >
-                {/* <SegmentedButton 
-                    style={styles.segmentedButtons} 
-                    buttons={getSegmentButtons()} 
-                    onPress={handleSegmentButtonClick}
-                /> */}
                 <View style={styles.container1}>
-                    {/* <Text style={styles.header1}>Regions</Text> */}
-                    {/* <BeachCardList data={mockBeachListData.data} /> */}
                     <BeachGridList
                         data={getGridData()}
                         onClick={(key) => handleRegionClick(key)}

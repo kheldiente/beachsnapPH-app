@@ -36,9 +36,15 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts(AppFonts);
 
+  const waitToProceed = () => {
+    setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, 1500);
+  }
+
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      waitToProceed();
     }
   }, [loaded]);
 

@@ -35,13 +35,17 @@ export default function BeachGridList(props) {
         const thumbnailImg = getThumbnail(item)
 
         return (
-            <TouchableOpacity onPress={() => handleOnClickCard(item)}>
+            <TouchableOpacity 
+                onPress={() => handleOnClickCard(item)}
+                disabled={!showData}
+            >
                 <View
                     style={
-                        showData ? styles.card : styles.cardInvisible
+                        // showData ? styles.card : styles.cardInvisible
+                        styles.card
                     }
                 >
-                    {showData &&
+                    {true &&
                         <View style={styles.gridItemImg}>
                             <Image
                                 source={thumbnailImg}
@@ -98,5 +102,6 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
         backgroundColor: 'transparent',
         width: 110,
+        marginTop: 10,
     },
 });

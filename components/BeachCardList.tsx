@@ -13,7 +13,11 @@ export default function BeachCardList(props) {
     // Written like this to prevent 
     // renderItem complaining for a type
     const renderItem = ({ item }: { item: Beach }) => (
-        <TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => {
+                props.handleOnClickCard(item)
+            }}
+        >
             <View style={styles.card}>
                 <View style={styles.item}>
                     <Text>{item.name}</Text>

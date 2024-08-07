@@ -77,14 +77,6 @@ export const mockData: BeachList = {
             region: "Bicol",
             islandGroup: "Luzon"
         },
-        {
-            id: "L-B-CN-M-Par001",
-            name: "Maculabo Island",
-            municipality: "Paracale",
-            province: "Camarines Norte",
-            region: "Bicol",
-            islandGroup: "Luzon"
-        },
     ]
 }
 
@@ -128,6 +120,6 @@ export const getThumbnail = (regionKey) => {
         case 'Zamboanga Peninsula':
             return require('@/assets/images/thumbnail/zamboanga-peninsula-thumbnail.jpeg')
         default:
-            return require('@/assets/images/thumbnail/beach-thumbnail.jpeg')
+            return require('@/assets/images/thumbnail/beach-emoji-hd.png')
     }
 }

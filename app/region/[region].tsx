@@ -1,7 +1,7 @@
 import BeachCardList from '@/components/BeachCardList';
 import { DefaultFont } from '@/constants/Fonts';
 import { mockData } from '@/data/beach';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import {
     View,
     Text,
@@ -13,16 +13,16 @@ import { Chip } from '@rneui/themed';
 import { useState } from 'react';
 
 const filters = [
-    'Albay', 
-    'Camarines Norte', 
+    'Albay',
+    'Camarines Norte',
     'Camarines Sur',
     'Catanduanes',
     'Masbate',
     'Sorsogon'
 ];
 const provinces = [
-    'Albay', 
-    'Camarines Norte', 
+    'Albay',
+    'Camarines Norte',
     'Camarines Sur',
     'Catanduanes',
     'Masbate',
@@ -36,11 +36,22 @@ export default function RegionList() {
 
     console.log(`Showing provinces for ${region}`)
 
+    const handleOnClickCard = (item) => {
+        console.log(`${JSON.stringify(item)}`);
+        router.navigate({
+            pathname: '/beach/[profile]',
+            params: { region: item.id }
+        })
+    }
+
     const renderBeachList = (province) => {
         return (
             <View style={styles.container1}>
                 <Text style={styles.header1}>{province}</Text>
-                <BeachCardList data={mockData.data} />
+                <BeachCardList
+                    data={mockData.data}
+                    handleOnClickCard={handleOnClickCard}
+                />
             </View>
         );
     }
@@ -57,7 +68,7 @@ export default function RegionList() {
                         key={`_chip_${title}`}
                         color={
                             selected === title ? styles.chipFilter.color
-                            : styles.chipFilterDisabled.color
+                                : styles.chipFilterDisabled.color
                         }
                         onPress={() => handleChipClick(title)}
                         containerStyle={styles.chipFilter}

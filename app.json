@@ -21,7 +21,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.midien.beachsnapph"
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +38,12 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/Nunito-Regular.ttf"]
         }
       ]
     ],
