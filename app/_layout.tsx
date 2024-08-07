@@ -16,13 +16,14 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const tabHeaderOptions = ({ navigation }) => {
     return {
+      headerShadowVisible: false,
+      headerShown: false,
       headerStyle: {
         // backgroundColor: "rgb(249, 249, 249)",
         backgroundColor: 'white',
         elevation: 0,
         shadowOpacity: 0
       },
-      headerShadowVisible: false,
       headerTitle: (props) => (
         <TabHeaderBar
           id="tabHeaderBar"
@@ -53,13 +54,11 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={tabHeaderOptions}
-        />
-      </Stack>
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen
+        name="(tabs)"
+        options={tabHeaderOptions}
+      />
+    </Stack>
   );
 }

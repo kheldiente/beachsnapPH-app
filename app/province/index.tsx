@@ -1,7 +1,7 @@
 import BeachCardList from '@/components/BeachCardList';
 import { DefaultFont } from '@/constants/Fonts';
 import { mockData } from '@/data/beach';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import {
     View,
     Text,
@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Chip } from '@rneui/themed';
 import { useState } from 'react';
+import TabHeaderBar from '@/components/TabHeaderBar';
 
 const filters = [
     'Albay',
@@ -29,18 +30,29 @@ const provinces = [
     'Sorsogon'
 ];
 
-export default function RegionList() {
-    const { region = "EMPTY" } = useLocalSearchParams();
+export default function BeachListLayout({ navigation, route }) {
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [data, setData] = useState(provinces);
 
-    console.log(`Showing provinces for ${region}`)
+    navigation.setOptions({
+        headerBackVisible: false,
+        headerTitle: (props) => (
+            <TabHeaderBar
+                id="tabHeaderBar"
+                title={`${route.params.region} 🏖️`}
+                {...props}
+            />
+        )
+    })
 
     const handleOnClickCard = (item) => {
         console.log(`${JSON.stringify(item)}`);
-        router.navigate({
+        router.push({
             pathname: '/beach/[profile]',
-            params: { region: item.id }
+            params: { 
+                id: item.id,
+                name: item.name
+             }
         })
     }
 
@@ -115,11 +127,13 @@ const styles = StyleSheet.create({
         flexDirection: "column"
     },
     chipFilter: {
+        fontFamily: DefaultFont.fontFamily,
         marginVertical: 15,
         marginHorizontal: 2,
         color: 'green',
     },
     chipFilterDisabled: {
+        fontFamily: DefaultFont.fontFamily,
         marginVertical: 15,
         marginHorizontal: 2,
         color: 'lightgray'
