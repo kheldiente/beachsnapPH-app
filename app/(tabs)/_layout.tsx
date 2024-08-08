@@ -26,6 +26,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="snaps"
+        options={{
+          title: 'Snaps',
+          tabBarLabelStyle: styles.tabBarText,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'images' : 'images-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: 'Explore',
@@ -42,6 +52,17 @@ export default function TabLayout() {
           tabBarLabelStyle: styles.tabBarText,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="more"
+        options={{
+          title: 'Settings',
+          href: null,
+          tabBarLabelStyle: styles.tabBarText,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
           ),
         }}
       />

@@ -39,12 +39,7 @@ export default function BeachGridList(props) {
                 onPress={() => handleOnClickCard(item)}
                 disabled={!showData}
             >
-                <View
-                    style={
-                        // showData ? styles.card : styles.cardInvisible
-                        styles.card
-                    }
-                >
+                <View style={styles.card}>
                     {true &&
                         <View style={styles.gridItemImg}>
                             <Image

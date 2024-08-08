@@ -1,14 +1,14 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { 
-  View, 
-  Text, 
-  StyleSheet 
+import {
+  View,
+  Text,
+  StyleSheet
 } from 'react-native';
 
-export default function MapLayout() {
+export default function GalleryLayout() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Map</Text>
+      <Text style={styles.text}>Snaps</Text>
     </View>
   );
 }

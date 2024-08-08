@@ -5,10 +5,10 @@ import {
   StyleSheet 
 } from 'react-native';
 
-export default function MapLayout() {
+export default function MoreLayout() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Map</Text>
+      <Text style={styles.text}>Gallery</Text>
     </View>
   );
 }
