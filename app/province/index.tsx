@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Chip } from '@rneui/themed';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TabHeaderBar from '@/components/TabHeaderBar';
+import { secondaryHeaderBar } from '@/constants/SharedComponent';
 
 const filters = [
     'Albay',
@@ -33,34 +34,30 @@ const provinces = [
 export default function BeachListLayout({ navigation, route }) {
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [data, setData] = useState(provinces);
+    const headerTitle = `${route.params.region} 🏖️`
 
-    navigation.setOptions({
-        headerBackVisible: false,
-        headerTitle: (props) => (
-            <TabHeaderBar
-                id="tabHeaderBar"
-                title={`${route.params.region} 🏖️`}
-                {...props}
-            />
-        )
-    })
+
+    useEffect(() => {
+        navigation.setOptions(secondaryHeaderBar(headerTitle))
+    });
 
     const handleOnClickCard = (item) => {
         console.log(`${JSON.stringify(item)}`);
         router.push({
             pathname: '/beach/[profile]',
-            params: { 
+            params: {
                 id: item.id,
                 name: item.name
-             }
+            }
         })
     }
 
     const renderBeachList = (province) => {
         return (
-            <View style={styles.container1}>
-                <Text style={styles.header1}>{province}</Text>
+            <View key={`_bListView_${province}`} style={styles.container1}>
+                <Text key={'_bListHeader'} style={styles.header1}>{province}</Text>
                 <BeachCardList
+                    key={'_bcList'}
                     data={mockData.data}
                     handleOnClickCard={handleOnClickCard}
                 />
@@ -71,6 +68,7 @@ export default function BeachListLayout({ navigation, route }) {
     const renderChipFilters = (selected = "All") => {
         return (
             <ScrollView
+                key={'_chipFilters'}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
             >

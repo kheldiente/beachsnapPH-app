@@ -1,25 +1,31 @@
-import { DefaultFont } from '@/constants/Fonts';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function GalleryLayout() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Snaps</Text>
-    </View>
-  );
+import { snapsLayoutKeys } from "@/constants/Global";
+import SnapsAlbumLayout from '@/app/snaps';
+import { defaultHeaderWithRightBar } from '@/constants/SharedComponent';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from 'expo-router';
+
+const Stack = createNativeStackNavigator()
+
+export default function SnapsLayout(props) {
+    const navigation = useNavigation();
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name={`${snapsLayoutKeys.SNAPS_ALBUM}`}
+                component={SnapsAlbumLayout}
+                options={defaultHeaderWithRightBar({
+                    component: (<Ionicons
+                        name="add-circle-outline"
+                        size={25}
+                        style={{
+                            backgroundColor: 'transparent',
+                            color: 'black'
+                        }}
+                        onPress={() => console.log("Add album")}
+                    />)
+                })} />
+        </Stack.Navigator>
+    )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontFamily: DefaultFont.fontFamily
-  }
-});

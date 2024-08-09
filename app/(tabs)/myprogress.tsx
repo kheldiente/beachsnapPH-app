@@ -1,25 +1,18 @@
-import { DefaultFont } from '@/constants/Fonts';
-import { 
-  View, 
-  Text, 
-  StyleSheet 
-} from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function MyProgressLayout() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>My Progress</Text>
-    </View>
-  );
+import { myProgressLayoutKeys } from "@/constants/Global";
+import ProgressListLayout from '@/app/progress';
+import { defaultHeaderBar } from '@/constants/SharedComponent';
+
+const Stack = createNativeStackNavigator()
+
+export default function MyProgressLayout(props) {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name={`${myProgressLayoutKeys.PROGRESS_LIST}`}
+                component={ProgressListLayout}
+                options={defaultHeaderBar()} />
+        </Stack.Navigator>
+    )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontFamily: DefaultFont.fontFamily
-  }
-});

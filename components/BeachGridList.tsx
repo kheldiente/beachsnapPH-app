@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import {
     StyleSheet,
-    FlatList,
     Image,
     View,
     Text,
     TouchableOpacity,
+    ScrollView,
 } from "react-native";
-import { Card } from "react-native-elements";
-import { Beach, BeachList, getThumbnail } from "@/data/beach";
+import { getThumbnail } from "@/data/beach";
 import { DefaultFont } from "@/constants/Fonts";
 
 export default function BeachGridList(props) {
@@ -16,9 +15,12 @@ export default function BeachGridList(props) {
     // Written like this to prevent 
     // renderItem complaining for a type
     const renderItem = (item) => {
-        const gridItemArray = item.item.gridItemArray
+        const gridItemArray = item.gridItemArray
         return (
-            <View style={styles.gridItem}>
+            <View
+            key={`_item_${gridItemArray.toString()}`} 
+            style={styles.gridItem}
+            >
                 {gridItemArray.map((gridItem) =>
                     renderGridCard(gridItem)
                 )}
@@ -35,7 +37,8 @@ export default function BeachGridList(props) {
         const thumbnailImg = getThumbnail(item)
 
         return (
-            <TouchableOpacity 
+            <TouchableOpacity
+                key={`_bchGrid_${item}`}
                 onPress={() => handleOnClickCard(item)}
                 disabled={!showData}
             >
@@ -55,11 +58,13 @@ export default function BeachGridList(props) {
     }
 
     return (
-        <FlatList
-            data={props.data}
-            renderItem={renderItem}
+        <ScrollView
             showsVerticalScrollIndicator={false}
-        />
+        >
+            {props.data.map((item) =>
+                renderItem(item)
+            )}
+        </ScrollView>
     )
 }
 
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
     },
     gridItem: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
     },
     card: {
         borderColor: 'white',

@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import {
     StyleSheet,
-    FlatList,
-    ListRenderItem,
     View,
     Text,
     TouchableOpacity
 } from "react-native";
 import { Beach, BeachList } from "@/data/beach";
 import { DefaultFont } from "@/constants/Fonts";
+import { ScrollView } from "react-native";
 
 export default function BeachCardList(props) {
     // Written like this to prevent 
     // renderItem complaining for a type
-    const renderItem = ({ item }: { item: Beach }) => (
+    const renderItem = (item) => (
         <TouchableOpacity
+            key={item.id}
             onPress={() => {
                 props.handleOnClickCard(item)
             }}
@@ -28,12 +28,13 @@ export default function BeachCardList(props) {
     )
 
     return (
-        <FlatList
-            data={props.data}
-            renderItem={renderItem}
-            keyExtractor={(item: Beach) => item.id}
+        <ScrollView
             showsVerticalScrollIndicator={false}
-        />
+        >
+            {props.data.map((item) =>
+                renderItem(item)
+            )}
+        </ScrollView>
     )
 }
 

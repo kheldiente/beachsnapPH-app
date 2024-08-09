@@ -6,13 +6,12 @@ import {
     Text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { gridRegions } from "@/data/beach";
-import BeachGridList from "@/components/BeachGridList";
+import PhotoGrid from "@/components/PhotoGrid";
 import { DefaultFont } from "@/constants/Fonts";
 import { useNavigation } from "expo-router";
-import { exploreLayoutKeys } from "@/constants/Global";
+import { photoGrid } from "@/data/photos";
 
-export default function RegionListLayout(props: any) {
+export default function SnapsAlbumLayout(props: any) {
     const getItemId = (item: { id: any; }) => (item.id)
     const navigation = useNavigation();
 
@@ -21,9 +20,9 @@ export default function RegionListLayout(props: any) {
     };
 
     const getGridData = () => {
-        return gridRegions.map((arr) => (
-            { gridItemArray: arr }
-        ))
+        return {
+            gridItemArray: photoGrid.data
+        }
     }
 
     const handleScroll = (event: any) => {
@@ -31,17 +30,15 @@ export default function RegionListLayout(props: any) {
         // console.log(event.nativeEvent.contentOffset.y);
     };
 
-    const handleSegmentButtonClick = (index: number) => { };
-
     const handleRegionClick = (key) => {
         if (key === '') {
             return;
         }
         
-        navigation.navigate({
-            name: `${exploreLayoutKeys.BEACH_LIST}`,
-            params: { region: key },
-        })
+        // navigation.navigate({
+        //     name: `${exploreLayoutKeys.BEACH_LIST}`,
+        //     params: { region: key },
+        // })
     };
 
     return (
@@ -51,9 +48,9 @@ export default function RegionListLayout(props: any) {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.container1}>
-                    <BeachGridList
+                    <PhotoGrid
                         data={getGridData()}
-                        onClick={(key) => handleRegionClick(key)}
+                        onClick={(key: string) => handleRegionClick(key)}
                     />
                 </View>
             </ScrollView>
@@ -74,7 +71,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
-        backgroundColor: 'white'
     },
     container1: {
         flexDirection: "column",
