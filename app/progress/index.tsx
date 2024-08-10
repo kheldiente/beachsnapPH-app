@@ -22,9 +22,9 @@ const progressWheelOptions = (progress) => {
 
 const renderCurrentGoal = () => {
     const visited = 1;
-    const totalBeachGoal = 6;
+    const totalBeachGoal = 3;
     const caption = `Complete your goal this month and unlock achievements. Share it with your friends!`;
-    const progress = 0.2
+    const progress = visited / totalBeachGoal;
 
     return (
         <View
@@ -68,13 +68,14 @@ const renderCurrentGoal = () => {
                         alignSelf: 'center'
                     }}
                 >
-                    {`/${totalBeachGoal} visited beaches`}
+                    {`visted out of ${totalBeachGoal} beaches`}
                 </Text>
             </View>
             <LinearProgress
                 key={'_currGoal_progress'}
                 style={{
                     width: '100%',
+                    height: 6,
                     marginBottom: 10,
                     borderRadius: 10,
                 }}
@@ -113,6 +114,11 @@ const renderVisitedBeachList = () => {
         },
         {
             name: 'Pinamuntugan Beach',
+            dateRange: 'Dec 20, 2023',
+            photosTaken: 2
+        },
+        {
+            name: 'Punta Beach',
             dateRange: 'Dec 20, 2023',
             photosTaken: 2
         },
