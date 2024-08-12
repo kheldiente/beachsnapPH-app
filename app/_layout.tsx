@@ -9,32 +9,32 @@ import { AppFonts } from '@/constants/Fonts';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded] = useFonts(AppFonts);
+    const [loaded] = useFonts(AppFonts);
 
-  const waitToProceed = () => {
-    setTimeout(() => {
-      SplashScreen.hideAsync();
-    }, 1500);
-  }
-
-  useEffect(() => {
-    if (loaded) {
-      waitToProceed();
+    const waitToProceed = () => {
+        setTimeout(() => {
+            SplashScreen.hideAsync();
+        }, 1500);
     }
-  }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+    useEffect(() => {
+        if (loaded) {
+            waitToProceed();
+        }
+    }, [loaded]);
 
-  return (
-    <Stack>
-      <Stack.Screen
-        name="(tabs)"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
-  );
+    if (!loaded) {
+        return null;
+    }
+
+    return (
+        <Stack>
+            <Stack.Screen
+                name="(tabs)"
+                options={{
+                    headerShown: false,
+                }}
+            />
+        </Stack>
+    );
 }

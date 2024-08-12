@@ -56,7 +56,7 @@ export const defaultHeaderWithBackBar = (title = appName) => {
             headerLeft: () => (
                 <Ionicons
                     name="chevron-back-outline"
-                    size={25}
+                    size={20}
                     style={{
                         backgroundColor: 'transparent',
                         color: 'black'
@@ -69,7 +69,7 @@ export const defaultHeaderWithBackBar = (title = appName) => {
     return tabHeaderOptions;
 }
 
-export const defaultHeaderWithRightBar = ({title = appName, component}) => {
+export const defaultHeaderWithRightBar = ({ title = appName, component }) => {
     const tabHeaderOptions = ({ navigation }) => {
         return {
             headerShadowVisible: false,

@@ -20,10 +20,10 @@ export const alcatraz = {
 
 
 export const philippineCoords = {
-    longitude: 122.50427676956998,
-    latitude: 11.874088270445917,
-    latitudeDelta: 15.16459232206335,
-    longitudeDelta: 8.553311616501432
+    longitude: 122.40602580250463,
+    latitude: 12.713043393738785,
+    latitudeDelta: 19.22828090543404,
+    longitudeDelta: 10.754851912614043
 }
 
 export const visitedBeachesMarkers = [
@@ -43,4 +43,165 @@ export const visitedBeachesMarkers = [
             longitude: 123.785540,
         }
     },
+]
+
+export const silverMapStyle = [
+    {
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#f5f5f5"
+            }
+        ]
+    },
+    {
+        elementType: "labels.icon",
+        stylers: [
+            {
+                visibility: "off"
+            }
+        ]
+    },
+    {
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#616161"
+            }
+        ]
+    },
+    {
+        elementType: "labels.text.stroke",
+        stylers: [
+            {
+                color: "#f5f5f5"
+            }
+        ]
+    },
+    {
+        featureType: "administrative.land_parcel",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#bdbdbd"
+            }
+        ]
+    },
+    {
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#eeeeee"
+            }
+        ]
+    },
+    {
+        featureType: "poi",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#757575"
+            }
+        ]
+    },
+    {
+        featureType: "poi.park",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#e5e5e5"
+            }
+        ]
+    },
+    {
+        featureType: "poi.park",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#9e9e9e"
+            }
+        ]
+    },
+    {
+        featureType: "road",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#ffffff"
+            }
+        ]
+    },
+    {
+        featureType: "road.arterial",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#757575"
+            }
+        ]
+    },
+    {
+        featureType: "road.highway",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#dadada"
+            }
+        ]
+    },
+    {
+        featureType: "road.highway",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#616161"
+            }
+        ]
+    },
+    {
+        featureType: "road.local",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#9e9e9e"
+            }
+        ]
+    },
+    {
+        featureType: "transit.line",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#e5e5e5"
+            }
+        ]
+    },
+    {
+        featureType: "transit.station",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#eeeeee"
+            }
+        ]
+    },
+    {
+        featureType: "water",
+        elementType: "geometry",
+        stylers: [
+            {
+                color: "#c9c9c9"
+            }
+        ]
+    },
+    {
+        featureType: "water",
+        elementType: "labels.text.fill",
+        stylers: [
+            {
+                color: "#9e9e9e"
+            }
+        ]
+    }
 ]

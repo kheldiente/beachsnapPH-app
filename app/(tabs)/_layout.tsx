@@ -16,9 +16,9 @@ export default function TabLayout() {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="myprogress"
+        name="index"
         options={{
-          title: 'My Progress',
+          title: 'Progress',
           tabBarLabelStyle: styles.tabBarText,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'trophy' : 'trophy-outline'} color={color} />
@@ -36,7 +36,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="explore"
         options={{
           title: 'Explore',
           tabBarLabelStyle: styles.tabBarText,
@@ -58,11 +58,12 @@ export default function TabLayout() {
       <Tabs.Screen
         name="more"
         options={{
-          title: 'Settings',
-          href: null,
+          title: 'More',
           tabBarLabelStyle: styles.tabBarText,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+            <TabBarIcon name={
+                focused ? 'ellipsis-horizontal' : 'ellipsis-horizontal-outline'
+            } color={color} />
           ),
         }}
       />
@@ -73,7 +74,7 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   tabBarText: {
     fontFamily: DefaultFont.fontFamily,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
   },
 });

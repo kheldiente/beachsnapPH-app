@@ -1,24 +1,18 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import RegionListLayout from '@/app/explore';
-import BeachListLayout from '@/app/province';
-import { exploreLayoutKeys } from "@/constants/Global";
+import { myProgressLayoutKeys } from "@/constants/Global";
+import ProgressListLayout from '@/app/progress';
 import { defaultHeaderBar } from '@/constants/SharedComponent';
 
 const Stack = createNativeStackNavigator()
 
-export default function ExploreLayout(props) {
+export default function MyProgressLayout(props) {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name={`${exploreLayoutKeys.REGION_LIST}`}
-                component={RegionListLayout}
+                name={`${myProgressLayoutKeys.PROGRESS_LIST}`}
+                component={ProgressListLayout}
                 options={defaultHeaderBar()} />
-            <Stack.Screen
-                name={`${exploreLayoutKeys.BEACH_LIST}`}
-                component={BeachListLayout}
-                options={defaultHeaderBar()} 
-            />
         </Stack.Navigator>
     )
 }
