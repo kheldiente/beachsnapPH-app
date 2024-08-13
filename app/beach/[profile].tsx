@@ -34,9 +34,7 @@ const samplePhotoGrid = [
 export default function ProfileLayout() {
     const { name = "Province" } = useLocalSearchParams();
     const headerTitle = `${name}`
-    const description = `
-        Bagasbas Beach is a scenic strip of white sand located in Daet, Camarines Norte. It is known for its calm and clear waters, making it perfect for swimming and snorkeling. The beach is also a popular spot for fishing and sunset-watching, offering breathtaking views of the surrounding landscape.
-    `
+    const description = `Bagasbas Beach is a scenic strip of white sand located in Daet, Camarines Norte. It is known for its calm and clear waters, making it perfect for swimming and snorkeling. The beach is also a popular spot for fishing and sunset-watching, offering breathtaking views of the surrounding landscape.`
 
     const [image, setImage] = useState(null);
 
@@ -151,6 +149,8 @@ export default function ProfileLayout() {
             <Text
                 key={'_profBch_desc'}
                 style={styles.description}
+                numberOfLines={3}
+                ellipsizeMode='tail'
             >
                 {description}
             </Text>
@@ -172,20 +172,24 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontFamily: DefaultFont.fontFamily,
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
         alignSelf: 'center',
     },
     description: {
         fontFamily: DefaultFont.fontFamily,
         fontSize: 12,
-        marginHorizontal: 15,
+        marginHorizontal: 20,
+        marginTop: 10,
+        color: 'gray',
         alignSelf: 'center',
-        flexWrap: 'wrap',
+        textAlign: 'center',
     },
     photoCount: {
         fontFamily: DefaultFont.fontFamily,
-        fontSize: 10,
+        fontWeight: 'bold',
+        fontSize: 12,
+        marginTop: 10,
         marginHorizontal: 15,
         alignSelf: 'center',
         flexWrap: 'wrap',
@@ -210,6 +214,7 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 20,
         paddingHorizontal: 30,
+        marginTop: 10,
         alignSelf: 'center',
         backgroundColor: 'green',
     },
