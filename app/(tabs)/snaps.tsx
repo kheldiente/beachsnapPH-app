@@ -16,6 +16,7 @@ export default function SnapsLayout(props) {
                 name={`${snapsLayoutKeys.SNAPS_ALBUM}`}
                 component={SnapsAlbumLayout}
                 options={defaultHeaderWithRightBar({
+                    title: 'My snaps',
                     component: (<Ionicons
                         name="add-circle-outline"
                         size={25}

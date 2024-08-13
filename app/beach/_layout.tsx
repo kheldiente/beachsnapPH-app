@@ -4,9 +4,6 @@ import { useEffect } from "react";
 import { defaultHeaderWithBackBar } from "@/constants/SharedComponent";
 
 export default function HomeLayout() {
-    const { name = "Province" } = useLocalSearchParams();
-    const headerTitle = `${name} 🏖️`
-
     const navigation = useNavigation();
 
     useEffect(() => {
@@ -23,7 +20,7 @@ export default function HomeLayout() {
         >
             <Stack.Screen
                 name="[profile]"
-                options={defaultHeaderWithBackBar(headerTitle)}
+                options={defaultHeaderWithBackBar()}
             />
         </Stack>
     );

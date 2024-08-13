@@ -13,7 +13,7 @@ export default function ExploreLayout(props) {
             <Stack.Screen
                 name={`${exploreLayoutKeys.REGION_LIST}`}
                 component={RegionListLayout}
-                options={defaultHeaderBar()} />
+                options={defaultHeaderBar('Explore PH')} />
             <Stack.Screen
                 name={`${exploreLayoutKeys.BEACH_LIST}`}
                 component={BeachListLayout}

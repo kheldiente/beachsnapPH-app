@@ -6,9 +6,12 @@ import {
     Text,
     TouchableOpacity,
     ScrollView,
+    Dimensions,
 } from "react-native";
 import { getThumbnail } from "@/data/beach";
 import { DefaultFont } from "@/constants/Fonts";
+
+const imgWidthWeight = 3.3;
 
 export default function BeachGridList(props) {
 
@@ -92,16 +95,17 @@ const styles = StyleSheet.create({
     gridItem: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        marginHorizontal: 5,
+        marginVertical: 5
     },
     card: {
         borderColor: 'white',
-        width: 110,
-        marginTop: 10,
+        width: (Dimensions.get('window').width / imgWidthWeight),
     },
     cardInvisible: {
         borderColor: 'transparent',
         backgroundColor: 'transparent',
-        width: 110,
+        width: (Dimensions.get('window').width / imgWidthWeight),
         marginTop: 10,
     },
 });

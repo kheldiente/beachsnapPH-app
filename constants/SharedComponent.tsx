@@ -36,11 +36,10 @@ export const secondaryHeaderBar = (title) => {
     }
 }
 
-export const defaultHeaderWithBackBar = (title = appName) => {
+export const defaultHeaderWithBackBar = (title = '') => {
     const tabHeaderOptions = ({ navigation }) => {
         return {
             headerStyle: {
-                // backgroundColor: "rgb(249, 249, 249)",
                 backgroundColor: 'white',
                 elevation: 0,
                 shadowOpacity: 0

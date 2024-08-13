@@ -12,7 +12,7 @@ export default function MyProgressLayout(props) {
             <Stack.Screen
                 name={`${myProgressLayoutKeys.PROGRESS_LIST}`}
                 component={ProgressListLayout}
-                options={defaultHeaderBar()} />
+                options={defaultHeaderBar('Track your progress')} />
         </Stack.Navigator>
     )
 }
