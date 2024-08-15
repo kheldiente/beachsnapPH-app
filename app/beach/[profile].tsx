@@ -7,11 +7,11 @@ import {
     TouchableOpacity,
     Text,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
 import { Dimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import AddBeachModal from './addbeach';
 
 const samplePhotoGrid = [
     {
@@ -36,29 +36,7 @@ export default function ProfileLayout() {
     const headerTitle = `${name}`
     const description = `Bagasbas Beach is a scenic strip of white sand located in Daet, Camarines Norte. It is known for its calm and clear waters, making it perfect for swimming and snorkeling. The beach is also a popular spot for fishing and sunset-watching, offering breathtaking views of the surrounding landscape.`
 
-    const [image, setImage] = useState(null);
-
-    const renderAddPhotosCta = () => {
-        const pickImage = async () => {
-            // No permissions request is necessary 
-            // for launching the image library
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-            });
-
-            console.log(result);
-            if (!result.canceled) {
-                setImage(result.assets[0].uri);
-            }
-        };
-
-        return (
-            <Button title="Pick an image from camera roll" onPress={pickImage} />
-        );
-    }
+    const [showModal, setShowModal] = useState(false);
 
     const renderPhoto = (item) => {
         return (
@@ -88,8 +66,6 @@ export default function ProfileLayout() {
         const columns = photos.length / 3;
         const columnArr = [...Array(columns).keys()];
         const countArr = [...Array(count).keys()];
-
-        console.log(`${photos.length}`)
 
         const gridRow = (photos) => {
             return (
@@ -121,12 +97,23 @@ export default function ProfileLayout() {
         )
     }
 
+    const handleAddPhotosCtaClick = () => {
+        setShowModal(true);
+    }
+
+    const handleOnModalClose = () => {
+        setShowModal(false);
+    }
+
     return (
         <ScrollView
             style={styles.container}
             showsVerticalScrollIndicator={false}
         >
-            {/* {image && <Image source={{ uri: image }} style={styles.imageUploaded} />} */}
+            <AddBeachModal
+                isVisible={showModal}
+                onClose={handleOnModalClose}
+            />
 
             <Text
                 key={'_profBch_header'}
@@ -146,17 +133,18 @@ export default function ProfileLayout() {
             >
                 {`10 photos`}ּ
             </Text>
-            <Text
+            {/* <Text
                 key={'_profBch_desc'}
                 style={styles.description}
                 numberOfLines={3}
                 ellipsizeMode='tail'
             >
                 {description}
-            </Text>
+            </Text> */}
             <Button
                 titleStyle={styles.buttonTitle}
                 buttonStyle={styles.button}
+                onPress={handleAddPhotosCtaClick}
                 title='Add photos'
             />
             {renderPhotoGrid(samplePhotoGrid)}
@@ -201,10 +189,6 @@ const styles = StyleSheet.create({
         color: 'gray',
         alignSelf: 'center',
         flexWrap: 'wrap',
-    },
-    imageUploaded: {
-        width: 200,
-        height: 200,
     },
     img: {
         width: '100%',

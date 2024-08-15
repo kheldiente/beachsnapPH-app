@@ -45,6 +45,7 @@ export const defaultHeaderWithBackBar = (title = '') => {
                 shadowOpacity: 0
             },
             headerShadowVisible: false,
+            headerBackVisible: false,
             headerTitle: (props) => (
                 <TabHeaderBar
                     id="tabHeaderBar"
