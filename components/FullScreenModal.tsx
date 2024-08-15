@@ -1,14 +1,35 @@
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import {
+    Modal,
+    View,
+    Text,
+    Pressable,
+    StyleSheet,
+    Dimensions
+} from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function FullScreenModal({ isVisible, children, onClose }) {
+const screenW = Dimensions.get('window').width;
+
+export default function FullScreenModal({ isVisible, children, onClose, title = "Title" }) {
+    const insets = useSafeAreaInsets();
+
     return (
-        <Modal animationType="slide" transparent={true} visible={isVisible}>
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isVisible}
+            statusBarTranslucent={true}
+        >
             <View style={styles.modalContent}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>Add beach snap</Text>
+                <View style={
+                    {
+                        ...styles.titleContainer,
+                        marginTop: insets.top
+                    }
+                }>
+                    <Text style={styles.title}>{title}</Text>
                     <View
                         style={styles.close}
                     >
@@ -30,33 +51,28 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         backgroundColor: 'white',
-        borderTopRightRadius: 18,
-        borderTopLeftRadius: 18,
         position: 'absolute',
-        bottom: 0,
     },
     titleContainer: {
-        height: '16%',
         backgroundColor: 'white',
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-        paddingHorizontal: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 20,
     },
     title: {
         fontFamily: DefaultFont.fontFamily,
         fontSize: 20,
         fontWeight: 'bold',
         color: 'black',
-        
+
     },
     close: {
         width: '100%',
         flex: 1,
         flexDirection: 'row',
         position: 'absolute',
+        paddingHorizontal: 20,
     }
 });
 

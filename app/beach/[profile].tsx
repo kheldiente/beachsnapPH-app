@@ -13,6 +13,9 @@ import { Dimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import AddBeachModal from './addbeach';
 
+const cardCalcWidth = Dimensions.get('window').width / 3;
+const cardMargin = 5;
+
 const samplePhotoGrid = [
     {
         name: 'test',
@@ -210,7 +213,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderColor: 'white',
         borderRadius: 5,
-        width: (Dimensions.get('window').width / 3) - 5,
+        width: cardCalcWidth - cardMargin,
         marginVertical: 2,
         marginHorizontal: 2,
     },

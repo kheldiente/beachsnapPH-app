@@ -12,6 +12,7 @@ import { getThumbnail } from "@/data/beach";
 import { DefaultFont } from "@/constants/Fonts";
 
 const imgWidthWeight = 3.3;
+const width = Dimensions.get('window').width
 
 export default function BeachGridList(props) {
 
@@ -100,12 +101,12 @@ const styles = StyleSheet.create({
     },
     card: {
         borderColor: 'white',
-        width: (Dimensions.get('window').width / imgWidthWeight),
+        width: (width / imgWidthWeight),
     },
     cardInvisible: {
         borderColor: 'transparent',
         backgroundColor: 'transparent',
-        width: (Dimensions.get('window').width / imgWidthWeight),
+        width: (width / imgWidthWeight),
         marginTop: 10,
     },
 });

@@ -40,12 +40,17 @@ export default function AddBeachModal({ isVisible, onClose }) {
 
     return (
         <FullScreenModal
+            title='New beach snap'
             isVisible={isVisible}
             onClose={onClose}
         >
             {!image && renderAddPhotosCta()}
             {image &&
-                <Image source={{ uri: image }} style={styles.imageUploaded} />
+                <View
+                    style={styles.imageContainer}
+                >
+                    <Image source={{ uri: image }} style={styles.imageUploaded} />
+                </View>
             }
         </FullScreenModal>
     )
@@ -56,10 +61,14 @@ const styles = StyleSheet.create({
         fontFamily: DefaultFont.fontFamily,
         alignSelf: 'center',
     },
+    imageContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
     imageUploaded: {
         width: 200,
         height: 200,
-        alignSelf: 'center',
     },
 });
 
