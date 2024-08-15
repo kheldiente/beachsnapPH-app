@@ -11,7 +11,7 @@ import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
 import { Dimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import AddBeachModal from './addbeach';
+import NewBeachSnapModal from './addbeach-modal';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const cardMargin = 5;
@@ -113,7 +113,7 @@ export default function ProfileLayout() {
             style={styles.container}
             showsVerticalScrollIndicator={false}
         >
-            <AddBeachModal
+            <NewBeachSnapModal
                 isVisible={showModal}
                 onClose={handleOnModalClose}
             />

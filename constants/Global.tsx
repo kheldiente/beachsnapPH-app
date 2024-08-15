@@ -8,8 +8,10 @@ export const exploreLayoutKeys = {
 
 export const snapsLayoutKeys = {
     SNAPS_ALBUM: "_SnapsAlbum",
+    NEW_BEACH_SNAP: "_NewBeachSnap"
 }
 
 export const myProgressLayoutKeys = {
     PROGRESS_LIST: "_ProgressList",
 }
+

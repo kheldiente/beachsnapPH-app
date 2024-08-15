@@ -1,16 +1,16 @@
 import {
     View,
-    Text,
     StyleSheet,
     Button,
+    Text,
+    ScrollView,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
-import FullScreenModal from '@/components/FullScreenModal';
 import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { Image } from 'react-native-elements';
 
-export default function AddBeachModal({ isVisible, onClose }) {
+export default function BeachSnapEditor(props: any) {
     const [image, setImage] = useState(null);
 
     const renderAddPhotosCta = () => {
@@ -39,20 +39,24 @@ export default function AddBeachModal({ isVisible, onClose }) {
     }
 
     return (
-        <FullScreenModal
-            title='New beach snap'
-            isVisible={isVisible}
-            onClose={onClose}
-        >
-            {!image && renderAddPhotosCta()}
-            {image &&
-                <View
-                    style={styles.imageContainer}
-                >
-                    <Image source={{ uri: image }} style={styles.imageUploaded} />
-                </View>
-            }
-        </FullScreenModal>
+        <ScrollView>
+            <View
+                style={{
+                    ...props.style,
+                    width: '100%',
+                    height: '100%',
+                }}
+            >
+                {!image && renderAddPhotosCta()}
+                {image &&
+                    <View
+                        style={styles.imageContainer}
+                    >
+                        <Image source={{ uri: image }} style={styles.imageUploaded} />
+                    </View>
+                }
+            </View>
+        </ScrollView>
     )
 }
 
@@ -64,7 +68,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     imageUploaded: {
         width: 200,

@@ -64,8 +64,7 @@ const styles = StyleSheet.create({
         fontFamily: DefaultFont.fontFamily,
         fontSize: 20,
         fontWeight: 'bold',
-        color: 'black',
-
+        color: 'green',
     },
     close: {
         width: '100%',

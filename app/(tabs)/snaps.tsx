@@ -5,11 +5,19 @@ import SnapsAlbumLayout from '@/app/snaps';
 import { defaultHeaderWithRightBar } from '@/constants/SharedComponent';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
+import NewBeachSnapLayout from '../beach/addbeach-page';
 
 const Stack = createNativeStackNavigator()
 
 export default function SnapsLayout(props) {
     const navigation = useNavigation();
+
+    const handleOnNewBeachSnapClick = () => {
+        navigation.navigate({
+            name: `${snapsLayoutKeys.NEW_BEACH_SNAP}`,
+        });
+    }
+
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -24,9 +32,19 @@ export default function SnapsLayout(props) {
                             backgroundColor: 'transparent',
                             color: 'black'
                         }}
-                        onPress={() => console.log("Add album")}
+                        onPress={handleOnNewBeachSnapClick}
                     />)
                 })} />
+            <Stack.Screen
+                name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}
+                component={NewBeachSnapLayout}
+                options={{
+                    headerShown: false,
+                    headerStyle: {
+                        backgroundColor: 'white'
+                    }
+                }}
+            />
         </Stack.Navigator>
     )
 }

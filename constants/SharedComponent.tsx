@@ -1,6 +1,8 @@
 import TabHeaderBar from "@/components/TabHeaderBar"
 import { appName } from "./Global"
 import { Ionicons } from "@expo/vector-icons";
+import { DefaultFont } from "./Fonts";
+import { View } from "react-native";
 
 export const defaultHeaderBar = (title = appName) => {
     const tabHeaderOptions = ({ navigation }) => {
@@ -89,4 +91,34 @@ export const defaultHeaderWithRightBar = ({ title = appName, component }) => {
         }
     };
     return tabHeaderOptions;
+}
+
+export const defaultModalHeader = (title) => {
+    const modalHeaderOptions = ({ navigation }) => {
+        return {
+            headerTitle: title,
+            headerBackVisible: false,
+            headerShadowVisible: false,
+            headerShown: false,
+            headerTitleStyle: {
+                fontFamily: DefaultFont.fontFamily,
+                fontWeight: 'bold',
+                fontSize: 20,
+                textAlign: 'center',
+                color: 'green'
+            },
+            headerLeft: (props) => (
+                <Ionicons
+                    name="chevron-back-outline"
+                    size={22}
+                    style={{
+                        backgroundColor: 'transparent',
+                        color: 'black'
+                    }}
+                    onPress={() => navigation.goBack()}
+                />
+            ),
+        }
+    }
+    return modalHeaderOptions;
 }
