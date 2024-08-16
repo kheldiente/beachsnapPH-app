@@ -2,9 +2,9 @@ import {
     Modal,
     View,
     Text,
-    Pressable,
+    TouchableOpacity,
     StyleSheet,
-    Dimensions
+    Dimensions,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +12,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const screenW = Dimensions.get('window').width;
 
-export default function FullScreenModal({ isVisible, children, onClose, title = "Title" }) {
+export default function FullScreenModal({ 
+    isVisible, 
+    children,
+    onClose,
+    onHideKeyboard,
+    isKeyboardShown = false,
+    title = 'Title',
+    keyboardTitle = 'Keyboard'
+}) {
     const insets = useSafeAreaInsets();
 
     return (
@@ -29,15 +37,29 @@ export default function FullScreenModal({ isVisible, children, onClose, title = 
                         marginTop: insets.top
                     }
                 }>
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.title}>{
+                        isKeyboardShown
+                        ? keyboardTitle
+                        : title
+                    }</Text>
                     <View
-                        style={styles.close}
+                        style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'space-between'
+                        }}
                     >
-                        <Pressable
+                        <TouchableOpacity
+                            style={styles.close}
                             onPress={onClose}
                         >
                             <Ionicons name="chevron-back" color="black" size={22} />
-                        </Pressable>
+                        </TouchableOpacity>
+                        {isKeyboardShown &&
+                            <TouchableOpacity onPress={onHideKeyboard}>
+                                <Text style={styles.ok}>OK</Text>
+                            </TouchableOpacity>
+                        }
                     </View>
                 </View>
                 {children}
@@ -64,13 +86,17 @@ const styles = StyleSheet.create({
         fontFamily: DefaultFont.fontFamily,
         fontSize: 20,
         fontWeight: 'bold',
+        alignSelf: 'center',
         color: 'green',
+        position: 'absolute',
     },
     close: {
-        width: '100%',
-        flex: 1,
-        flexDirection: 'row',
-        position: 'absolute',
+        paddingHorizontal: 20,
+    },
+    ok: {
+        fontFamily: DefaultFont.fontFamily,
+        fontWeight: 'bold',
+        fontSize: 16,
         paddingHorizontal: 20,
     }
 });

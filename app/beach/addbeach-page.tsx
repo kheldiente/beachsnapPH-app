@@ -3,20 +3,48 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
+    Keyboard,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BeachSnapEditor from '@/app/editor/index';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
+import { useEffect, useState } from 'react';
 
 export default function NewBeachSnapLayout(props: any) {
     const navigation = useNavigation();
+    const [isKeyboardShown, setIsKeyboardShown] = useState(false);
 
     const handleOnBackClick = () => {
-        console.log("go back");
         navigation.goBack();
     }
+
+    const handleOnSaveClick = () => {
+        navigation.goBack();
+    }
+
+    const hideKeyboard = () => {
+        Keyboard.dismiss();
+    }
+
+    const doOnShowKeyboard = () => {
+        setIsKeyboardShown(true);
+    }
+
+    const doOnHideKeyboard = () => {
+        setIsKeyboardShown(false);
+    }
+
+    useEffect(() => {
+        Keyboard.addListener('keyboardWillShow', () => {
+            doOnShowKeyboard();
+        });
+
+        Keyboard.addListener('keyboardWillHide', () => {
+            doOnHideKeyboard();
+        });
+    }, []);
 
     return (
         <SafeAreaView
@@ -35,20 +63,65 @@ export default function NewBeachSnapLayout(props: any) {
                         alignItems: 'center',
                     }}
                 >
-                    <Text style={styles.title}>New beach snap</Text>
+                    <Text style={styles.title}>
+                        {!isKeyboardShown
+                            ? `New beach snap`
+                            : `Caption`
+                        }
+                    </Text>
                 </View>
-                <TouchableOpacity
-                    style={styles.close}
-                    onPress={handleOnBackClick}
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignContent: 'center',
+                        justifyContent: 'space-between',
+                    }}
                 >
-                    <Ionicons name="chevron-back" color="black" size={22} />
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleOnBackClick}
+                    >
+                        <Ionicons
+                            style={styles.close}
+                            name="chevron-back"
+                            color="black" size={22}
+                        />
+                    </TouchableOpacity>
+                    {isKeyboardShown &&
+                        <TouchableOpacity onPress={hideKeyboard}>
+                            <Text style={styles.ok}>OK</Text>
+                        </TouchableOpacity>
+                    }
+                </View>
             </View>
             <BeachSnapEditor
                 style={{
                     marginVertical: 20,
                 }}
             />
+            {!isKeyboardShown &&
+                <View>
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: 'green',
+                            paddingVertical: 10,
+                            marginHorizontal: 10,
+                            borderRadius: 10,
+                        }}
+                        onPress={handleOnSaveClick}
+                    >
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontWeight: 'bold',
+                                fontSize: 20,
+                                alignSelf: 'center',
+                                color: 'white',
+                            }}
+                        >Save</Text>
+                    </TouchableOpacity>
+                </View>
+            }
         </SafeAreaView>
     )
 }
@@ -66,6 +139,12 @@ const styles = StyleSheet.create({
         color: 'green',
     },
     close: {
+        paddingHorizontal: 20,
+    },
+    ok: {
+        fontFamily: DefaultFont.fontFamily,
+        fontWeight: 'bold',
+        fontSize: 16,
         paddingHorizontal: 20,
     }
 });

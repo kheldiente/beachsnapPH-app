@@ -95,8 +95,8 @@ const renderCurrentGoal = () => {
     )
 }
 
-const renderVisitedBeachList = () => {
-    const data = [
+const renderStatCard = (data) => {
+    const list = data.list ?? [
         {
             name: 'Cemento Beach',
             dateRange: 'Feb 14, 2024',
@@ -122,11 +122,11 @@ const renderVisitedBeachList = () => {
             dateRange: 'Dec 20, 2023',
             photosTaken: 2
         },
-    ]
+    ];
 
     return (
         <View
-            key={'_visited_bchList'}
+            key={`visited_bchList+${data.key}`}
             style={{
                 backgroundColor: 'papayawhip',
                 borderRadius: 10,
@@ -134,10 +134,10 @@ const renderVisitedBeachList = () => {
                 margin: 10,
             }}
         >
-            <Text style={styles.headerText}>Recent Visited Beaches</Text>
-            {data.map((item) => (
+            <Text style={styles.headerText}>{data.title}</Text>
+            {list.map((item) => (
                 <View
-                key={`_visited_bchList+${item.name}`}
+                    key={`_visited_bchList+${item.name}`}
                     style={{
                         flex: 1,
                         flexDirection: 'row',
@@ -208,7 +208,10 @@ export default function ProgressListLayout() {
     }
 
     return (
-        <ScrollView style={styles.root}>
+        <ScrollView
+            style={styles.root}
+            showsVerticalScrollIndicator={false}
+        >
             <View
                 key={'_progWhl_container'}
                 style={styles.container}
@@ -234,7 +237,9 @@ export default function ProgressListLayout() {
                 )}
             </View>
             {renderCurrentGoal()}
-            {renderVisitedBeachList()}
+            {renderStatCard({title: 'Recent visited beaches', key: 'stat1'})}
+            {renderStatCard({title: 'Top beaches with many photos', key: 'stat2'})}
+            {renderStatCard({title: 'Favorited beaches', key: 'stat3'})}
         </ScrollView>
     );
 }

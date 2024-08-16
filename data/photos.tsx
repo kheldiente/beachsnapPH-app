@@ -142,3 +142,9 @@ export const photoGrid = {
         }
     ]
 }
+
+export const emptyBeachSnap = {
+    jpeg: require("@/assets/images/empty-image.jpeg"),
+    jpeg200: require("@/assets/images/empty-image-200.jpeg"),
+    jpeg300: require("@/assets/images/empty-image-300.jpeg"),
+}

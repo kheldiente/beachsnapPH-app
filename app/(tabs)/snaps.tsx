@@ -42,7 +42,8 @@ export default function SnapsLayout(props) {
                     headerShown: false,
                     headerStyle: {
                         backgroundColor: 'white'
-                    }
+                    },
+                    presentation: 'fullScreenModal',
                 }}
             />
         </Stack.Navigator>

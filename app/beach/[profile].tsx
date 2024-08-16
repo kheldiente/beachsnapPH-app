@@ -108,6 +108,10 @@ export default function ProfileLayout() {
         setShowModal(false);
     }
 
+    const handleOnSaveClick = () => {
+        setShowModal(false);
+    }
+
     return (
         <ScrollView
             style={styles.container}
@@ -116,6 +120,7 @@ export default function ProfileLayout() {
             <NewBeachSnapModal
                 isVisible={showModal}
                 onClose={handleOnModalClose}
+                onSave={handleOnSaveClick}
             />
 
             <Text
