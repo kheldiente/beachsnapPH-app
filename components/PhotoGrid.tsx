@@ -17,8 +17,8 @@ export default function PhotoGrid(props) {
     const renderItem = (item) => {
         return (
             <View style={styles.gridItem}>
-                {item.municipalities.map((municipality) =>
-                    renderGridCard(municipality)
+                {item.beaches.map((beach) =>
+                    renderGridCard(beach)
                 )}
             </View>
         )

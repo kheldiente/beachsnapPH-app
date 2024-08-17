@@ -100,10 +100,10 @@ export default function BeachSnapEditor(props: any) {
                 type: 'chevron'
             },
             {
-                title: 'Add as favorite',
+                title: 'Date',
                 key: '_addAsFave',
-                icon: 'star',
-                type: 'toggle'
+                icon: 'calendar',
+                type: 'chevron'
             },
         ]
         return (

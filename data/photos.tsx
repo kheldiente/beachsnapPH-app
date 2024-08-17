@@ -4,9 +4,9 @@ export const photoGrid = {
             "province": "Albay",
             "visited": 5,
             "beachesCount": 12,
-            "municipalities": [
+            "beaches": [
                 {
-                    "name": "Bacacay",
+                    "name": "Pinamuntugan",
                     "region": "Bicol",
                     "photos": [
                         "@/assets/images/thumbnail/bicol-thumbnail.jpeg",
@@ -17,7 +17,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Tabaco",
+                    "name": "Panarayon",
                     "region": "Bicol",
                     "photos": [
                         "@/assets/images/thumbnail/bicol-thumbnail.jpeg",
@@ -26,7 +26,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Tiwi",
+                    "name": "Coron-Coron",
                     "region": "Bicol",
                     "photos": [
                         "@/assets/images/thumbnail/bicol-thumbnail.jpeg",
@@ -43,9 +43,9 @@ export const photoGrid = {
             "province": "Batanes",
             "visited": 4,
             "beachesCount": 15,
-            "municipalities": [
+            "beaches": [
                 {
-                    "name": "Basco",
+                    "name": "Didadungan",
                     "region": "Cagayan Valley",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -56,7 +56,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Mahatao",
+                    "name": "Oway",
                     "region": "Cagayan Valley",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -73,12 +73,12 @@ export const photoGrid = {
             ]
         },
         {
-            "province": "Aurora",
+            "province": "Surigao del Norte",
             "visited": 8,
             "beachesCount": 15,
-            "municipalities": [
+            "beaches": [
                 {
-                    "name": "Baler",
+                    "name": "Sohoton",
                     "region": "Central Luzon",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -87,7 +87,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Casiguran",
+                    "name": "Puyangin",
                     "region": "Central Luzon",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -97,7 +97,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Dilasag",
+                    "name": "Bucas Grande",
                     "region": "Central Luzon",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -107,12 +107,12 @@ export const photoGrid = {
             ]
         },
         {
-            "province": "Bataan",
+            "province": "Cagayan",
             "visited": 1,
             "beachesCount": 8,
-            "municipalities": [
+            "beaches": [
                 {
-                    "name": "Bagac",
+                    "name": "Cape Engaño",
                     "region": "Central Luzon",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -121,7 +121,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Mariveles",
+                    "name": "Anguib",
                     "region": "Central Luzon",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
@@ -131,7 +131,7 @@ export const photoGrid = {
                     ]
                 },
                 {
-                    "name": "Morong",
+                    "name": "Masisit",
                     "region": "Central Luzon",
                     "photos": [
                         "@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg",
