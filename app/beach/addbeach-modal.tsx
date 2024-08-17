@@ -52,7 +52,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
                     <TouchableOpacity
                         style={{
                             ...styles.save,
-                            marginBottom: insets.bottom,
+                            marginBottom: insets.bottom + 10,
                         }}
                         onPress={onSave}
                     >

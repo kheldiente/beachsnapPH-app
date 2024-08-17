@@ -140,6 +140,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         paddingVertical: 10,
         marginHorizontal: 20,
+        marginBottom: 10,
         borderRadius: 10,
     },
     saveCta: {

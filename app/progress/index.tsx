@@ -179,30 +179,39 @@ export default function ProgressListLayout() {
     const stats = [
         {
             statsCount: 2,
-            title: 'Regions'
+            total: 17,
+            title: 'regions'
         },
         {
             statsCount: 3,
-            title: 'Provinces'
+            total: 34,
+            title: 'provinces'
         },
         {
             statsCount: 5,
-            title: 'Municipalities'
+            total: 50,
+            title: 'municipalities'
         },
     ]
 
-    const renderStats = (statsCount, title) => {
+    const renderStats = (stat) => {
         return (
             <View
-                key={`_stats+${title}_${statsCount}`}
+                key={`_stats+${stat.title}_${stat.statsCount}`}
                 style={{
                     flex: 1,
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}
             >
-                <Text style={styles.statsCount}>{statsCount}</Text>
-                <Text style={styles.statsTitle}>{title}</Text>
+                <Text style={styles.statsCount}>{stat.statsCount}</Text>
+                <Text style={{
+                    fontFamily: DefaultFont.fontFamily,
+                    fontSize: 10,
+                    alignSelf: 'center',
+                    color: 'gray'
+                }}>out of {stat.total}</Text>
+                <Text style={styles.statsTitle}>{stat.title}</Text>
             </View>
         )
     }
@@ -233,13 +242,13 @@ export default function ProgressListLayout() {
                 style={styles.statsContainer}
             >
                 {stats.map((stat) =>
-                    renderStats(stat.statsCount, stat.title)
+                    renderStats(stat)
                 )}
             </View>
             {renderCurrentGoal()}
-            {renderStatCard({title: 'Recent visited beaches', key: 'stat1'})}
-            {renderStatCard({title: 'Top beaches with many photos', key: 'stat2'})}
-            {renderStatCard({title: 'Favorited beaches', key: 'stat3'})}
+            {renderStatCard({ title: 'Recent visited beaches', key: 'stat1' })}
+            {renderStatCard({ title: 'Top beaches with many photos', key: 'stat2' })}
+            {renderStatCard({ title: 'Favorited beaches', key: 'stat3' })}
         </ScrollView>
     );
 }
@@ -285,6 +294,7 @@ const styles = StyleSheet.create({
     labelText: {
         fontFamily: DefaultFont.fontFamily,
         fontWeight: 'bold',
-        fontSize: 40
+        fontSize: 40,
+        color: 'gray'
     },
 });
