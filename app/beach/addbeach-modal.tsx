@@ -10,6 +10,7 @@ import BeachSnapEditor from '@/app/editor/index';
 import { useEffect, useState } from 'react';
 import { DefaultFont } from '@/constants/Fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { addKeyboardListener } from '@/constants/Utils';
 
 export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     const insets = useSafeAreaInsets();
@@ -28,13 +29,10 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     }
 
     useEffect(() => {
-        Keyboard.addListener('keyboardWillShow', () => {
-            doOnShowKeyboard();
-        });
-
-        Keyboard.addListener('keyboardWillHide', () => {
-            doOnHideKeyboard();
-        });
+        addKeyboardListener(
+            () => { doOnShowKeyboard() },
+            () => { doOnHideKeyboard() }
+        )
     }, []);
 
     return (

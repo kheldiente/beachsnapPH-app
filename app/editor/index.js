@@ -6,7 +6,6 @@ import {
     ScrollView,
     TouchableOpacity,
     Platform,
-    Keyboard,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import * as ImagePicker from 'expo-image-picker';
@@ -16,6 +15,7 @@ import { emptyBeachSnap } from '@/data/photos';
 import { Ionicons } from '@expo/vector-icons';
 import { Switch } from '@rneui/themed';
 import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
+import { addKeyboardListener } from '@/constants/Utils';
 
 const imgDimension = 300;
 
@@ -209,14 +209,11 @@ export default function BeachSnapEditor(props: any) {
     }
 
     useEffect(() => {
-        const duration = 100;
-        Keyboard.addListener('keyboardWillShow', () => {
-            doOnShowKeyboard(duration);
-        });
-
-        Keyboard.addListener('keyboardWillHide', () => {
-            doOnHideKeyboard(duration);
-        });
+        const duration = Platform.OS === 'ios' ? 100 : 50;
+        addKeyboardListener(
+            () => { doOnShowKeyboard(duration) },
+            () => { doOnHideKeyboard(duration) }
+        )
     }, []);
 
     return (

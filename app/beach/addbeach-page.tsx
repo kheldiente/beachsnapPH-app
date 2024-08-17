@@ -4,6 +4,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     Keyboard,
+    Platform,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,6 +12,7 @@ import BeachSnapEditor from '@/app/editor/index';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { addKeyboardListener } from '@/constants/Utils';
 
 export default function NewBeachSnapLayout(props: any) {
     const navigation = useNavigation();
@@ -37,13 +39,10 @@ export default function NewBeachSnapLayout(props: any) {
     }
 
     useEffect(() => {
-        Keyboard.addListener('keyboardWillShow', () => {
-            doOnShowKeyboard();
-        });
-
-        Keyboard.addListener('keyboardWillHide', () => {
-            doOnHideKeyboard();
-        });
+        addKeyboardListener(
+            () => { doOnShowKeyboard() },
+            () => { doOnHideKeyboard() }
+        )
     }, []);
 
     return (
