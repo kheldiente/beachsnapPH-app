@@ -76,7 +76,7 @@ export default function PhotoGrid(props) {
                             justifyContent: 'flex-end',
                         }}>
                             <Text style={styles.subHeader}>
-                                Visited beaches: {item.visited}/{item.beachesCount}
+                                Visited: {item.visited}/{item.beachesCount}
                             </Text>
                         </View>
                     </View>

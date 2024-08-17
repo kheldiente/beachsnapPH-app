@@ -20,7 +20,7 @@ import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'reac
 const imgDimension = 300;
 
 export default function BeachSnapEditor(props: any) {
-    const maxCharacters = 300;
+    const maxCharacters = 100;
     var imageContainerH = 350; // Measured in console.logs
 
     const [caption, setCaption] = useState('');
@@ -97,13 +97,15 @@ export default function BeachSnapEditor(props: any) {
                 title: 'Beach name',
                 key: '_bchName',
                 icon: 'cloudy',
-                type: 'chevron'
+                type: 'chevron',
+                value: 'Bagasbas'
             },
             {
                 title: 'Date',
                 key: '_addAsFave',
                 icon: 'calendar',
-                type: 'chevron'
+                type: 'chevron',
+                value: 'Jan 1, 2024'
             },
         ]
         return (
@@ -136,25 +138,50 @@ export default function BeachSnapEditor(props: any) {
                                 <Text style={{
                                     marginLeft: 10,
                                     fontFamily: DefaultFont.fontFamily,
-                                    fontWeight: '400'
+                                    fontWeight: '400',
+                                    alignSelf: 'center',
                                 }}>{item.title}</Text>
                             </View>
-                            {item.type === 'chevron' ?
-                                <Ionicons style={{ alignSelf: 'flex-end' }} name="chevron-forward" color="black" size={22} />
-                                : <Switch
-                                    style={{
-                                        alignSelf: 'flex-end',
-                                        padding: 0,
-                                        transform: Platform.OS === 'ios'
-                                            ? [{ scaleX: .7 }, { scaleY: .7 }]
-                                            : [{ scaleX: 1 }, { scaleY: 1 }],
-                                    }}
-                                    value={favorited}
-                                    trackColor={'green'}
-                                    thumbColor={'white'}
-                                    onValueChange={handleOnChangeFavorited}
-                                />
-                            }
+                            <View>
+                                {item.type === 'chevron' ?
+                                    (
+                                        <View
+                                            style={{
+                                                flex: 1,
+                                                flexDirection: 'row',
+                                            }}
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontFamily: DefaultFont.fontFamily,
+                                                    fontSize: 12,
+                                                    alignSelf: 'center',
+                                                    backgroundColor: 'lightgray',
+                                                    paddingVertical: 4,
+                                                    paddingHorizontal: 10,
+                                                    marginHorizontal: 8,
+                                                    borderRadius: 5,
+                                                    overflow: 'hidden',
+                                                }}
+                                            >{item.value}</Text>
+                                            <Ionicons style={{ alignSelf: 'flex-end' }} name="chevron-forward" color="black" size={22} />
+                                        </View>
+                                    )
+                                    : <Switch
+                                        style={{
+                                            alignSelf: 'flex-end',
+                                            padding: 0,
+                                            transform: Platform.OS === 'ios'
+                                                ? [{ scaleX: .7 }, { scaleY: .7 }]
+                                                : [{ scaleX: 1 }, { scaleY: 1 }],
+                                        }}
+                                        value={favorited}
+                                        trackColor={'green'}
+                                        thumbColor={'white'}
+                                        onValueChange={handleOnChangeFavorited}
+                                    />
+                                }
+                            </View>
                         </View>
                         <Divider />
                     </View>
@@ -275,7 +302,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     input: {
-        height: 100,
+        height: 80,
         marginTop: 5,
         padding: 10,
         borderWidth: 1,

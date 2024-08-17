@@ -102,22 +102,11 @@ export default function NewBeachSnapLayout(props: any) {
             {!isKeyboardShown &&
                 <View>
                     <TouchableOpacity
-                        style={{
-                            backgroundColor: 'green',
-                            paddingVertical: 10,
-                            marginHorizontal: 10,
-                            borderRadius: 10,
-                        }}
+                        style={styles.save}
                         onPress={handleOnSaveClick}
                     >
                         <Text
-                            style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                alignSelf: 'center',
-                                color: 'white',
-                            }}
+                            style={styles.saveCta}
                         >Save</Text>
                     </TouchableOpacity>
                 </View>
@@ -146,6 +135,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
         paddingHorizontal: 20,
+    },
+    save: {
+        backgroundColor: 'green',
+        paddingVertical: 10,
+        marginHorizontal: 20,
+        borderRadius: 10,
+    },
+    saveCta: {
+        fontFamily: DefaultFont.fontFamily,
+        fontWeight: 'bold',
+        fontSize: 20,
+        alignSelf: 'center',
+        color: 'white',
     }
 });
 

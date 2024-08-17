@@ -9,7 +9,6 @@ import FullScreenModal from '@/components/FullScreenModal';
 import BeachSnapEditor from '@/app/editor/index';
 import { useEffect, useState } from 'react';
 import { DefaultFont } from '@/constants/Fonts';
-import { useNavigation } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
@@ -52,22 +51,13 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
                 <View>
                     <TouchableOpacity
                         style={{
-                            backgroundColor: 'green',
-                            paddingVertical: 10,
-                            marginHorizontal: 10,
+                            ...styles.save,
                             marginBottom: insets.bottom,
-                            borderRadius: 10,
                         }}
                         onPress={onSave}
                     >
                         <Text
-                            style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontWeight: 'bold',
-                                fontSize: 20,
-                                alignSelf: 'center',
-                                color: 'white',
-                            }}
+                            style={styles.saveCta}
                         >Save</Text>
                     </TouchableOpacity>
                 </View>
@@ -75,3 +65,19 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
         </FullScreenModal>
     )
 }
+
+const styles = StyleSheet.create({
+    save: {
+        backgroundColor: 'green',
+        paddingVertical: 10,
+        marginHorizontal: 20,
+        borderRadius: 10,
+    },
+    saveCta: {
+        fontFamily: DefaultFont.fontFamily,
+        fontWeight: 'bold',
+        fontSize: 20,
+        alignSelf: 'center',
+        color: 'white',
+    }
+});
