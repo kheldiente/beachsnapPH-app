@@ -6,6 +6,7 @@ import {
     ScrollView,
     TouchableOpacity,
     Platform,
+    Modal,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import * as ImagePicker from 'expo-image-picker';
@@ -13,13 +14,16 @@ import { useEffect, useState } from 'react';
 import { Divider, Image } from 'react-native-elements';
 import { emptyBeachSnap } from '@/data/photos';
 import { Ionicons } from '@expo/vector-icons';
-import { Switch } from '@rneui/themed';
+import { Button, Switch } from '@rneui/themed';
 import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { addKeyboardListener } from '@/constants/Utils';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const imgDimension = 300;
 
-export default function BeachSnapEditor(props: any) {
+export default function BeachSnapEditor(props) {
+    const insets = useSafeAreaInsets();
     const maxCharacters = 100;
     var imageContainerH = 350; // Measured in console.logs
 
@@ -27,6 +31,8 @@ export default function BeachSnapEditor(props: any) {
     const [favorited, setFavorited] = useState(false);
     const [image, setImage] = useState(null);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
+    const [showDate, setShowDate] = useState(false);
+
     const calcImageContainerH = useSharedValue(imageContainerH);
 
     const pickImage = async () => {
@@ -51,6 +57,13 @@ export default function BeachSnapEditor(props: any) {
 
     const handleOnCaptionChange = (text) => {
         setCaption(text);
+    }
+
+    const handleOnSelectDate = () => {
+        setShowDate(false);
+        props.onSelectDate
+            ? props.onSelectDate()
+            : null
     }
 
     const renderAddPhotosCta = () => {
@@ -102,12 +115,22 @@ export default function BeachSnapEditor(props: any) {
             },
             {
                 title: 'Date',
-                key: '_addAsFave',
+                key: '_dateVstd',
                 icon: 'calendar',
                 type: 'chevron',
                 value: 'Jan 1, 2024'
             },
         ]
+
+        const handleOnBeachNameItemClick = () => {
+            // console.log('Beach name item clicked')
+        }
+
+        const handleOnDateVisitedItemClick = () => {
+            console.log('Date visited item clicked');
+            setShowDate(true);
+        }
+
         return (
             <View
                 style={{
@@ -115,8 +138,19 @@ export default function BeachSnapEditor(props: any) {
                 }}
             >
                 {items.map((item, index) => (
-                    <View
+                    <TouchableOpacity
                         key={`_chevronList+${item.key}`}
+                        onPress={() => {
+                            if (item.key === '_bchName') {
+                                handleOnBeachNameItemClick();
+                            } else if (item.key === '_dateVstd') {
+                                handleOnDateVisitedItemClick();
+                            }
+
+                            props.onSelectItem ? props.onSelectItem(
+                                `_chevronList+${item.key}`
+                            ) : null
+                        }}
                     >
                         {index === 0 && <Divider />}
                         <View
@@ -184,7 +218,7 @@ export default function BeachSnapEditor(props: any) {
                             </View>
                         </View>
                         <Divider />
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </View>
         )
@@ -258,8 +292,51 @@ export default function BeachSnapEditor(props: any) {
                     />
                     {renderListItemWithChevron()}
                 </View>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={showDate}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            backgroundColor: 'white',
+                            width: '100%',
+                            position: 'absolute',
+                            bottom: 0,
+                            padding: 10,
+                            paddingBottom: insets.bottom + 5,
+                        }}
+                    >
+                        <RNDateTimePicker
+                            style={{
+                                marginTop: 10,
+                                backgroundColor: 'white',
+                            }}
+                            display={'spinner'}
+                            value={new Date()}
+                            maximumDate={new Date()}
+                        />
+                        <Button
+                            buttonStyle={{
+                                backgroundColor: 'green',
+                                borderRadius: 10,
+                                width: '100%'
+                            }}
+                            titleStyle={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontWeight: 'bold',
+                            }}
+                            title='Select'
+                            onPress={() => {
+                                handleOnSelectDate();
+                            }}
+                        />
+                    </View>
+                </Modal>
             </View>
-        </ScrollView >
+        </ScrollView>
     )
 }
 

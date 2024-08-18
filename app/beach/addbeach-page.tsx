@@ -17,6 +17,7 @@ import { addKeyboardListener } from '@/constants/Utils';
 export default function NewBeachSnapLayout(props: any) {
     const navigation = useNavigation();
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
+    const [dimBackground, setDimBackground] = useState(false);
 
     const handleOnBackClick = () => {
         navigation.goBack();
@@ -38,6 +39,16 @@ export default function NewBeachSnapLayout(props: any) {
         setIsKeyboardShown(false);
     }
 
+    const handleOnSelectItem = (key) => {
+        if (key === '_chevronList+_dateVstd') {
+            setDimBackground(true);
+        }
+    }
+
+    const handleOnSelectDate = () => {
+        setDimBackground(false);
+    } 
+
     useEffect(() => {
         addKeyboardListener(
             () => { doOnShowKeyboard() },
@@ -51,65 +62,84 @@ export default function NewBeachSnapLayout(props: any) {
         >
             <View
                 style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    flex: 1,
+                    flexDirection: 'column',
                 }}
             >
                 <View
                     style={{
-                        position: 'absolute',
-                        width: '100%',
+                        flexDirection: 'row',
                         alignItems: 'center',
                     }}
                 >
-                    <Text style={styles.title}>
-                        {!isKeyboardShown
-                            ? `New beach snap`
-                            : `Caption`
-                        }
-                    </Text>
-                </View>
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        justifyContent: 'space-between',
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={handleOnBackClick}
+                    <View
+                        style={{
+                            position: 'absolute',
+                            width: '100%',
+                            alignItems: 'center',
+                        }}
                     >
-                        <Ionicons
-                            style={styles.close}
-                            name="chevron-back"
-                            color="black" size={22}
-                        />
-                    </TouchableOpacity>
-                    {isKeyboardShown &&
-                        <TouchableOpacity onPress={hideKeyboard}>
-                            <Text style={styles.ok}>OK</Text>
+                        <Text style={styles.title}>
+                            {!isKeyboardShown
+                                ? `New beach snap`
+                                : `Caption`
+                            }
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            alignContent: 'center',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={handleOnBackClick}
+                        >
+                            <Ionicons
+                                style={styles.close}
+                                name="chevron-back"
+                                color="black" size={22}
+                            />
                         </TouchableOpacity>
-                    }
+                        {isKeyboardShown &&
+                            <TouchableOpacity onPress={hideKeyboard}>
+                                <Text style={styles.ok}>OK</Text>
+                            </TouchableOpacity>
+                        }
+                    </View>
                 </View>
+                <BeachSnapEditor
+                    style={{
+                        marginVertical: 20,
+                    }}
+                    onSelectItem={handleOnSelectItem}
+                    onSelectDate={handleOnSelectDate}
+                />
+                {!isKeyboardShown &&
+                    <View>
+                        <TouchableOpacity
+                            style={styles.save}
+                            onPress={handleOnSaveClick}
+                        >
+                            <Text
+                                style={styles.saveCta}
+                            >Save</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+                {dimBackground &&
+                    <View
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'absolute',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                        }}
+                    />
+                }
             </View>
-            <BeachSnapEditor
-                style={{
-                    marginVertical: 20,
-                }}
-            />
-            {!isKeyboardShown &&
-                <View>
-                    <TouchableOpacity
-                        style={styles.save}
-                        onPress={handleOnSaveClick}
-                    >
-                        <Text
-                            style={styles.saveCta}
-                        >Save</Text>
-                    </TouchableOpacity>
-                </View>
-            }
         </SafeAreaView>
     )
 }

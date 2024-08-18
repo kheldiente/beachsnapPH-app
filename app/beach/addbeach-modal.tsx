@@ -15,6 +15,7 @@ import { addKeyboardListener } from '@/constants/Utils';
 export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     const insets = useSafeAreaInsets();
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
+    const [dimBackground, setDimBackground] = useState(false);
 
     const hideKeyboard = () => {
         Keyboard.dismiss();
@@ -26,6 +27,16 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
 
     const doOnHideKeyboard = () => {
         setIsKeyboardShown(false);
+    }
+
+    const handleOnSelectItem = (key) => {
+        if (key === '_chevronList+_dateVstd') {
+            setDimBackground(true);
+        }
+    }
+
+    const handleOnSelectDate = () => {
+        setDimBackground(false);
     }
 
     useEffect(() => {
@@ -44,7 +55,10 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
             onClose={onClose}
             onHideKeyboard={hideKeyboard}
         >
-            <BeachSnapEditor />
+            <BeachSnapEditor
+                onSelectItem={handleOnSelectItem}
+                onSelectDate={handleOnSelectDate}
+            />
             {!isKeyboardShown &&
                 <View>
                     <TouchableOpacity
@@ -59,6 +73,16 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
                         >Save</Text>
                     </TouchableOpacity>
                 </View>
+            }
+            {dimBackground &&
+                <View
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                    }}
+                />
             }
         </FullScreenModal>
     )
