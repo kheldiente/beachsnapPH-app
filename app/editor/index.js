@@ -76,7 +76,10 @@ export default function BeachSnapEditor(props) {
                 }}
             >
                 <TouchableOpacity onPress={pickImage}>
-                    <Image source={emptyBeachSnap.jpeg300} style={styles.imageUploaded} />
+                    <View style={{
+                        ...styles.imageUploaded,
+                        backgroundColor: 'gainsboro',
+                    }} />
                     <View
                         style={{
                             position: 'absolute',
@@ -104,7 +107,7 @@ export default function BeachSnapEditor(props) {
         )
     }
 
-    const renderListItemWithChevron = () => {
+    const renderListItemOptions = () => {
         const items = [
             {
                 title: 'Beach name',
@@ -224,6 +227,54 @@ export default function BeachSnapEditor(props) {
         )
     }
 
+    const renderDatePickerModal = () => {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showDate}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        backgroundColor: 'white',
+                        width: '100%',
+                        position: 'absolute',
+                        bottom: 0,
+                        padding: 10,
+                        paddingBottom: insets.bottom + 5,
+                    }}
+                >
+                    <RNDateTimePicker
+                        style={{
+                            marginTop: 10,
+                            backgroundColor: 'white',
+                        }}
+                        display={'spinner'}
+                        value={new Date()}
+                        maximumDate={new Date()}
+                    />
+                    <Button
+                        buttonStyle={{
+                            backgroundColor: 'green',
+                            borderRadius: 10,
+                            width: '100%'
+                        }}
+                        titleStyle={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontWeight: 'bold',
+                        }}
+                        title='Select'
+                        onPress={() => {
+                            handleOnSelectDate();
+                        }}
+                    />
+                </View>
+            </Modal>
+        )
+    }
+
     const doOnShowKeyboard = (duration) => {
         calcImageContainerH.value = withTiming(0, {
             duration: duration,
@@ -290,51 +341,9 @@ export default function BeachSnapEditor(props) {
                         placeholder='Write a caption...'
                         placeholderTextColor={'darkgray'}
                     />
-                    {renderListItemWithChevron()}
+                    {renderListItemOptions()}
                 </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={showDate}
-                >
-                    <View
-                        style={{
-                            flex: 1,
-                            flexDirection: 'column',
-                            backgroundColor: 'white',
-                            width: '100%',
-                            position: 'absolute',
-                            bottom: 0,
-                            padding: 10,
-                            paddingBottom: insets.bottom + 5,
-                        }}
-                    >
-                        <RNDateTimePicker
-                            style={{
-                                marginTop: 10,
-                                backgroundColor: 'white',
-                            }}
-                            display={'spinner'}
-                            value={new Date()}
-                            maximumDate={new Date()}
-                        />
-                        <Button
-                            buttonStyle={{
-                                backgroundColor: 'green',
-                                borderRadius: 10,
-                                width: '100%'
-                            }}
-                            titleStyle={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontWeight: 'bold',
-                            }}
-                            title='Select'
-                            onPress={() => {
-                                handleOnSelectDate();
-                            }}
-                        />
-                    </View>
-                </Modal>
+                {renderDatePickerModal()}
             </View>
         </ScrollView>
     )
@@ -354,6 +363,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: imgDimension,
         height: imgDimension,
+        borderRadius: 5,
     },
     changePhoto: {
         fontFamily: DefaultFont.fontFamily,
