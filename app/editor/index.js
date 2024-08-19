@@ -15,10 +15,11 @@ import { Divider, Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Switch } from '@rneui/themed';
 import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
-import { addKeyboardListener } from '@/constants/Utils';
+import { addKeyboardListener, dateToMDY } from '@/constants/Utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { items } from '@/constants/Global';
+import { mockData } from '@/data/beach';
 
 const imgDimension = 300;
 const modalBorderRadius = 10;
@@ -28,13 +29,16 @@ export default function BeachSnapEditor(props) {
     const insets = useSafeAreaInsets();
     var imageContainerH = 350; // Measured in console.logs
 
+    const beachPageDisplayed = useRef(false);
+    const dateVisited = useRef(new Date());
+
     const [caption, setCaption] = useState('');
     const [favorited, setFavorited] = useState(false);
     const [image, setImage] = useState(null);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
     const [showDate, setShowDate] = useState(false);
     const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
-    const beachPageDisplayed = useRef(false);
+    const [selectedBeach, setSelectedBeach] = useState('');
 
     const calcImageContainerH = useSharedValue(imageContainerH);
 
@@ -64,16 +68,21 @@ export default function BeachSnapEditor(props) {
 
     const handleOnSelectDate = () => {
         setShowDate(false);
+
         props.onSelectDate
             ? props.onSelectDate()
             : null
     }
 
-    const handleOnChangeBeachName = () => {
+    const handleOnChangeBeachName = (item) => {
+        console.log(`beachName: ${item.name}`)
+
         beachPageDisplayed.current = false;
         setShowSearchBeachPage(false);
+        setSelectedBeach(item.name);
+
         props.onChangeBeachName
-            ? props.onChangeBeachName()
+            ? props.onChangeBeachName(item)
             : null
     }
 
@@ -126,6 +135,36 @@ export default function BeachSnapEditor(props) {
 
         const handleOnDateVisitedItemClick = () => {
             setShowDate(true);
+        }
+
+        const renderItemValue = (key) => {
+            var value = ''
+            if (key === '_bchName') {
+                value = selectedBeach
+            } else if (key === '_dateVstd') {
+                // value = dateVisited.current.toDateString();
+                value = dateToMDY(dateVisited.current)
+            }
+
+            if (!value || value.length === 0) {
+                return null;
+            }
+
+            return (
+                <Text
+                    style={{
+                        fontFamily: DefaultFont.fontFamily,
+                        fontSize: 12,
+                        alignSelf: 'center',
+                        backgroundColor: 'lightgray',
+                        paddingVertical: 4,
+                        paddingHorizontal: 10,
+                        marginHorizontal: 8,
+                        borderRadius: 5,
+                        overflow: 'hidden',
+                    }}
+                >{value}</Text>
+            )
         }
 
         return (
@@ -182,19 +221,7 @@ export default function BeachSnapEditor(props) {
                                                 flexDirection: 'row',
                                             }}
                                         >
-                                            <Text
-                                                style={{
-                                                    fontFamily: DefaultFont.fontFamily,
-                                                    fontSize: 12,
-                                                    alignSelf: 'center',
-                                                    backgroundColor: 'lightgray',
-                                                    paddingVertical: 4,
-                                                    paddingHorizontal: 10,
-                                                    marginHorizontal: 8,
-                                                    borderRadius: 5,
-                                                    overflow: 'hidden',
-                                                }}
-                                            >{item.value}</Text>
+                                            {renderItemValue(item.key)}
                                             <Ionicons style={{ alignSelf: 'flex-end' }} name="chevron-forward" color="black" size={22} />
                                         </View>
                                     )
@@ -223,7 +250,9 @@ export default function BeachSnapEditor(props) {
 
     const renderDatePickerModal = () => {
         const onDateChange = (event, selectedDate) => {
-            console.log(`onDateChange: ${event.type}`)
+            console.log(`onDateChange: ${event.type}, selected: ${selectedDate}`)
+            dateVisited.current = selectedDate;
+
             if (Platform.OS === 'android') {
                 if (event.type === 'dismissed'
                     || event.type === 'set'
@@ -240,7 +269,7 @@ export default function BeachSnapEditor(props) {
                         marginTop: 10,
                         backgroundColor: 'white',
                     }}
-                    value={new Date()}
+                    value={dateVisited.current}
                     maximumDate={new Date()}
                     onChange={onDateChange}
                     positiveButton={{ label: 'Select', textColor: 'green' }}
@@ -274,7 +303,7 @@ export default function BeachSnapEditor(props) {
                             backgroundColor: 'white',
                         }}
                         display={'spinner'}
-                        value={new Date()}
+                        value={dateVisited.current}
                         maximumDate={new Date()}
                         onChange={onDateChange}
 
@@ -303,6 +332,52 @@ export default function BeachSnapEditor(props) {
     }
 
     const renderSearchBeachModal = () => {
+        const renderBeachList = () => {
+            const renderItem = (item) => (
+                <TouchableOpacity
+                    key={item.id}
+                    onPress={() => {
+                        handleOnChangeBeachName(item)
+                    }}
+                >
+                    <View style={{
+                        // backgroundColor: 'red',
+                        borderColor: "white",
+                        borderRadius: 5,
+                        shadowColor: "transparent",
+                        paddingVertical: 5,
+                        flexDirection: "row",
+                        alignItems: 'center'
+                    }}>
+                        <View style={{
+                            marginHorizontal: 5,
+                        }}>
+                            <Text style={{
+                                fontFamily: DefaultFont.fontFamily,
+                            }}>{item.name}</Text>
+                            <Text style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 10,
+                                color: 'gray'
+                            }}>
+                                {item.municipality}, {item.province}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            )
+
+            return (
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                >
+                    {mockData.data.map((item) =>
+                        renderItem(item)
+                    )}
+                </ScrollView>
+            )
+        }
+
         return (
             <Modal
                 animationType="slide"
@@ -330,7 +405,7 @@ export default function BeachSnapEditor(props) {
                         }}
                         name='close'
                         size={25}
-                        onPress={() => { handleOnChangeBeachName() }}
+                        onPress={() => { handleOnChangeBeachName('') }}
                     />
                     <TextInput
                         style={{
@@ -342,7 +417,9 @@ export default function BeachSnapEditor(props) {
                             padding: 10,
                         }}
                         placeholder={`Search for a beach...`}
+                        cursorColor={'black'}
                     />
+                    {renderBeachList()}
                 </View>
             </Modal>
         )

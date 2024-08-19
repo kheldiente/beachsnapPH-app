@@ -1,7 +1,7 @@
 import { Keyboard, Platform } from "react-native";
 
 export const addKeyboardListener = (
-    onShowKeyboard: () => void, 
+    onShowKeyboard: () => void,
     onHideKeyboard: () => void
 ) => {
     if (Platform.OS === 'android') {
@@ -21,4 +21,11 @@ export const addKeyboardListener = (
             onHideKeyboard();
         });
     }
+}
+
+export const dateToMDY = (date: Date) => {
+    return date.toDateString()
+        .split(' ')
+        .slice(1)
+        .join(' ');
 }
