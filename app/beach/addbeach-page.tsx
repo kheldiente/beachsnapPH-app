@@ -41,12 +41,16 @@ export default function NewBeachSnapLayout(props: any) {
 
     const handleOnSelectItem = (key) => {
         if (key === '_chevronList+_dateVstd') {
-            setDimBackground(true);
+            if (Platform.OS === 'ios') {
+                setDimBackground(true);
+            }
         }
     }
 
     const handleOnSelectDate = () => {
-        setDimBackground(false);
+        if (Platform.OS === 'ios') {
+            setDimBackground(false);
+        }
     } 
 
     useEffect(() => {

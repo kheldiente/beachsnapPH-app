@@ -4,6 +4,7 @@ import {
     TouchableOpacity,
     Text,
     Keyboard,
+    Platform,
 } from 'react-native';
 import FullScreenModal from '@/components/FullScreenModal';
 import BeachSnapEditor from '@/app/editor/index';
@@ -31,12 +32,16 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
 
     const handleOnSelectItem = (key) => {
         if (key === '_chevronList+_dateVstd') {
-            setDimBackground(true);
+            if (Platform.OS === 'ios') {
+                setDimBackground(true);
+            }
         }
     }
 
     const handleOnSelectDate = () => {
-        setDimBackground(false);
+        if (Platform.OS === 'ios') {
+            setDimBackground(false);
+        }
     }
 
     useEffect(() => {

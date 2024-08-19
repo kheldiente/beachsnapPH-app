@@ -15,3 +15,20 @@ export const myProgressLayoutKeys = {
     PROGRESS_LIST: "_ProgressList",
 }
 
+export const items = [
+    {
+        title: 'Beach name',
+        key: '_bchName',
+        icon: 'cloudy',
+        type: 'chevron',
+        value: 'Bagasbas'
+    },
+    {
+        title: 'Date',
+        key: '_dateVstd',
+        icon: 'calendar',
+        type: 'chevron',
+        value: 'Jan 1, 2024'
+    },
+]
+

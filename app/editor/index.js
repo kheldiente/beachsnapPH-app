@@ -19,6 +19,7 @@ import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'reac
 import { addKeyboardListener } from '@/constants/Utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { items } from '@/constants/Global';
 
 const imgDimension = 300;
 
@@ -108,23 +109,6 @@ export default function BeachSnapEditor(props) {
     }
 
     const renderListItemOptions = () => {
-        const items = [
-            {
-                title: 'Beach name',
-                key: '_bchName',
-                icon: 'cloudy',
-                type: 'chevron',
-                value: 'Bagasbas'
-            },
-            {
-                title: 'Date',
-                key: '_dateVstd',
-                icon: 'calendar',
-                type: 'chevron',
-                value: 'Jan 1, 2024'
-            },
-        ]
-
         const handleOnBeachNameItemClick = () => {
             // console.log('Beach name item clicked')
         }
@@ -228,6 +212,33 @@ export default function BeachSnapEditor(props) {
     }
 
     const renderDatePickerModal = () => {
+        const onDateChange = (event, selectedDate) => {
+            console.log(`onDateChange: ${event.type}`)
+            if (Platform.OS === 'android') {
+                if (event.type === 'dismissed'
+                    || event.type === 'set'
+                ) {
+                    handleOnSelectDate();
+                }
+            }
+        };
+
+        if (Platform.OS === 'android') {
+            return (
+                <RNDateTimePicker
+                    style={{
+                        marginTop: 10,
+                        backgroundColor: 'white',
+                    }}
+                    value={new Date()}
+                    maximumDate={new Date()}
+                    onChange={onDateChange}
+                    positiveButton={{ label: 'Select', textColor: 'green' }}
+                    negativeButton={{ label: 'Cancel', textColor: 'black' }}
+                />
+            )
+        }
+
         return (
             <Modal
                 animationType="slide"
@@ -254,22 +265,27 @@ export default function BeachSnapEditor(props) {
                         display={'spinner'}
                         value={new Date()}
                         maximumDate={new Date()}
+                        onChange={onDateChange}
+
                     />
-                    <Button
-                        buttonStyle={{
-                            backgroundColor: 'green',
-                            borderRadius: 10,
-                            width: '100%'
-                        }}
-                        titleStyle={{
-                            fontFamily: DefaultFont.fontFamily,
-                            fontWeight: 'bold',
-                        }}
-                        title='Select'
-                        onPress={() => {
-                            handleOnSelectDate();
-                        }}
-                    />
+                    {Platform.OS === 'ios'
+                        ? (<Button
+                            buttonStyle={{
+                                backgroundColor: 'green',
+                                borderRadius: 10,
+                                width: '100%'
+                            }}
+                            titleStyle={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontWeight: 'bold',
+                            }}
+                            title='Select'
+                            onPress={() => {
+                                handleOnSelectDate();
+                            }}
+                        />)
+                        : null
+                    }
                 </View>
             </Modal>
         )
@@ -343,7 +359,7 @@ export default function BeachSnapEditor(props) {
                     />
                     {renderListItemOptions()}
                 </View>
-                {renderDatePickerModal()}
+                {showDate && renderDatePickerModal()}
             </View>
         </ScrollView>
     )
