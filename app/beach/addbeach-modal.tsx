@@ -8,13 +8,16 @@ import {
 } from 'react-native';
 import FullScreenModal from '@/components/FullScreenModal';
 import BeachSnapEditor from '@/app/editor/index';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DefaultFont } from '@/constants/Fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { addKeyboardListener } from '@/constants/Utils';
 
+const pageKey = '_bchSnapEdtr';
+
 export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     const insets = useSafeAreaInsets();
+    const showScreen = useRef(pageKey);
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
     const [dimBackground, setDimBackground] = useState(false);
 
@@ -31,23 +34,48 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     }
 
     const handleOnSelectItem = (key) => {
+        showScreen.current = key;
+
         if (key === '_chevronList+_dateVstd') {
             if (Platform.OS === 'ios') {
-                setDimBackground(true);
+                setDimBackgroundAndResetKey(true);
             }
+        } else if (key === '_chevronList+_bchName') {
+            setDimBackgroundAndResetKey(true);
         }
     }
 
     const handleOnSelectDate = () => {
         if (Platform.OS === 'ios') {
-            setDimBackground(false);
+            setDimBackgroundAndResetKey(false);
         }
+    }
+
+    const handleOnChangeBeachName = () => {
+        setDimBackgroundAndResetKey(false);
+    }
+
+    const setDimBackgroundAndResetKey = (yes) => {
+        if (!yes) {
+            showScreen.current = pageKey;
+        }
+        setDimBackground(yes);
     }
 
     useEffect(() => {
         addKeyboardListener(
-            () => { doOnShowKeyboard() },
-            () => { doOnHideKeyboard() }
+            () => {
+                if (showScreen.current !== pageKey) {
+                    return;
+                }
+                doOnShowKeyboard() 
+            },
+            () => {
+                if (showScreen.current !== pageKey) {
+                    return;
+                } 
+                doOnHideKeyboard() 
+            }
         )
     }, []);
 
@@ -63,6 +91,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
             <BeachSnapEditor
                 onSelectItem={handleOnSelectItem}
                 onSelectDate={handleOnSelectDate}
+                onChangeBeachName={handleOnChangeBeachName}
             />
             {!isKeyboardShown &&
                 <View>

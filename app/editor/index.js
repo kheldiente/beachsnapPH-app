@@ -10,9 +10,8 @@ import {
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import * as ImagePicker from 'expo-image-picker';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Divider, Image } from 'react-native-elements';
-import { emptyBeachSnap } from '@/data/photos';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Switch } from '@rneui/themed';
 import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -22,10 +21,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { items } from '@/constants/Global';
 
 const imgDimension = 300;
+const modalBorderRadius = 10;
+const maxCharacters = 200;
 
 export default function BeachSnapEditor(props) {
     const insets = useSafeAreaInsets();
-    const maxCharacters = 100;
     var imageContainerH = 350; // Measured in console.logs
 
     const [caption, setCaption] = useState('');
@@ -33,6 +33,8 @@ export default function BeachSnapEditor(props) {
     const [image, setImage] = useState(null);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
     const [showDate, setShowDate] = useState(false);
+    const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
+    const beachPageDisplayed = useRef(false);
 
     const calcImageContainerH = useSharedValue(imageContainerH);
 
@@ -64,6 +66,14 @@ export default function BeachSnapEditor(props) {
         setShowDate(false);
         props.onSelectDate
             ? props.onSelectDate()
+            : null
+    }
+
+    const handleOnChangeBeachName = () => {
+        beachPageDisplayed.current = false;
+        setShowSearchBeachPage(false);
+        props.onChangeBeachName
+            ? props.onChangeBeachName()
             : null
     }
 
@@ -110,11 +120,11 @@ export default function BeachSnapEditor(props) {
 
     const renderListItemOptions = () => {
         const handleOnBeachNameItemClick = () => {
-            // console.log('Beach name item clicked')
+            beachPageDisplayed.current = true;
+            setShowSearchBeachPage(true);
         }
 
         const handleOnDateVisitedItemClick = () => {
-            console.log('Date visited item clicked');
             setShowDate(true);
         }
 
@@ -255,6 +265,7 @@ export default function BeachSnapEditor(props) {
                         bottom: 0,
                         padding: 10,
                         paddingBottom: insets.bottom + 5,
+                        borderRadius: modalBorderRadius,
                     }}
                 >
                     <RNDateTimePicker
@@ -291,6 +302,52 @@ export default function BeachSnapEditor(props) {
         )
     }
 
+    const renderSearchBeachModal = () => {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showSearchBeachPage}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        backgroundColor: 'white',
+                        width: '100%',
+                        height: '80%',
+                        position: 'absolute',
+                        bottom: 0,
+                        paddingHorizontal: 10,
+                        paddingBottom: insets.bottom + 5,
+                        borderRadius: modalBorderRadius,
+                    }}
+                >
+                    <Ionicons
+                        style={{
+                            alignSelf: 'flex-end',
+                            margin: 10,
+                        }}
+                        name='close'
+                        size={25}
+                        onPress={() => { handleOnChangeBeachName() }}
+                    />
+                    <TextInput
+                        style={{
+                            width: '100%',
+                            height: 40,
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            borderColor: 'lightgray',
+                            padding: 10,
+                        }}
+                        placeholder={`Search for a beach...`}
+                    />
+                </View>
+            </Modal>
+        )
+    }
+
     const doOnShowKeyboard = (duration) => {
         calcImageContainerH.value = withTiming(0, {
             duration: duration,
@@ -312,8 +369,20 @@ export default function BeachSnapEditor(props) {
     useEffect(() => {
         const duration = Platform.OS === 'ios' ? 100 : 50;
         addKeyboardListener(
-            () => { doOnShowKeyboard(duration) },
-            () => { doOnHideKeyboard(duration) }
+            () => {
+                if (beachPageDisplayed.current) {
+                    return;
+                }
+
+                doOnShowKeyboard(duration)
+            },
+            () => {
+                if (beachPageDisplayed.current) {
+                    return;
+                }
+
+                doOnHideKeyboard(duration)
+            }
         )
     }, []);
 
@@ -360,6 +429,7 @@ export default function BeachSnapEditor(props) {
                     {renderListItemOptions()}
                 </View>
                 {showDate && renderDatePickerModal()}
+                {showSearchBeachPage && renderSearchBeachModal()}
             </View>
         </ScrollView>
     )
