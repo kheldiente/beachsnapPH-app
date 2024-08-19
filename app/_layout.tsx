@@ -14,7 +14,7 @@ export default function RootLayout() {
     const waitToProceed = () => {
         setTimeout(() => {
             SplashScreen.hideAsync();
-        }, 1500);
+        }, 1000);
     }
 
     useEffect(() => {
