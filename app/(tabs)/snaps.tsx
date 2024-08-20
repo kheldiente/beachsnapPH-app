@@ -25,15 +25,15 @@ export default function SnapsLayout(props) {
                 component={SnapsAlbumLayout}
                 options={defaultHeaderWithRightBar({
                     title: 'My snaps',
-                    component: (<Ionicons
-                        name="add-circle-outline"
-                        size={25}
-                        style={{
-                            backgroundColor: 'transparent',
-                            color: 'black'
-                        }}
-                        onPress={handleOnNewBeachSnapClick}
-                    />)
+                    // component: (<Ionicons
+                    //     name="add-circle-outline"
+                    //     size={25}
+                    //     style={{
+                    //         backgroundColor: 'transparent',
+                    //         color: 'black'
+                    //     }}
+                    //     onPress={handleOnNewBeachSnapClick}
+                    // />)
                 })} />
             {/* <Stack.Screen
                 name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}

@@ -10,7 +10,6 @@ import {
 import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
 import { Dimensions } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 import NewBeachSnapModal from './addbeach-modal';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
@@ -34,8 +33,8 @@ const samplePhotoGrid = [
     },
 ]
 
-export default function ProfileLayout() {
-    const { name = "Province" } = useLocalSearchParams();
+export default function ProfileLayout({ navigation, route }) {
+    const { name } = route.params;
     const headerTitle = `${name}`
     const description = `Bagasbas Beach is a scenic strip of white sand located in Daet, Camarines Norte. It is known for its calm and clear waters, making it perfect for swimming and snorkeling. The beach is also a popular spot for fishing and sunset-watching, offering breathtaking views of the surrounding landscape.`
 

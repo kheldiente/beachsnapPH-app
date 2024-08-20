@@ -13,6 +13,7 @@ import ExploreLayout from './explore';
 import MapLayout from './map';
 import MoreLayout from './more';
 import EmptyLayout from './empty';
+import { snapsLayoutKeys } from '@/constants/Global';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,8 +53,8 @@ export default function TabLayout() {
                 listeners={({ navigation }) => ({
                     tabPress: (e) => {
                         e.preventDefault();
-                        console.log('New Beach Snap Editor')
-                        navigation.navigate('_NewBeachSnap')
+                        // console.log('New Beach Snap Editor')
+                        navigation.navigate(`${snapsLayoutKeys.NEW_BEACH_SNAP}`)
                     }
                 })}
                 options={{

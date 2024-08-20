@@ -13,6 +13,7 @@ import { Chip } from '@rneui/themed';
 import { useEffect, useState } from 'react';
 import TabHeaderBar from '@/components/TabHeaderBar';
 import { secondaryHeaderBar } from '@/constants/SharedComponent';
+import { snapsLayoutKeys } from '@/constants/Global';
 
 const filters = [
     'Albay',
@@ -43,12 +44,17 @@ export default function BeachListLayout({ navigation, route }) {
 
     const handleOnClickCard = (item) => {
         console.log(`${JSON.stringify(item)}`);
-        router.push({
-            pathname: '/beach/[profile]',
-            params: {
-                id: item.id,
-                name: item.name
-            }
+        // navigation.push({
+        //     pathname: '/beach/[profile]',
+        //     params: {
+        //         id: item.id,
+        //         name: item.name
+        //     }
+        // })
+
+        navigation.push(`${snapsLayoutKeys.BEACH_PROFILE}`, {
+            id: item.id,
+            name: item.name,
         })
     }
 

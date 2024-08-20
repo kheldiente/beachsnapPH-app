@@ -9,6 +9,8 @@ import TabLayout from './(tabs)/_layout';
 import NewBeachSnapLayout from './beach/addbeach-page';
 import { snapsLayoutKeys } from '@/constants/Global';
 import { NavigationContainer } from '@react-navigation/native';
+import ProfileLayout from './beach/[profile]';
+import { defaultHeaderWithBackBar } from '@/constants/SharedComponent';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -21,7 +23,7 @@ export default function RootLayout() {
     const waitToProceed = () => {
         setTimeout(() => {
             SplashScreen.hideAsync();
-        }, 1000);
+        }, 500);
     }
 
     useEffect(() => {
@@ -57,6 +59,11 @@ export default function RootLayout() {
                         },
                         presentation: 'fullScreenModal',
                     }}
+                />
+                <Stack.Screen
+                    name={`${snapsLayoutKeys.BEACH_PROFILE}`}
+                    component={ProfileLayout}
+                    options={defaultHeaderWithBackBar()}
                 />
             </Stack.Navigator>
         </NavigationContainer>

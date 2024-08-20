@@ -3,7 +3,7 @@ import { Stack } from 'expo-router';
 import { useEffect } from "react";
 import { defaultHeaderWithBackBar } from "@/constants/SharedComponent";
 
-export default function HomeLayout() {
+export default function BeachContainerLayout() {
     const navigation = useNavigation();
 
     useEffect(() => {
