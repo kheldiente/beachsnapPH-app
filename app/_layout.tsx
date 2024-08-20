@@ -33,6 +33,7 @@ export default function RootLayout() {
                 name="(tabs)"
                 options={{
                     headerShown: false,
+                    navigationBarColor: 'white',
                 }}
             />
         </Stack>

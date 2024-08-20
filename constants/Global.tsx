@@ -15,6 +15,10 @@ export const myProgressLayoutKeys = {
     PROGRESS_LIST: "_ProgressList",
 }
 
+export const editorLayoutKeys = {
+    EDITOR: "_Editor"
+}
+
 export const items = [
     {
         title: 'Beach name',
