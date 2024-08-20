@@ -1,8 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { myProgressLayoutKeys } from "@/constants/Global";
+import { myProgressLayoutKeys, snapsLayoutKeys } from "@/constants/Global";
 import ProgressListLayout from '@/app/progress';
 import { defaultHeaderBar } from '@/constants/SharedComponent';
+import NewBeachSnapLayout from '../beach/addbeach-page';
 
 const Stack = createNativeStackNavigator()
 
@@ -12,7 +13,20 @@ export default function MyProgressLayout(props) {
             <Stack.Screen
                 name={`${myProgressLayoutKeys.PROGRESS_LIST}`}
                 component={ProgressListLayout}
-                options={defaultHeaderBar('Track your progress')} />
+                options={defaultHeaderBar('Track your progress')}
+            />
+            {/* Putting this here so that this screen is loaded on app INIT */}
+            {/* <Stack.Screen
+                name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}
+                component={NewBeachSnapLayout}
+                options={{
+                    headerShown: false,
+                    headerStyle: {
+                        backgroundColor: 'white'
+                    },
+                    presentation: 'fullScreenModal',
+                }}
+            /> */}
         </Stack.Navigator>
     )
 }

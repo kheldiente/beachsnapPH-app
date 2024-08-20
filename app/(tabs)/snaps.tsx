@@ -35,7 +35,7 @@ export default function SnapsLayout(props) {
                         onPress={handleOnNewBeachSnapClick}
                     />)
                 })} />
-            <Stack.Screen
+            {/* <Stack.Screen
                 name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}
                 component={NewBeachSnapLayout}
                 options={{
@@ -45,7 +45,7 @@ export default function SnapsLayout(props) {
                     },
                     presentation: 'fullScreenModal',
                 }}
-            />
+            /> */}
         </Stack.Navigator>
     )
 }

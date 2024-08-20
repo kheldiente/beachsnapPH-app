@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {
     StyleSheet,
@@ -7,17 +7,26 @@ import {
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { DefaultFont } from '@/constants/Fonts';
+import MyProgressLayout from '.';
+import SnapsLayout from './snaps';
+import ExploreLayout from './explore';
+import MapLayout from './map';
+import MoreLayout from './more';
+import EmptyLayout from './empty';
+
+const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
     return (
-        <Tabs
+        <Tab.Navigator
             screenOptions={{
                 tabBarActiveTintColor: Colors.light.tint,
                 headerShown: false,
                 tabBarShowLabel: false,
             }}>
-            <Tabs.Screen
+            <Tab.Screen
                 name="index"
+                component={MyProgressLayout}
                 options={{
                     title: 'Progress',
                     tabBarLabelStyle: styles.tabBarText,
@@ -26,8 +35,9 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            <Tabs.Screen
+            <Tab.Screen
                 name="snaps"
+                component={SnapsLayout}
                 options={{
                     title: 'Snaps',
                     tabBarLabelStyle: styles.tabBarText,
@@ -36,8 +46,26 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            <Tabs.Screen
+            <Tab.Screen
+                name="editor"
+                component={EmptyLayout} // Only a placeholder!!!
+                listeners={({ navigation }) => ({
+                    tabPress: (e) => {
+                        e.preventDefault();
+                        console.log('New Beach Snap Editor')
+                        navigation.navigate('_NewBeachSnap')
+                    }
+                })}
+                options={{
+                    tabBarLabelStyle: styles.tabBarText,
+                    tabBarIcon: ({ color, focused }) => (
+                        <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={'black'} size={28} />
+                    ),
+                }}
+            />
+            <Tab.Screen
                 name="explore"
+                component={ExploreLayout}
                 options={{
                     title: 'Explore',
                     tabBarLabelStyle: styles.tabBarText,
@@ -46,19 +74,20 @@ export default function TabLayout() {
                     ),
                 }}
             />
-            <Tabs.Screen
+            {/* <Tab.Screen
                 name="map"
+                component={MapLayout}
                 options={{
                     title: 'Map',
-                    href: null,
                     tabBarLabelStyle: styles.tabBarText,
                     tabBarIcon: ({ color, focused }) => (
                         <TabBarIcon name={focused ? 'map' : 'map-outline'} color={color} />
                     ),
                 }}
-            />
-            <Tabs.Screen
+            /> */}
+            <Tab.Screen
                 name="more"
+                component={MoreLayout}
                 options={{
                     title: 'More',
                     tabBarLabelStyle: styles.tabBarText,
@@ -69,7 +98,7 @@ export default function TabLayout() {
                     ),
                 }}
             />
-        </Tabs>
+        </Tab.Navigator>
     );
 }
 
