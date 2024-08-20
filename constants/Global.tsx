@@ -24,7 +24,7 @@ export const items = [
         value: 'Bagasbas'
     },
     {
-        title: 'Date',
+        title: 'Date visited',
         key: '_dateVstd',
         icon: 'calendar',
         type: 'chevron',
