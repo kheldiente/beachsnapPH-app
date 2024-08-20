@@ -1,4 +1,4 @@
-import MapView, { Callout, Marker } from 'react-native-maps';
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import {
     StyleSheet,
     View,
@@ -101,6 +101,7 @@ export default function MapLayout() {
             style={styles.container} edges={['right', 'left']}
         >
             <MapView
+                provider={PROVIDER_GOOGLE}
                 style={styles.map}
                 customMapStyle={silverMapStyle}
                 initialRegion={region}
@@ -135,7 +136,6 @@ const styles = StyleSheet.create({
     },
     markerText: {
         fontFamily: DefaultFont.fontFamily,
-        fontWeight: '400',
         fontSize: 12,
         color: 'black',
     },
