@@ -140,9 +140,8 @@ const styles = StyleSheet.create({
         color: 'lightgray'
     },
     header1: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 18,
-        fontWeight: 'bold',
         color: 'green',
         marginVertical: 10,
     },

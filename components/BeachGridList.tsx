@@ -85,9 +85,8 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
     },
     gridItemTxt: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 13,
-        fontWeight: 'bold',
         color: 'white',
         margin: 5,
         position: 'absolute',

@@ -76,9 +76,8 @@ const styles = StyleSheet.create({
         flexDirection: "column",
     },
     header1: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 18,
-        fontWeight: 'bold',
         marginRight: 15,
         marginLeft: 8,
         marginTop: 10

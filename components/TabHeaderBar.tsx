@@ -1,5 +1,5 @@
 import { DefaultFont } from "@/constants/Fonts";
-import React, { useState } from "react";
+import React from "react";
 import {
     View,
     Text,
@@ -23,9 +23,8 @@ const styles = StyleSheet.create({
     },
     title: {
         color: 'green',
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 20,
-        fontWeight: 'bold',
         alignSelf: 'flex-start',
         position: 'absolute',
         paddingVertical: 6,

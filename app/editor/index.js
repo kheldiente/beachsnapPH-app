@@ -208,7 +208,6 @@ export default function BeachSnapEditor(props) {
                                 <Text style={{
                                     marginLeft: 10,
                                     fontFamily: DefaultFont.fontFamily,
-                                    fontWeight: '400',
                                     alignSelf: 'center',
                                 }}>{item.title}</Text>
                             </View>
@@ -316,8 +315,7 @@ export default function BeachSnapEditor(props) {
                                 width: '100%'
                             }}
                             titleStyle={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontWeight: 'bold',
+                                fontFamily: DefaultFont.fontFamilyBold,
                             }}
                             title='Select'
                             onPress={() => {
@@ -529,14 +527,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     changePhoto: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: '600',
+        fontFamily: DefaultFont.fontFamilyMedium,
         color: 'blue',
         alignSelf: 'center',
     },
     addPhotoLabel: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: '600',
+        fontFamily: DefaultFont.fontFamilyMedium,
         alignSelf: 'center',
         justifyContent: 'center',
         alignContent: 'center',

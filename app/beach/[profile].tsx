@@ -167,9 +167,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     headerText: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 25,
-        fontWeight: 'bold',
         alignSelf: 'center',
     },
     description: {
@@ -182,8 +181,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     photoCount: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: 'bold',
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 12,
         marginTop: 10,
         marginHorizontal: 15,

@@ -101,8 +101,7 @@ export const defaultModalHeader = (title) => {
             headerShadowVisible: false,
             headerShown: false,
             headerTitleStyle: {
-                fontFamily: DefaultFont.fontFamily,
-                fontWeight: 'bold',
+                fontFamily: DefaultFont.fontFamilyBold,
                 fontSize: 20,
                 textAlign: 'center',
                 color: 'green'

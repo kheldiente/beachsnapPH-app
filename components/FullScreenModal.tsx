@@ -83,9 +83,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     title: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 20,
-        fontWeight: 'bold',
         alignSelf: 'center',
         color: 'green',
         position: 'absolute',

@@ -130,8 +130,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     saveCta: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: 'bold',
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 20,
         alignSelf: 'center',
         color: 'white',

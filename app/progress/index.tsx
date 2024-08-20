@@ -62,7 +62,6 @@ const renderCurrentGoal = () => {
                     style={{
                         ...styles.headerText,
                         fontSize: 14,
-                        fontWeight: '500',
                         marginLeft: 5,
                         color: 'darkgray',
                         alignSelf: 'center'
@@ -152,7 +151,6 @@ const renderStatCard = (data) => {
                             fontFamily: DefaultFont.fontFamily,
                             fontSize: 15,
                             color: 'black',
-                            fontWeight: '200',
                         }}>{item.name}</Text>
                         <Text style={{
                             fontFamily: DefaultFont.fontFamily,
@@ -161,11 +159,10 @@ const renderStatCard = (data) => {
                         }}>{item.dateRange}</Text>
                     </View>
                     <Text style={{
-                        fontFamily: DefaultFont.fontFamily,
+                        fontFamily: DefaultFont.fontFamilyBold,
                         fontSize: 12,
                         alignSelf: 'center',
                         color: 'black',
-                        fontWeight: 'bold',
                     }}>{item.photosTaken} photos</Text>
                 </View>
             ))}
@@ -270,10 +267,9 @@ const styles = StyleSheet.create({
         marginVertical: 8,
     },
     headerText: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 16,
         color: 'black',
-        fontWeight: 'bold',
     },
     text: {
         fontFamily: DefaultFont.fontFamily,
@@ -281,9 +277,8 @@ const styles = StyleSheet.create({
         color: 'gray'
     },
     statsCount: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 25,
-        fontWeight: 'bold',
         color: 'black'
     },
     statsTitle: {
@@ -292,8 +287,7 @@ const styles = StyleSheet.create({
         color: 'gray'
     },
     labelText: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: 'bold',
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 40,
         color: 'gray'
     },

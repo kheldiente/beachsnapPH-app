@@ -73,8 +73,7 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBarText: {
-    fontFamily: DefaultFont.fontFamily,
+    fontFamily: DefaultFont.fontFamilyBold,
     fontSize: 11,
-    fontWeight: 'bold',
   },
 });

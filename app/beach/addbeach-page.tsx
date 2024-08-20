@@ -185,17 +185,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     title: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 20,
-        fontWeight: 'bold',
         color: 'green',
     },
     close: {
         paddingHorizontal: 20,
     },
     ok: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: 'bold',
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 16,
         paddingHorizontal: 20,
     },
@@ -207,8 +205,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     saveCta: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: 'bold',
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 20,
         alignSelf: 'center',
         color: 'white',

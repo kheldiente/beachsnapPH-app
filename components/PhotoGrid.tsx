@@ -99,10 +99,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     header: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 16,
         marginLeft: 20,
-        fontWeight: 'bold',
         color: 'darkgray',
     },
     subHeader: {
@@ -123,17 +122,15 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
     },
     gridItemTxt: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 13,
-        fontWeight: 'bold',
         color: 'black',
         marginTop: 5,
         alignSelf: 'center',
     },
     gridItemSubTxt: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 10,
-        fontWeight: 'bold',
         color: 'gray',
         alignSelf: 'center',
     },
