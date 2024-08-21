@@ -31,14 +31,17 @@ export default function BeachSnapEditor(props) {
 
     const beachPageDisplayed = useRef(false);
     const dateVisited = useRef(new Date());
+    const selectedBeach = useRef('');
+    const image = useRef(null);
 
     const [caption, setCaption] = useState('');
     const [favorited, setFavorited] = useState(false);
-    const [image, setImage] = useState(null);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
+    
     const [showDate, setShowDate] = useState(false);
     const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
-    const [selectedBeach, setSelectedBeach] = useState('');
+    const [showBeachName, setShowBeachName] = useState(false);
+    const [showImage, setShowImage] = useState(false);
 
     const calcImageContainerH = useSharedValue(imageContainerH);
 
@@ -54,7 +57,10 @@ export default function BeachSnapEditor(props) {
 
         console.log(result);
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            image.current = result.assets[0].uri;
+
+            setShowImage(true);
+            handleOnUpdatedBeachData();
         }
     };
 
@@ -64,26 +70,43 @@ export default function BeachSnapEditor(props) {
 
     const handleOnCaptionChange = (text) => {
         setCaption(text);
+
+        handleOnUpdatedBeachData();
     }
 
     const handleOnSelectDate = () => {
         setShowDate(false);
-
         props.onSelectDate
             ? props.onSelectDate()
             : null
+
+        handleOnUpdatedBeachData();
+    }
+
+    const handleOnUpdatedBeachData = () => {
+        props.onUpdatedBeachData
+            ? props.onUpdatedBeachData({
+                image: image.current,
+                beachName: selectedBeach.current,
+                dateVisited: dateVisited.current,
+                caption: caption,
+                favorited: favorited,
+            }) : null
     }
 
     const handleOnChangeBeachName = (item) => {
         console.log(`beachName: ${item.name}`)
 
         beachPageDisplayed.current = false;
-        setShowSearchBeachPage(false);
-        setSelectedBeach(item.name);
+        selectedBeach.current = item.name;
 
+        setShowSearchBeachPage(false);
+        setShowBeachName(true);
         props.onChangeBeachName
             ? props.onChangeBeachName(item)
             : null
+
+        handleOnUpdatedBeachData();
     }
 
     const renderAddPhotosCta = () => {
@@ -119,7 +142,7 @@ export default function BeachSnapEditor(props) {
     const renderPhotoWithChangeCta = (image) => {
         return (
             <View>
-                <Image source={{ uri: image }} style={styles.imageUploaded} />
+                <Image source={{ uri: image.current }} style={styles.imageUploaded} />
                 <TouchableOpacity onPress={pickImage}>
                     <Text style={styles.changePhoto}>Change photo</Text>
                 </TouchableOpacity>
@@ -140,9 +163,8 @@ export default function BeachSnapEditor(props) {
         const renderItemValue = (key) => {
             var value = ''
             if (key === '_bchName') {
-                value = selectedBeach
+                value = selectedBeach.current
             } else if (key === '_dateVstd') {
-                // value = dateVisited.current.toDateString();
                 value = dateToMDY(dateVisited.current)
             }
 
@@ -482,7 +504,7 @@ export default function BeachSnapEditor(props) {
                             height: calcImageContainerH
                         }}
                     >
-                        {image !== null ? (
+                        {showImage ? (
                             renderPhotoWithChangeCta(image)
                         ) : (
                             renderAddPhotosCta()

@@ -93,8 +93,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     ok: {
-        fontFamily: DefaultFont.fontFamily,
-        fontWeight: 'bold',
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 16,
         paddingHorizontal: 20,
     }

@@ -10,7 +10,6 @@ import { DefaultFont } from '@/constants/Fonts';
 import MyProgressLayout from '.';
 import SnapsLayout from './snaps';
 import ExploreLayout from './explore';
-import MapLayout from './map';
 import MoreLayout from './more';
 import EmptyLayout from './empty';
 import { snapsLayoutKeys } from '@/constants/Global';
@@ -18,6 +17,12 @@ import { snapsLayoutKeys } from '@/constants/Global';
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
+
+    const showBeachSnapEditor = (event, navigation) => {
+        event.preventDefault();
+        navigation.navigate(`${snapsLayoutKeys.NEW_BEACH_SNAP}`)
+    }
+
     return (
         <Tab.Navigator
             screenOptions={{
@@ -51,11 +56,7 @@ export default function TabLayout() {
                 name="editor"
                 component={EmptyLayout} // Only a placeholder!!!
                 listeners={({ navigation }) => ({
-                    tabPress: (e) => {
-                        e.preventDefault();
-                        // console.log('New Beach Snap Editor')
-                        navigation.navigate(`${snapsLayoutKeys.NEW_BEACH_SNAP}`)
-                    }
+                    tabPress: (e) => {showBeachSnapEditor(e, navigation)}
                 })}
                 options={{
                     tabBarLabelStyle: styles.tabBarText,

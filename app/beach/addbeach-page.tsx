@@ -21,6 +21,7 @@ export default function NewBeachSnapLayout(props: any) {
     const showScreen = useRef(pageKey);
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
     const [dimBackground, setDimBackground] = useState(false);
+    const [saveCtaEnabled, setSaveCtaEnabled] = useState(false);
 
     const handleOnBackClick = () => {
         navigation.goBack();
@@ -72,19 +73,30 @@ export default function NewBeachSnapLayout(props: any) {
         setDimBackgroundAndResetKey(false);
     }
 
+    const handleOnUpdatedBeachData = (data) => {
+        console.log(`beachData: ${JSON.stringify(data)}`);
+
+        const { image, beachName, dateVisited } = data;
+        const isValidData = image
+            && beachName
+            && dateVisited
+
+        setSaveCtaEnabled(isValidData);
+    }
+
     useEffect(() => {
         addKeyboardListener(
-            () => { 
+            () => {
                 if (showScreen.current !== pageKey) {
                     return;
                 }
                 doOnShowKeyboard()
             },
-            () => { 
+            () => {
                 if (showScreen.current !== pageKey) {
                     return;
                 }
-                doOnHideKeyboard() 
+                doOnHideKeyboard()
             }
         )
     }, []);
@@ -150,11 +162,17 @@ export default function NewBeachSnapLayout(props: any) {
                     onSelectItem={handleOnSelectItem}
                     onSelectDate={handleOnSelectDate}
                     onChangeBeachName={handleOnChangeBeachName}
+                    onUpdatedBeachData={handleOnUpdatedBeachData}
                 />
                 {!isKeyboardShown &&
                     <View>
                         <TouchableOpacity
-                            style={styles.save}
+                            style={
+                                saveCtaEnabled
+                                    ? styles.save
+                                    : styles.saveDisabled
+                            }
+                            disabled={!saveCtaEnabled}
                             onPress={handleOnSaveClick}
                         >
                             <Text
@@ -199,6 +217,13 @@ const styles = StyleSheet.create({
     },
     save: {
         backgroundColor: 'green',
+        paddingVertical: 10,
+        marginHorizontal: 20,
+        marginBottom: 10,
+        borderRadius: 10,
+    },
+    saveDisabled: {
+        backgroundColor: 'gray',
         paddingVertical: 10,
         marginHorizontal: 20,
         marginBottom: 10,
