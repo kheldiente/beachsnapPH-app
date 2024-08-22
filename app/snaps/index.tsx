@@ -10,6 +10,7 @@ import PhotoGrid from "@/components/PhotoGrid";
 import { DefaultFont } from "@/constants/Fonts";
 import { useNavigation } from "expo-router";
 import { photoGrid } from "@/data/photos";
+import { snapsLayoutKeys } from "@/constants/Global";
 
 export default function SnapsAlbumLayout(props: any) {
     const getItemId = (item: { id: any; }) => (item.id)
@@ -25,32 +26,28 @@ export default function SnapsAlbumLayout(props: any) {
         }
     }
 
-    const handleScroll = (event: any) => {
-        // console.log(props);
-        // console.log(event.nativeEvent.contentOffset.y);
-    };
-
-    const handleRegionClick = (key) => {
-        if (key === '') {
+    const handleOnBeachItemClick = (item) => {
+        if (item.name === '') {
             return;
         }
         
-        // navigation.navigate({
-        //     name: `${exploreLayoutKeys.BEACH_LIST}`,
-        //     params: { region: key },
-        // })
+        navigation.navigate({
+            name: `${snapsLayoutKeys.BEACH_PROFILE}`,
+            params: { 
+                name: item.name 
+            },
+        });
     };
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
             <ScrollView
-                onScroll={handleScroll}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.container1}>
                     <PhotoGrid
                         data={getGridData()}
-                        onClick={(key: string) => handleRegionClick(key)}
+                        onClick={(key: string) => handleOnBeachItemClick(key)}
                     />
                 </View>
             </ScrollView>
