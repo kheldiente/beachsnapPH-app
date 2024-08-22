@@ -67,11 +67,16 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
         console.log(`beachData: ${JSON.stringify(data)}`);
 
         const { image, beachName, dateVisited } = data;
-        const isValidData = image
-            && beachName
-            && dateVisited
+        const isValidData = image !== null
+            && beachName !== ''
+            && dateVisited !== null
 
         setSaveCtaEnabled(isValidData);
+    }
+
+    const onDismiss = () => {
+        // Reset values if needed such as below
+        setSaveCtaEnabled(false);
     }
 
     useEffect(() => {
@@ -98,6 +103,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
             isKeyboardShown={isKeyboardShown}
             isVisible={isVisible}
             onClose={onClose}
+            onDismiss={onDismiss}
             onHideKeyboard={hideKeyboard}
         >
             <BeachSnapEditor

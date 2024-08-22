@@ -17,6 +17,7 @@ export default function FullScreenModal({
     children,
     onClose,
     onHideKeyboard,
+    onDismiss,
     isKeyboardShown = false,
     title = 'Title',
     keyboardTitle = 'Keyboard'
@@ -29,6 +30,7 @@ export default function FullScreenModal({
             transparent={true}
             visible={isVisible}
             statusBarTranslucent={true}
+            onDismiss={onDismiss}
         >
             <View style={styles.modalContent}>
                 <View style={
