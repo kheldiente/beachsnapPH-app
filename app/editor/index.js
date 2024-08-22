@@ -32,7 +32,7 @@ export default function BeachSnapEditor(props) {
     const beachPageDisplayed = useRef(false);
     const dateVisited = useRef(new Date());
     const selectedBeach = useRef('');
-    const image = useRef(null);
+    const imageRef = useRef(null);
 
     const [caption, setCaption] = useState('');
     const [favorited, setFavorited] = useState(false);
@@ -40,12 +40,16 @@ export default function BeachSnapEditor(props) {
     
     const [showDate, setShowDate] = useState(false);
     const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
-    const [showBeachName, setShowBeachName] = useState(false);
-    const [showImage, setShowImage] = useState(false);
+    const [image, setImage] = useState(null);
 
     const calcImageContainerH = useSharedValue(imageContainerH);
 
     const pickImage = async () => {
+        const checkIfDiffImg = (result) => {
+            return imageRef === null
+                || imageRef.current !== result.assets[0].uri;
+        }
+
         // No permissions request is necessary 
         // for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -55,11 +59,11 @@ export default function BeachSnapEditor(props) {
             quality: 1,
         });
 
-        console.log(result);
-        if (!result.canceled) {
-            image.current = result.assets[0].uri;
+        // console.log(result);
+        if (!result.canceled && checkIfDiffImg(result)) {
+            imageRef.current = result.assets[0].uri;
 
-            setShowImage(true);
+            setImage(imageRef.current);
             handleOnUpdatedBeachData();
         }
     };
@@ -86,7 +90,7 @@ export default function BeachSnapEditor(props) {
     const handleOnUpdatedBeachData = () => {
         props.onUpdatedBeachData
             ? props.onUpdatedBeachData({
-                image: image.current,
+                image: imageRef.current,
                 beachName: selectedBeach.current,
                 dateVisited: dateVisited.current,
                 caption: caption,
@@ -101,7 +105,6 @@ export default function BeachSnapEditor(props) {
         selectedBeach.current = item.name;
 
         setShowSearchBeachPage(false);
-        setShowBeachName(true);
         props.onChangeBeachName
             ? props.onChangeBeachName(item)
             : null
@@ -142,7 +145,7 @@ export default function BeachSnapEditor(props) {
     const renderPhotoWithChangeCta = (image) => {
         return (
             <View>
-                <Image source={{ uri: image.current }} style={styles.imageUploaded} />
+                <Image source={{ uri: image }} style={styles.imageUploaded} />
                 <TouchableOpacity onPress={pickImage}>
                     <Text style={styles.changePhoto}>Change photo</Text>
                 </TouchableOpacity>
@@ -504,7 +507,7 @@ export default function BeachSnapEditor(props) {
                             height: calcImageContainerH
                         }}
                     >
-                        {showImage ? (
+                        {image ? (
                             renderPhotoWithChangeCta(image)
                         ) : (
                             renderAddPhotosCta()
