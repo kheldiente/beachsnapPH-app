@@ -20,6 +20,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     const showScreen = useRef(pageKey);
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
     const [dimBackground, setDimBackground] = useState(false);
+    const [saveCtaEnabled, setSaveCtaEnabled] = useState(false);
 
     const hideKeyboard = () => {
         Keyboard.dismiss();
@@ -62,6 +63,17 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
         setDimBackground(yes);
     }
 
+    const handleOnUpdatedBeachData = (data) => {
+        console.log(`beachData: ${JSON.stringify(data)}`);
+
+        const { image, beachName, dateVisited } = data;
+        const isValidData = image
+            && beachName
+            && dateVisited
+
+        setSaveCtaEnabled(isValidData);
+    }
+
     useEffect(() => {
         addKeyboardListener(
             () => {
@@ -92,14 +104,21 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
                 onSelectItem={handleOnSelectItem}
                 onSelectDate={handleOnSelectDate}
                 onChangeBeachName={handleOnChangeBeachName}
+                onUpdatedBeachData={handleOnUpdatedBeachData}
             />
             {!isKeyboardShown &&
                 <View>
                     <TouchableOpacity
-                        style={{
-                            ...styles.save,
-                            marginBottom: insets.bottom + 10,
-                        }}
+                        style={saveCtaEnabled
+                            ? {
+                                ...styles.save,
+                                marginBottom: insets.bottom + 10,
+                            }
+                            : {
+                                ...styles.saveDisabled,
+                                marginBottom: insets.bottom + 10,
+                            }
+                        }
                         onPress={onSave}
                     >
                         <Text
@@ -134,5 +153,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         alignSelf: 'center',
         color: 'white',
-    }
+    },
+    saveDisabled: {
+        backgroundColor: 'lightgray',
+        paddingVertical: 10,
+        marginHorizontal: 20,
+        marginBottom: 10,
+        borderRadius: 10,
+    },
 });

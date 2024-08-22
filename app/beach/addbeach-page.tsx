@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     saveDisabled: {
-        backgroundColor: 'gray',
+        backgroundColor: 'lightgray',
         paddingVertical: 10,
         marginHorizontal: 20,
         marginBottom: 10,
