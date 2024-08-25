@@ -208,7 +208,10 @@ export default function ProgressListLayout() {
                     alignSelf: 'center',
                     color: 'gray'
                 }}>out of {stat.total}</Text>
-                <Text style={styles.statsTitle}>{stat.title}</Text>
+                <Text style={{
+                    ...styles.statsTitle,
+                    fontSize: 10,
+                }}>{stat.title}</Text>
             </View>
         )
     }

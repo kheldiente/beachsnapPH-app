@@ -71,7 +71,7 @@ export const defaultHeaderWithBackBar = (title = '') => {
     return tabHeaderOptions;
 }
 
-export const defaultHeaderWithRightBar = ({ title = appName, component }) => {
+export const defaultHeaderWithRightBar = ({ title = appName, component = null }) => {
     const tabHeaderOptions = ({ navigation }) => {
         return {
             headerShadowVisible: false,
