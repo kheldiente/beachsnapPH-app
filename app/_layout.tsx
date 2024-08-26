@@ -11,6 +11,8 @@ import { snapsLayoutKeys } from '@/constants/Global';
 import { NavigationContainer } from '@react-navigation/native';
 import ProfileLayout from './beach/[profile]';
 import { defaultHeaderWithBackBar } from '@/constants/SharedComponent';
+import PhotoPostLayout from '@/app/post';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -37,35 +39,45 @@ export default function RootLayout() {
     }
 
     return (
-        <NavigationContainer
-            independent={true}
-        >
-            <Stack.Navigator>
-                <Stack.Screen
-                    name='(tabs)'
-                    component={TabLayout}
-                    options={{
-                        headerShown: false,
-                        navigationBarColor: 'white',
-                    }}
-                />
-                <Stack.Screen
-                    name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}
-                    component={NewBeachSnapLayout}
-                    options={{
-                        headerShown: false,
-                        headerStyle: {
-                            backgroundColor: 'white'
-                        },
-                        presentation: 'fullScreenModal',
-                    }}
-                />
-                <Stack.Screen
-                    name={`${snapsLayoutKeys.BEACH_PROFILE}`}
-                    component={ProfileLayout}
-                    options={defaultHeaderWithBackBar()}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <GestureHandlerRootView>
+            <NavigationContainer
+                independent={true}
+            >
+                <Stack.Navigator>
+                    <Stack.Screen
+                        name='(tabs)'
+                        component={TabLayout}
+                        options={{
+                            headerShown: false,
+                            navigationBarColor: 'white',
+                        }}
+                    />
+                    <Stack.Screen
+                        name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}
+                        component={NewBeachSnapLayout}
+                        options={{
+                            headerShown: false,
+                            headerStyle: {
+                                backgroundColor: 'white'
+                            },
+                            presentation: 'fullScreenModal',
+                        }}
+                    />
+                    <Stack.Screen
+                        name={`${snapsLayoutKeys.BEACH_PROFILE}`}
+                        component={ProfileLayout}
+                        options={defaultHeaderWithBackBar()}
+                    />
+                    <Stack.Screen
+                        name={`${snapsLayoutKeys.PHOTO_POST}`}
+                        component={PhotoPostLayout}
+                        options={{
+                            headerShown: false,
+                            presentation: 'transparentModal'
+                        }}
+                    />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </GestureHandlerRootView>
     );
 }

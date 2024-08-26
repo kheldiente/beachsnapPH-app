@@ -2,7 +2,7 @@ import TabHeaderBar from "@/components/TabHeaderBar"
 import { appName } from "./Global"
 import { Ionicons } from "@expo/vector-icons";
 import { DefaultFont } from "./Fonts";
-import { View } from "react-native";
+import { SharedTransition, withSpring } from "react-native-reanimated";
 
 export const defaultHeaderBar = (title = appName) => {
     const tabHeaderOptions = ({ navigation }) => {
@@ -121,3 +121,14 @@ export const defaultModalHeader = (title) => {
     }
     return modalHeaderOptions;
 }
+
+
+export const customTransition = SharedTransition.custom((values) => {
+    'worklet';
+    return {
+        height: withSpring(values.targetHeight),
+        width: withSpring(values.targetWidth),
+        originX: withSpring(values.targetOriginX),
+        originY: withSpring(values.targetOriginY),
+    };
+});

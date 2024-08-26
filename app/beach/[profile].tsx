@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
     Image,
     View,
@@ -11,6 +11,8 @@ import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
 import { Dimensions } from 'react-native';
 import NewBeachSnapModal from './addbeach-modal';
+import { snapsLayoutKeys } from '@/constants/Global';
+import Animated from 'react-native-reanimated';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const cardMargin = 5;
@@ -18,17 +20,17 @@ const cardMargin = 5;
 const samplePhotoGrid = [
     {
         name: 'test',
-        key: 1,
+        id: 1,
         img: require('@/assets/images/thumbnail/bicol-thumbnail.jpeg'),
     },
     {
         name: 'test',
-        key: 2,
+        id: 2,
         img: require('@/assets/images/thumbnail/bicol-thumbnail.jpeg'),
     },
     {
         name: 'test',
-        key: 3,
+        id: 3,
         img: require('@/assets/images/thumbnail/bicol-thumbnail.jpeg'),
     },
 ]
@@ -39,25 +41,59 @@ export default function ProfileLayout({ navigation, route }) {
     const description = `Bagasbas Beach is a scenic strip of white sand located in Daet, Camarines Norte. It is known for its calm and clear waters, making it perfect for swimming and snorkeling. The beach is also a popular spot for fishing and sunset-watching, offering breathtaking views of the surrounding landscape.`
 
     const [showModal, setShowModal] = useState(false);
+    const data = {
+        id: 20020,
+        image: 'https://plus.unsplash.com/premium_photo-1676750395664-3ac0783ae2c2?q=80&w=474&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    }
+
+    const onNavigateDetail = useCallback(
+        (currentData: { id: number; img: string }) => {
+            navigation.navigate(snapsLayoutKeys.PHOTO_POST, {
+                data: {
+                    ...currentData,
+                    image: 'https://picsum.photos/id/39/200',
+                },
+                parentId: data.id,
+                callback: null,
+                from: 'Profile',
+            });
+        },
+        [data.id, navigation],
+    );
+
+    const parentTransitionTag = (item) => {
+        return 'Profile' + item.id.toString();
+    }
+
+    const childTransitionTag = (item) => {
+        return 'Profile' + item.id.toString() + data.id.toString();
+    }
 
     const renderPhoto = (item) => {
         return (
             <View
-                key={`_phGrid_${item.key}`}
+                key={`_phGrid_${item.id}`}
             >
                 <TouchableOpacity
-                    onPress={() => { }}
+                    onPress={() => {
+                        onNavigateDetail(item)
+                    }}
                 >
-                    <View style={styles.card}>
+                    <Animated.View
+                        style={styles.card}
+                        // sharedTransitionTag={parentTransitionTag(item)}
+                    >
                         {true &&
                             <View style={styles.gridItemImg}>
-                                <Image
-                                    source={item.img}
+                                <Animated.Image
+                                    source={{ uri: 'https://picsum.photos/id/39/200' }}
                                     style={styles.img}
+                                    // sharedTransitionTag={childTransitionTag(item)}
+                                    // sharedTransitionStyle={customTransition}
                                 />
                             </View>
                         }
-                    </View>
+                    </Animated.View>
                 </TouchableOpacity>
             </View>
         )
