@@ -1,5 +1,13 @@
 // Put all configs here
 export const appName = 'BeachSnap PH'
+export const dbName = 'beachsnap.db'
+export const dbVersions = [
+    {
+        name: 'beachsnap-v1',
+        version: '1.0.0',
+        fileUrl: require ('@/assets/db/beachsnap-v1.db'),
+    }
+]
 
 export const exploreLayoutKeys = {
     REGION_LIST: "_RegionList",
