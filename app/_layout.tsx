@@ -14,7 +14,7 @@ import { defaultHeaderWithBackBar } from '@/constants/SharedComponent';
 import PhotoPostLayout from '@/app/post';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SQLiteProvider } from 'expo-sqlite';
-import initDb from './db/DatabaseHandler';
+import initDb from './db/ReadOnlyDatabase';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

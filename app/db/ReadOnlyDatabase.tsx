@@ -48,6 +48,11 @@ export const getAllRegions = async () => {
         return;
     }
 
+    if (cachedRegions.length > 0) {
+        console.log(`regions available: ${cachedRegions.length}`)
+        return;
+    }
+
     try {
         cachedRegions = await db.getAllAsync('SELECT * FROM region');
         console.log(`regions available: ${cachedRegions.length}`)
