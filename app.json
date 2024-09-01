@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "beach-snap-ph",
+    "name": "BeachSnap PH",
     "slug": "beach-snap-ph",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -24,7 +24,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.midien.beachsnapph"
+      "package": "com.midien.beachsnapph",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,12 +45,23 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/Nunito-Regular.ttf"]
+          "fonts": [
+            "./assets/fonts/Nunito-Regular.ttf"
+          ]
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "49e8eaa9-a402-407d-a7b8-85d3af0e2e55"
+      }
     }
   }
 }

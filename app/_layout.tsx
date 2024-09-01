@@ -7,14 +7,14 @@ import 'react-native-reanimated';
 import { AppFonts } from '@/constants/Fonts';
 import TabLayout from './(tabs)/_layout';
 import NewBeachSnapLayout from './beach/addbeach-page';
-import { dbName, dbVersions, snapsLayoutKeys } from '@/constants/Global';
+import { dbName, snapsLayoutKeys } from '@/constants/Global';
 import { NavigationContainer } from '@react-navigation/native';
 import ProfileLayout from './beach/[profile]';
 import { defaultHeaderWithBackBar } from '@/constants/SharedComponent';
 import PhotoPostLayout from '@/app/post';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SQLiteProvider } from 'expo-sqlite';
-import { initDb } from './db/DatabaseHandler';
+import initDb from './db/DatabaseHandler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -28,10 +28,6 @@ export default function RootLayout() {
         setTimeout(() => {
             SplashScreen.hideAsync();
         }, 500);
-    }
-
-    const getDbAsset = () => {
-        return dbVersions[0].fileUrl;
     }
 
     useEffect(() => {
@@ -48,7 +44,6 @@ export default function RootLayout() {
     return (
         <SQLiteProvider
             databaseName={dbName}
-            assetSource={{ assetId: getDbAsset() }}
         >
             <GestureHandlerRootView>
                 <NavigationContainer

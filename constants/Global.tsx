@@ -1,6 +1,6 @@
 // Put all configs here
 export const appName = 'BeachSnap PH'
-export const dbName = 'beachsnap.db'
+export const dbName = 'beachsnap-v1.db'
 export const dbVersions = [
     {
         name: 'beachsnap-v1',

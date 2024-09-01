@@ -4,16 +4,10 @@ import { myProgressLayoutKeys, snapsLayoutKeys } from "@/constants/Global";
 import ProgressListLayout from '@/app/progress';
 import { defaultHeaderBar } from '@/constants/SharedComponent';
 import NewBeachSnapLayout from '../beach/addbeach-page';
-import { useEffect } from 'react';
-import { getAllRegions } from '@/app/db/DatabaseHandler';
 
 const Stack = createNativeStackNavigator()
 
 export default function MyProgressLayout(props) {
-    useEffect(() => {
-        getAllRegions();
-    }, []);
-
     return (
         <Stack.Navigator>
             <Stack.Screen

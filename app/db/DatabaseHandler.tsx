@@ -1,12 +1,45 @@
-import { dbName } from '@/constants/Global';
+import { dbName, dbVersions } from '@/constants/Global';
 import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+import { Asset } from 'expo-asset';
 
 var db: SQLite.SQLiteDatabase;
+var cachedRegions;
 
-export const initDb = async () => {
-    db = await SQLite.openDatabaseAsync(dbName);
-    await db.execAsync('PRAGMA journal_mode = WAL');
-    console.log('Database initialized!');
+export const dbFileSystemUrl = () => {
+    return `${FileSystem.documentDirectory}SQLite/beachsnap-v1.db`;
+}
+
+// Download db from assets to file system
+export const importDbToFileSystem = async () => {
+
+    try {
+        const fileInfo = await FileSystem
+            .getInfoAsync(`${FileSystem.documentDirectory}SQLite/beachsnap-v1.db`);
+
+        if (fileInfo.exists) {
+            console.log('DB is in the file system');
+            return;
+        }
+
+        console.log('Importing db to file system...');
+        const { uri } = await FileSystem.downloadAsync(
+            Asset.fromModule(dbVersions[0].fileUrl).uri,
+            `${FileSystem.documentDirectory}SQLite/beachsnap-v1.db`
+        )
+        console.log('Finished downloading to ', uri);
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+export const openDb = async () => {
+    try {
+        db = await SQLite.openDatabaseAsync(dbName);
+        console.log('Database initialized!');
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 export const getAllRegions = async () => {
@@ -15,12 +48,16 @@ export const getAllRegions = async () => {
         return;
     }
 
-    // await db.runAsync('INSERT INTO region (id, name) VALUES (?, ?)', 'REGSAMPLE1', 'Sample Region');
-
-    // `getAllAsync()` is useful when you want to get all results as an array of objects.
-    const allRows = await db.getAllAsync('SELECT * FROM region');
-    for (const row of allRows) {
-        console.log(row.id, row.name);
+    try {
+        cachedRegions = await db.getAllAsync('SELECT * FROM region');
+        console.log(`regions available: ${cachedRegions.length}`)
+    } catch (e) {
+        console.log(e);
     }
-    console.log(`getAllRegions: ${allRows.length}`)
+}
+
+export default async function initDb() {
+    await importDbToFileSystem();
+    await openDb();
+    await getAllRegions();
 }
