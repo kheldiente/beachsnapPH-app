@@ -7,7 +7,7 @@ var db: SQLite.SQLiteDatabase;
 export const openDb = async () => {
     try {
         db = await SQLite.openDatabaseAsync(userDbName);
-        console.log(`Database ${userDbName} initialized!`);
+        console.log(`Database ${userDbName} opened!`);
     } catch (e) {
         console.log(e);
     }

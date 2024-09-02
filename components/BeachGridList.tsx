@@ -33,11 +33,15 @@ export default function BeachGridList(props) {
     }
 
     const handleOnClickCard = (item) => {
+        if (item.id === '') {
+            return;
+        }
+        
         props.onClick(item);
     }
 
     const renderGridCard = (item) => {
-        const showData = item !== ''
+        const showData = item.id !== ''
         const thumbnailImg = getThumbnail(item.id)
 
         return (

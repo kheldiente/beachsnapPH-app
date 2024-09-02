@@ -83,7 +83,7 @@ export const mockData: BeachList = {
 export const getThumbnail = (regionKey) => {
     // Note: require() doesn't work with dynamic values. 
     // Hence, we're using static strings here
-    console.log(`getThumbnail: ${regionKey}`)
+    // console.log(`getThumbnail: ${regionKey}`)
     switch (regionKey) {
         case "REG1":
             return require('@/assets/images/thumbnail/bicol-thumbnail.jpeg')

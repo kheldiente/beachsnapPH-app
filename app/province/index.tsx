@@ -10,49 +10,41 @@ import {
 } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Chip } from '@rneui/themed';
-import { useEffect, useState } from 'react';
-import TabHeaderBar from '@/components/TabHeaderBar';
+import { useEffect, useRef, useState } from 'react';
 import { secondaryHeaderBar } from '@/constants/SharedComponent';
 import { snapsLayoutKeys } from '@/constants/Global';
+import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase';
 
-const filters = [
-    'Albay',
-    'Camarines Norte',
-    'Camarines Sur',
-    'Catanduanes',
-    'Masbate',
-    'Sorsogon'
-];
-const provinces = [
-    'Albay',
-    'Camarines Norte',
-    'Camarines Sur',
-    'Catanduanes',
-    'Masbate',
-    'Sorsogon'
-];
+const NO_FILTER = {
+    id: 'ALLPROV',
+    name: 'All',
+}
 
 export default function BeachListLayout({ navigation, route }) {
     const { id, name } = route.params.region;
-    const [selectedFilter, setSelectedFilter] = useState('All');
-    const [data, setData] = useState(provinces);
     const headerTitle = `${name}`
 
+    const allProvinces = useRef(null);
+    const [selectedFilter, setSelectedFilter] = useState(NO_FILTER.id);
+    const [provinces, setProvinces] = useState([]);
 
-    useEffect(() => {
-        navigation.setOptions(secondaryHeaderBar(headerTitle))
-    });
+    const getProvinces = async () => {
+        await ReadOnlyDatabase.openDb();
+        const cProvinces = await ReadOnlyDatabase.getProvinces(id);
+        await ReadOnlyDatabase.closeDb();
+
+        allProvinces.current = cProvinces;
+        setProvinces(cProvinces);
+    }
+
+    const getFilters = () => {
+        return [
+            NO_FILTER,
+            ...allProvinces.current,
+        ]
+    }
 
     const handleOnClickCard = (item) => {
-        console.log(`${JSON.stringify(item)}`);
-        // navigation.push({
-        //     pathname: '/beach/[profile]',
-        //     params: {
-        //         id: item.id,
-        //         name: item.name
-        //     }
-        // })
-
         navigation.push(`${snapsLayoutKeys.BEACH_PROFILE}`, {
             id: item.id,
             name: item.name,
@@ -61,8 +53,8 @@ export default function BeachListLayout({ navigation, route }) {
 
     const renderBeachList = (province) => {
         return (
-            <View key={`_bListView_${province}`} style={styles.container1}>
-                <Text key={'_bListHeader'} style={styles.header1}>{province}</Text>
+            <View key={`_bListView_${province.id}`} style={styles.container1}>
+                <Text key={'_bListHeader'} style={styles.header1}>{province.name}</Text>
                 <BeachCardList
                     key={'_bcList'}
                     data={mockData.data}
@@ -72,22 +64,22 @@ export default function BeachListLayout({ navigation, route }) {
         );
     }
 
-    const renderChipFilters = (selected = "All") => {
+    const renderChipFilters = (selected = "ALLPROV") => {
         return (
             <ScrollView
                 key={'_chipFilters'}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
             >
-                {['All', ...filters].map((title) => (
+                {getFilters().map((province) => (
                     <Chip
-                        title={title}
-                        key={`_chip_${title}`}
+                        title={province.name}
+                        key={`_chip_${province.id}`}
                         color={
-                            selected === title ? styles.chipFilterContainer.color
+                            selected === province.id ? styles.chipFilterContainer.color
                                 : styles.chipFilterDisabled.color
                         }
-                        onPress={() => handleChipClick(title)}
+                        onPress={() => handleChipClick(province.id)}
                         containerStyle={styles.chipFilterContainer}
                         titleStyle={styles.chipFilterTitle}
                     />
@@ -96,29 +88,40 @@ export default function BeachListLayout({ navigation, route }) {
         );
     }
 
-    const handleChipClick = (key) => {
-        var dataToShow = provinces;
-        if (key !== 'All') {
-            dataToShow = [key];
+    const handleChipClick = (id) => {
+        var dataToShow = allProvinces.current;
+        if (id !== 'ALLPROV') {
+            dataToShow = dataToShow.filter((province) =>
+                province.id === id
+            );
         }
 
-        setSelectedFilter(key);
-        setData(dataToShow);
+        setSelectedFilter(id);
+        setProvinces(dataToShow);
     }
+
+    useEffect(() => {
+        navigation.setOptions(
+            secondaryHeaderBar(headerTitle)
+        )
+        getProvinces();
+    }, []);
 
     return (
         <SafeAreaView
             style={styles.container}
             edges={['right', 'left']}
         >
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-            >
-                {renderChipFilters(selectedFilter)}
-                {data.map((province) =>
-                    renderBeachList(province)
-                )}
-            </ScrollView>
+            {allProvinces.current &&
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                >
+                    {renderChipFilters(selectedFilter)}
+                    {provinces.map((province) =>
+                        renderBeachList(province)
+                    )}
+                </ScrollView>
+            }
         </SafeAreaView>
     );
 }

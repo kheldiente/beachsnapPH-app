@@ -67,10 +67,6 @@ export default function RegionListLayout(props: any) {
     const handleSegmentButtonClick = (index: number) => { };
 
     const handleRegionClick = (item) => {
-        if (item === '') {
-            return;
-        }
-
         navigation.navigate({
             name: `${exploreLayoutKeys.BEACH_LIST}`,
             params: { region: item },

@@ -5,6 +5,7 @@ import { Asset } from 'expo-asset';
 
 var db: SQLite.SQLiteDatabase;
 var cachedRegions = null;
+var cachedProvinces = {};
 
 export const dbFileSystemUrl = () => {
     return `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`;
@@ -36,7 +37,7 @@ export const importDbToFileSystem = async () => {
 export const openDb = async () => {
     try {
         db = await SQLite.openDatabaseAsync(readOnlyDbName);
-        console.log(`Database ${readOnlyDbName} initialized!`);
+        console.log(`Database ${readOnlyDbName} opened!`);
     } catch (e) {
         console.log(e);
     }
@@ -62,11 +63,33 @@ export const getAllRegions = async () => {
     return cachedRegions;
 }
 
+export const getProvinces = async (regionId) => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    const statement = await db.prepareAsync('SELECT * FROM province WHERE regionId = $regionId');
+    try {
+        if (regionId in cachedProvinces) {
+            console.log(`using cached provinces for ${regionId}`);
+        } else {
+            const result = await statement.executeAsync({ $regionId: regionId });
+            cachedProvinces[regionId] = await result.getAllAsync();
+        }
+        console.log(`provinces available for ${regionId} : ${cachedProvinces[regionId].length}`);
+    } catch (e) {
+        console.log(e);
+    }
+
+    return cachedProvinces[regionId];
+}
+
 export const closeDb = async () => {
     await db.closeAsync();
 }
 
-export const initDb = async() => {
+export const initDb = async () => {
     await importDbToFileSystem();
     await openDb();
     await getAllRegions();
