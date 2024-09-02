@@ -6,6 +6,7 @@ import { Asset } from 'expo-asset';
 var db: SQLite.SQLiteDatabase;
 var cachedRegions = null;
 var cachedProvinces = {};
+var cachedBeaches = {}; // Key is Region Id
 
 export const dbFileSystemUrl = () => {
     return `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`;
@@ -63,21 +64,45 @@ export const getAllRegions = async () => {
     return cachedRegions;
 }
 
-export const getProvinces = async (regionId) => {
+export const getProvincesWithBeaches = async (regionId) => {
     if (!db) {
         console.log(`Database ${readOnlyDbName} not initialized!`);
         return;
     }
 
-    const statement = await db.prepareAsync('SELECT * FROM province WHERE regionId = $regionId');
     try {
+        const statement = await db.prepareAsync('SELECT * FROM province WHERE regionId = $regionId');
+
         if (regionId in cachedProvinces) {
             console.log(`using cached provinces for ${regionId}`);
         } else {
             const result = await statement.executeAsync({ $regionId: regionId });
             cachedProvinces[regionId] = await result.getAllAsync();
         }
-        console.log(`provinces available for ${regionId} : ${cachedProvinces[regionId].length}`);
+        // console.log(`provinces available for ${regionId} : ${cachedProvinces[regionId].length} `);
+
+        ///// GET BEACHES from REGIONS /////
+
+        const statement2 = await db.prepareAsync(
+            `SELECT beach.id, beach.name, beach.municipality, beach.regionId, beach.provinceId
+            FROM province
+            INNER JOIN beach ON province.id = beach.provinceId  where beach.regionId = $regionId;`
+        );
+
+        if (regionId in cachedBeaches) {
+            console.log(`using cached beaches for ${regionId}`);
+        } else {
+            const result = await statement2.executeAsync({ $regionId: regionId });
+            cachedBeaches[regionId] = await result.getAllAsync();
+
+            if (regionId in cachedBeaches) {
+                cachedProvinces[regionId].forEach((province) => {
+                    province[`beaches`] = cachedBeaches[regionId].filter((bch) => bch.provinceId === province.id);
+                })
+            }
+        }
+
+        // console.log(`beaches for ${JSON.stringify(cachedProvinces[regionId][0][`beaches`])}`)
     } catch (e) {
         console.log(e);
     }

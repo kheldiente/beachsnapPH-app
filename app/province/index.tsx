@@ -1,7 +1,5 @@
 import BeachCardList from '@/components/BeachCardList';
 import { DefaultFont } from '@/constants/Fonts';
-import { mockData } from '@/data/beach';
-import { router } from 'expo-router';
 import {
     View,
     Text,
@@ -30,7 +28,7 @@ export default function BeachListLayout({ navigation, route }) {
 
     const getProvinces = async () => {
         await ReadOnlyDatabase.openDb();
-        const cProvinces = await ReadOnlyDatabase.getProvinces(id);
+        const cProvinces = await ReadOnlyDatabase.getProvincesWithBeaches(id);
         await ReadOnlyDatabase.closeDb();
 
         allProvinces.current = cProvinces;
@@ -54,12 +52,27 @@ export default function BeachListLayout({ navigation, route }) {
     const renderBeachList = (province) => {
         return (
             <View key={`_bListView_${province.id}`} style={styles.container1}>
-                <Text key={'_bListHeader'} style={styles.header1}>{province.name}</Text>
-                <BeachCardList
-                    key={'_bcList'}
-                    data={mockData.data}
-                    handleOnClickCard={handleOnClickCard}
-                />
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Text key={'_bListHeader'} style={styles.header1}>{province.name}</Text>
+                    {province.beaches.length === 0 &&
+                        <Text
+                            key={'_bList+noBeaches'}
+                            style={styles.noBeaches}
+                        >No beaches</Text>
+                    }
+                </View>
+                {province.beaches.length > 0 &&
+                    (<BeachCardList
+                        key={'_bcList'}
+                        data={province.beaches}
+                        handleOnClickCard={handleOnClickCard}
+                    />)}
             </View>
         );
     }
@@ -154,5 +167,11 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'green',
         marginVertical: 10,
+    },
+    noBeaches: {
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 12,
+        color: 'gray',
+        alignSelf: 'center',
     },
 })
