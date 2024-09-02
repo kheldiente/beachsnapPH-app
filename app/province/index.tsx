@@ -33,9 +33,10 @@ const provinces = [
 ];
 
 export default function BeachListLayout({ navigation, route }) {
+    const { id, name } = route.params.region;
     const [selectedFilter, setSelectedFilter] = useState('All');
     const [data, setData] = useState(provinces);
-    const headerTitle = `${route.params.region}`
+    const headerTitle = `${name}`
 
 
     useEffect(() => {

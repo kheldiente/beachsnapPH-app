@@ -18,11 +18,11 @@ export default function BeachGridList(props) {
 
     // Written like this to prevent 
     // renderItem complaining for a type
-    const renderItem = (item) => {
-        const gridItemArray = item.gridItemArray
+    const renderItem = (item, index) => {
+        const gridItemArray = item
         return (
             <View
-            key={`_item_${gridItemArray.toString()}`} 
+            key={`_item_${index}`} 
             style={styles.gridItem}
             >
                 {gridItemArray.map((gridItem) =>
@@ -32,17 +32,17 @@ export default function BeachGridList(props) {
         )
     }
 
-    const handleOnClickCard = (key) => {
-        props.onClick(key);
+    const handleOnClickCard = (item) => {
+        props.onClick(item);
     }
 
     const renderGridCard = (item) => {
         const showData = item !== ''
-        const thumbnailImg = getThumbnail(item)
+        const thumbnailImg = getThumbnail(item.id)
 
         return (
             <TouchableOpacity
-                key={`_bchGrid_${item}`}
+                key={`_bchGrid_${item.id}`}
                 onPress={() => handleOnClickCard(item)}
                 disabled={!showData}
             >
@@ -53,7 +53,7 @@ export default function BeachGridList(props) {
                                 source={thumbnailImg}
                                 style={styles.img}
                             />
-                            <Text style={styles.gridItemTxt}>{item}</Text>
+                            <Text style={styles.gridItemTxt}>{item.name}</Text>
                         </View>
                     }
                 </View>
@@ -65,8 +65,8 @@ export default function BeachGridList(props) {
         <ScrollView
             showsVerticalScrollIndicator={false}
         >
-            {props.data.map((item) =>
-                renderItem(item)
+            {props.data.map((item, index) =>
+                renderItem(item, index)
             )}
         </ScrollView>
     )

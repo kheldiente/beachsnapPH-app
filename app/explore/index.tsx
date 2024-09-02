@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -11,10 +11,12 @@ import BeachGridList from "@/components/BeachGridList";
 import { DefaultFont } from "@/constants/Fonts";
 import { useNavigation } from "expo-router";
 import { exploreLayoutKeys } from "@/constants/Global";
+import * as ReadOnlyDatabase from "../db/ReadOnlyDatabase";
 
 export default function RegionListLayout(props: any) {
     const getItemId = (item: { id: any; }) => (item.id)
     const navigation = useNavigation();
+    const [regions, setRegions] = useState(null);
 
     const getSegmentButtons = () => {
         return ["All", "Visited"];
@@ -26,6 +28,37 @@ export default function RegionListLayout(props: any) {
         ))
     }
 
+    const getRegionGridData = async () => {
+        await ReadOnlyDatabase.openDb();
+        const cRegions = await ReadOnlyDatabase.getAllRegions();
+        await ReadOnlyDatabase.closeDb();
+
+        if (cRegions === null) {
+            return [];
+        }
+
+        // Add empty region to show EVEN grid
+        cRegions.push({ id: '', name: '' })
+
+        var result = [];
+        var index = 0;
+        var inc = 3;
+        while (index < cRegions.length) {
+            var row = [];
+            for (var k = index; k < index + inc; k++) {
+                if (k < cRegions.length) {
+                    row.push(cRegions[k]);
+                }
+            }
+            result.push(row);
+            index = index + inc;
+        }
+        
+        if (result.length > 0) {
+            setRegions(result);
+        }
+    }
+
     const handleScroll = (event: any) => {
         // console.log(props);
         // console.log(event.nativeEvent.contentOffset.y);
@@ -33,16 +66,20 @@ export default function RegionListLayout(props: any) {
 
     const handleSegmentButtonClick = (index: number) => { };
 
-    const handleRegionClick = (key) => {
-        if (key === '') {
+    const handleRegionClick = (item) => {
+        if (item === '') {
             return;
         }
-        
+
         navigation.navigate({
             name: `${exploreLayoutKeys.BEACH_LIST}`,
-            params: { region: key },
+            params: { region: item },
         })
     };
+
+    useEffect(() => {
+        getRegionGridData();
+    }, [])
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
@@ -50,12 +87,14 @@ export default function RegionListLayout(props: any) {
                 onScroll={handleScroll}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={styles.container1}>
-                    <BeachGridList
-                        data={getGridData()}
-                        onClick={(key) => handleRegionClick(key)}
-                    />
-                </View>
+                {regions &&
+                    <View style={styles.container1}>
+                        <BeachGridList
+                            data={regions}
+                            onClick={(item) => handleRegionClick(item)}
+                        />
+                    </View>
+                }
             </ScrollView>
         </SafeAreaView>
     );

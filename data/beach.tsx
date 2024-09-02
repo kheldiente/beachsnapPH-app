@@ -83,41 +83,41 @@ export const mockData: BeachList = {
 export const getThumbnail = (regionKey) => {
     // Note: require() doesn't work with dynamic values. 
     // Hence, we're using static strings here
-    // console.log(`getThumbnail: ${regionKey}`)
+    console.log(`getThumbnail: ${regionKey}`)
     switch (regionKey) {
-        case "Bicol":
+        case "REG1":
             return require('@/assets/images/thumbnail/bicol-thumbnail.jpeg')
-        case "Cagayan Valley":
+        case "REG2":
             return require('@/assets/images/thumbnail/cagayan-valley-thumbnail.jpeg')
-        case 'Caraga':
+        case 'REG3':
             return require('@/assets/images/thumbnail/caraga-thumbnail.jpeg')
-        case 'Central Luzon':
+        case 'REG4':
             return require('@/assets/images/thumbnail/central-luzon-thumbnail.jpeg')
-        case 'Soccsksargen':
+        case 'REG5':
             return require('@/assets/images/thumbnail/soccsksargen-thumbnail.jpeg')
-        case 'Central Visayas':
+        case 'REG6':
             return require('@/assets/images/thumbnail/central-visayas-thumbnail.jpeg')
-        case 'Davao':
+        case 'REG7':
             return require('@/assets/images/thumbnail/davao-thumbnail.jpeg')
-        case 'Eastern Visayas':
+        case 'REG8':
             return require('@/assets/images/thumbnail/eastern-visayas-thumbnail.jpeg')
-        case 'Ilocos':
+        case 'REG9':
             return require('@/assets/images/thumbnail/ilocos-thumbnail.jpeg')
-        case 'BARMM':
+        case 'REG10':
             return require('@/assets/images/thumbnail/barmm-thumbnail.jpeg')
-        case 'NCR':
+        case 'REG11':
             return require('@/assets/images/thumbnail/ncr-thumbnail.jpeg')
-        case 'Negros Island':
+        case 'REG12':
             return require('@/assets/images/thumbnail/negros-island-thumbnail.jpeg')
-        case 'Northern Mindanao':
+        case 'REG13':
             return require('@/assets/images/thumbnail/northern-mindanao-thumbnail.jpeg')
-        case 'Mimaropa':
+        case 'REG14':
             return require('@/assets/images/thumbnail/mimaropa-thumbnail.jpeg')
-        case 'Calabarzon':
+        case 'REG15':
             return require('@/assets/images/thumbnail/calabarzon-thumbnail.jpeg')
-        case 'Western Visayas':
+        case 'REG16':
             return require('@/assets/images/thumbnail/western-visayas-thumbnail.jpeg')
-        case 'Zamboanga Peninsula':
+        case 'REG17':
             return require('@/assets/images/thumbnail/zamboanga-peninsula-thumbnail.jpeg')
         default:
             return require('@/assets/images/thumbnail/beach-emoji-hd.png')

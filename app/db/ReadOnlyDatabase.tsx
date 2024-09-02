@@ -1,13 +1,13 @@
-import { dbName, dbVersions } from '@/constants/Global';
+import { readOnlyDbName, readOnlyDbVersions } from '@/constants/Global';
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 
 var db: SQLite.SQLiteDatabase;
-var cachedRegions;
+var cachedRegions = null;
 
 export const dbFileSystemUrl = () => {
-    return `${FileSystem.documentDirectory}SQLite/beachsnap-v1.db`;
+    return `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`;
 }
 
 // Download db from assets to file system
@@ -15,7 +15,7 @@ export const importDbToFileSystem = async () => {
 
     try {
         const fileInfo = await FileSystem
-            .getInfoAsync(`${FileSystem.documentDirectory}SQLite/beachsnap-v1.db`);
+            .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
 
         if (fileInfo.exists) {
             console.log('DB is in the file system');
@@ -24,8 +24,8 @@ export const importDbToFileSystem = async () => {
 
         console.log('Importing db to file system...');
         const { uri } = await FileSystem.downloadAsync(
-            Asset.fromModule(dbVersions[0].fileUrl).uri,
-            `${FileSystem.documentDirectory}SQLite/beachsnap-v1.db`
+            Asset.fromModule(readOnlyDbVersions[0].fileUrl).uri,
+            `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`
         )
         console.log('Finished downloading to ', uri);
     } catch (e) {
@@ -35,8 +35,8 @@ export const importDbToFileSystem = async () => {
 
 export const openDb = async () => {
     try {
-        db = await SQLite.openDatabaseAsync(dbName);
-        console.log('Database initialized!');
+        db = await SQLite.openDatabaseAsync(readOnlyDbName);
+        console.log(`Database ${readOnlyDbName} initialized!`);
     } catch (e) {
         console.log(e);
     }
@@ -44,25 +44,31 @@ export const openDb = async () => {
 
 export const getAllRegions = async () => {
     if (!db) {
-        console.log('Database not initialized!');
-        return;
-    }
-
-    if (cachedRegions.length > 0) {
-        console.log(`regions available: ${cachedRegions.length}`)
+        console.log(`Database ${readOnlyDbName} not initialized!`);
         return;
     }
 
     try {
-        cachedRegions = await db.getAllAsync('SELECT * FROM region');
+        if (cachedRegions === null) {
+            cachedRegions = await db.getAllAsync('SELECT * FROM region');
+        } else {
+            console.log('using cached regions')
+        }
         console.log(`regions available: ${cachedRegions.length}`)
     } catch (e) {
         console.log(e);
     }
+
+    return cachedRegions;
 }
 
-export default async function initDb() {
+export const closeDb = async () => {
+    await db.closeAsync();
+}
+
+export const initDb = async() => {
     await importDbToFileSystem();
     await openDb();
     await getAllRegions();
+    await closeDb();
 }
