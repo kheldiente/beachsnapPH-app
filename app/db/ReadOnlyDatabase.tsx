@@ -20,16 +20,16 @@ export const importDbToFileSystem = async () => {
             .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
 
         if (fileInfo.exists) {
-            console.log('DB is in the file system');
+            console.log(`DB ${readOnlyDbName} is in the file system`);
             return;
         }
 
-        console.log('Importing db to file system...');
+        console.log(`Importing db ${readOnlyDbName} to file system...`);
         const { uri } = await FileSystem.downloadAsync(
             Asset.fromModule(readOnlyDbVersions[0].fileUrl).uri,
             `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`
         )
-        console.log('Finished downloading to ', uri);
+        console.log(`Finished moving db ${readOnlyDbName} to `, uri);
     } catch (e) {
         console.log(e)
     }
@@ -56,7 +56,7 @@ export const getAllRegions = async () => {
         } else {
             console.log('using cached regions')
         }
-        console.log(`regions available: ${cachedRegions.length}`)
+        // console.log(`regions available: ${cachedRegions.length}`)
     } catch (e) {
         console.log(e);
     }
@@ -79,7 +79,6 @@ export const getProvincesWithBeaches = async (regionId) => {
             const result = await statement.executeAsync({ $regionId: regionId });
             cachedProvinces[regionId] = await result.getAllAsync();
         }
-        // console.log(`provinces available for ${regionId} : ${cachedProvinces[regionId].length} `);
 
         ///// GET BEACHES from REGIONS /////
 
@@ -101,8 +100,6 @@ export const getProvincesWithBeaches = async (regionId) => {
                 })
             }
         }
-
-        // console.log(`beaches for ${JSON.stringify(cachedProvinces[regionId][0][`beaches`])}`)
     } catch (e) {
         console.log(e);
     }
@@ -116,7 +113,4 @@ export const closeDb = async () => {
 
 export const initDb = async () => {
     await importDbToFileSystem();
-    await openDb();
-    await getAllRegions();
-    await closeDb();
 }

@@ -63,7 +63,7 @@ export const getAllSnaps = async () => {
 
     try {
         const allRows = await db.getAllAsync('SELECT * FROM snap');
-        console.log(`snaps available: ${allRows.length}`)
+        // console.log(`snaps available: ${allRows.length}`)
     } catch (e) {
         console.log(e);
     }
@@ -77,7 +77,7 @@ export const getAllGoals = async () => {
 
     try {
         const allRows = await db.getAllAsync('SELECT * FROM goal');
-        console.log(`goals available: ${allRows.length}`)
+        // console.log(`goals available: ${allRows.length}`)
     } catch (e) {
         console.log(e);
     }
@@ -90,7 +90,5 @@ export const closeDb = async () => {
 export const initDb = async () => {
     await openDb();
     await createTables();
-    await getAllSnaps();
-    await getAllGoals();
     await closeDb();
 }
