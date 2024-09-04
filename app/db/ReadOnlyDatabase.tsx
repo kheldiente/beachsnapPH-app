@@ -117,7 +117,10 @@ export const getMatchingBeaches = async (keyword = '') => {
     const limit = 20;
     try {
         beaches = await db.getAllAsync(
-            `SELECT * FROM beach WHERE name LIKE "%${keyword}%" order by name limit ${limit}`
+            `SELECT beach.id, beach.name, beach.municipality, province.name as province
+            FROM province
+            INNER JOIN beach ON province.id = beach.provinceId 
+            WHERE beach.name LIKE "%${keyword}%" order by beach.name limit ${limit}`
         );
         console.log(`getMatchingBeaches: ${beaches.length}, keyword: ${keyword}`)
     } catch (e) {
