@@ -107,6 +107,25 @@ export const getProvincesWithBeaches = async (regionId) => {
     return cachedProvinces[regionId];
 }
 
+export const getMatchingBeaches = async (keyword = '') => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    var beaches = [];
+    const limit = 20;
+    try {
+        beaches = await db.getAllAsync(
+            `SELECT * FROM beach WHERE name LIKE "%${keyword}%" order by name limit ${limit}`
+        );
+        console.log(`getMatchingBeaches: ${beaches.length}, keyword: ${keyword}`)
+    } catch (e) {
+        console.log(e);
+    }
+    return beaches;
+}
+
 export const closeDb = async () => {
     await db.closeAsync();
 }

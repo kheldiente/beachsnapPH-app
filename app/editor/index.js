@@ -20,6 +20,7 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { items } from '@/constants/Global';
 import { mockData } from '@/data/beach';
+import * as ReadOnlyDatabase from '../db/ReadOnlyDatabase';
 
 const imgDimension = 300;
 const modalBorderRadius = 10;
@@ -37,10 +38,11 @@ export default function BeachSnapEditor(props) {
     const [caption, setCaption] = useState('');
     const [favorited, setFavorited] = useState(false);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
-    
+
     const [showDate, setShowDate] = useState(false);
     const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
     const [image, setImage] = useState(null);
+    const [matchedBeaches, setMatchedBeaches] = useState(null);
 
     const calcImageContainerH = useSharedValue(imageContainerH);
 
@@ -153,10 +155,20 @@ export default function BeachSnapEditor(props) {
         )
     }
 
+    const getBeachesFromDb = async (keyword = '') => {
+        await ReadOnlyDatabase.openDb();
+        const beaches = await ReadOnlyDatabase.getMatchingBeaches(keyword);
+        await ReadOnlyDatabase.closeDb();
+
+        setMatchedBeaches(beaches);
+    }
+
     const renderListItemOptions = () => {
         const handleOnBeachNameItemClick = () => {
             beachPageDisplayed.current = true;
             setShowSearchBeachPage(true);
+
+            getBeachesFromDb();
         }
 
         const handleOnDateVisitedItemClick = () => {
@@ -394,9 +406,11 @@ export default function BeachSnapEditor(props) {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                 >
-                    {mockData.data.map((item) =>
-                        renderItem(item)
-                    )}
+                    {matchedBeaches &&
+                        matchedBeaches.map((item) =>
+                            renderItem(item)
+                        )
+                    }
                 </ScrollView>
             )
         }
