@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { items } from '@/constants/Global';
 import { mockData } from '@/data/beach';
 import * as ReadOnlyDatabase from '../db/ReadOnlyDatabase';
+import { FlashList } from '@shopify/flash-list';
 
 const imgDimension = 300;
 const modalBorderRadius = 10;
@@ -28,11 +29,12 @@ const maxCharacters = 200;
 
 export default function BeachSnapEditor(props) {
     const insets = useSafeAreaInsets();
+    const estListSize = 500;
     var imageContainerH = 350; // Measured in console.logs
 
     const beachPageDisplayed = useRef(false);
     const dateVisited = useRef(new Date());
-    const selectedBeach = useRef('');
+    const selectedBeach = useRef({ name: '' });
     const imageRef = useRef(null);
 
     const [caption, setCaption] = useState('');
@@ -93,7 +95,7 @@ export default function BeachSnapEditor(props) {
         props.onUpdatedBeachData
             ? props.onUpdatedBeachData({
                 image: imageRef.current,
-                beachName: selectedBeach.current,
+                beach: selectedBeach.current,
                 dateVisited: dateVisited.current,
                 caption: caption,
                 favorited: favorited,
@@ -104,7 +106,7 @@ export default function BeachSnapEditor(props) {
         console.log(`beachName: ${item.name}`)
 
         beachPageDisplayed.current = false;
-        selectedBeach.current = item.name;
+        selectedBeach.current = item;
 
         setShowSearchBeachPage(false);
         props.onChangeBeachName
@@ -157,10 +159,24 @@ export default function BeachSnapEditor(props) {
 
     const getBeachesFromDb = async (keyword = '') => {
         await ReadOnlyDatabase.openDb();
-        const beaches = await ReadOnlyDatabase.getMatchingBeaches(keyword);
+        const beaches = await ReadOnlyDatabase.getMatchingBeaches({ keyword: keyword, applyLimit: false });
         await ReadOnlyDatabase.closeDb();
 
         setMatchedBeaches(beaches);
+    }
+
+    const searchBeachFromDb = async (keyword = '') => {
+        await ReadOnlyDatabase.openDb();
+        const beaches = await ReadOnlyDatabase.getMatchingBeaches({ keyword: keyword, applyLimit: false });
+        await ReadOnlyDatabase.closeDb();
+
+        setMatchedBeaches(beaches);
+    }
+
+    const handleSearchInputChange = (text) => {
+        setTimeout(() => {
+            searchBeachFromDb(text)
+        }, 200)
     }
 
     const renderListItemOptions = () => {
@@ -178,7 +194,7 @@ export default function BeachSnapEditor(props) {
         const renderItemValue = (key) => {
             var value = ''
             if (key === '_bchName') {
-                value = selectedBeach.current
+                value = selectedBeach.current.name
             } else if (key === '_dateVstd') {
                 value = dateToMDY(dateVisited.current)
             }
@@ -403,15 +419,12 @@ export default function BeachSnapEditor(props) {
             )
 
             return (
-                <ScrollView
+                <FlashList
                     showsVerticalScrollIndicator={false}
-                >
-                    {matchedBeaches &&
-                        matchedBeaches.map((item) =>
-                            renderItem(item)
-                        )
-                    }
-                </ScrollView>
+                    data={matchedBeaches}
+                    renderItem={({ item }) => renderItem(item)}
+                    estimatedItemSize={estListSize}
+                />
             )
         }
 
@@ -455,6 +468,7 @@ export default function BeachSnapEditor(props) {
                         }}
                         placeholder={`Search for a beach...`}
                         cursorColor={'black'}
+                        onChangeText={handleSearchInputChange}
                     />
                     {renderBeachList()}
                 </View>

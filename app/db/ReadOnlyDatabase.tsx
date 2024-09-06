@@ -107,22 +107,34 @@ export const getProvincesWithBeaches = async (regionId) => {
     return cachedProvinces[regionId];
 }
 
-export const getMatchingBeaches = async (keyword = '') => {
+export const getMatchingBeaches = async ({
+    keyword = '',
+    offset = 0,
+    limit = 20,
+    applyLimit = true
+}) => {
     if (!db) {
         console.log(`Database ${readOnlyDbName} not initialized!`);
         return;
     }
 
     var beaches = [];
-    const limit = 20;
     try {
-        beaches = await db.getAllAsync(
-            `SELECT beach.id, beach.name, beach.municipality, province.name as province
-            FROM province
-            INNER JOIN beach ON province.id = beach.provinceId 
-            WHERE beach.name LIKE "%${keyword}%" order by beach.name limit ${limit}`
-        );
-        console.log(`getMatchingBeaches: ${beaches.length}, keyword: ${keyword}`)
+        var statement = `SELECT beach.id, beach.name, beach.municipality, province.name as province
+                FROM province
+                INNER JOIN beach ON province.id = beach.provinceId 
+                WHERE beach.name LIKE "${keyword}%" ORDER BY beach.name`
+
+        if (applyLimit) {
+            statement = statement + ` LIMIT ${limit} OFFSET ${offset}`
+        }
+        beaches = await db.getAllAsync(statement);
+
+        console.log(`getMatchingBeaches: ${beaches.length}, 
+            keyword: ${keyword}, 
+            limit: ${limit}, 
+            offset: ${offset},
+            applyLimit: ${applyLimit}`)
     } catch (e) {
         console.log(e);
     }

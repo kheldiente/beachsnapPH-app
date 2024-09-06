@@ -76,10 +76,10 @@ export default function NewBeachSnapLayout(props: any) {
     const handleOnUpdatedBeachData = (data) => {
         console.log(`beachData: ${JSON.stringify(data)}`);
 
-        const { image, beachName, dateVisited } = data;
-        const isValidData = image
-            && beachName
-            && dateVisited
+        const { image, beach, dateVisited } = data;
+        const isValidData = image !== null
+            && beach.name !== ''
+            && dateVisited !== null
 
         setSaveCtaEnabled(isValidData);
     }

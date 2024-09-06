@@ -66,9 +66,9 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     const handleOnUpdatedBeachData = (data) => {
         console.log(`beachData: ${JSON.stringify(data)}`);
 
-        const { image, beachName, dateVisited } = data;
+        const { image, beach, dateVisited } = data;
         const isValidData = image !== null
-            && beachName !== ''
+            && beach.name !== ''
             && dateVisited !== null
 
         setSaveCtaEnabled(isValidData);
