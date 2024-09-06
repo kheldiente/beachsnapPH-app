@@ -12,12 +12,14 @@ import { useEffect, useRef, useState } from 'react';
 import { DefaultFont } from '@/constants/Fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { addKeyboardListener } from '@/constants/Utils';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
 
 const pageKey = '_bchSnapEdtr';
 
 export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
     const insets = useSafeAreaInsets();
     const showScreen = useRef(pageKey);
+    const currSnapData = useRef(null);
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
     const [dimBackground, setDimBackground] = useState(false);
     const [saveCtaEnabled, setSaveCtaEnabled] = useState(false);
@@ -71,6 +73,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
             && beach.name !== ''
             && dateVisited !== null
 
+        currSnapData.current = data;
         setSaveCtaEnabled(isValidData);
     }
 
@@ -85,16 +88,31 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
                 if (showScreen.current !== pageKey) {
                     return;
                 }
-                doOnShowKeyboard() 
+                doOnShowKeyboard()
             },
             () => {
                 if (showScreen.current !== pageKey) {
                     return;
-                } 
-                doOnHideKeyboard() 
+                }
+                doOnHideKeyboard()
             }
         )
     }, []);
+
+    const handleOnSaveClick = async () => {
+        if (currSnapData === null) {
+            return;
+        }
+
+        const result = await DatabaseActions.saveSnap({
+            beachId: currSnapData.current?.beach.id,
+            photoUrl: currSnapData.current?.image,
+            caption: currSnapData.current?.caption,
+            dateVisited: currSnapData.current?.dateVisited
+        })
+
+        onSave();
+    }
 
     return (
         <FullScreenModal
@@ -125,7 +143,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
                                 marginBottom: insets.bottom + 10,
                             }
                         }
-                        onPress={onSave}
+                        onPress={handleOnSaveClick}
                     >
                         <Text
                             style={styles.saveCta}

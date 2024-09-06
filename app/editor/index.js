@@ -19,8 +19,7 @@ import { addKeyboardListener, dateToMDY } from '@/constants/Utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { items } from '@/constants/Global';
-import { mockData } from '@/data/beach';
-import * as ReadOnlyDatabase from '../db/ReadOnlyDatabase';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { FlashList } from '@shopify/flash-list';
 
 const imgDimension = 300;
@@ -158,18 +157,12 @@ export default function BeachSnapEditor(props) {
     }
 
     const getBeachesFromDb = async (keyword = '') => {
-        await ReadOnlyDatabase.openDb();
-        const beaches = await ReadOnlyDatabase.getMatchingBeaches({ keyword: keyword, applyLimit: false });
-        await ReadOnlyDatabase.closeDb();
-
+        const beaches = await DatabaseActions.getBeachesFromDb({ keyword: keyword, applyLimit: false });
         setMatchedBeaches(beaches);
     }
 
     const searchBeachFromDb = async (keyword = '') => {
-        await ReadOnlyDatabase.openDb();
-        const beaches = await ReadOnlyDatabase.getMatchingBeaches({ keyword: keyword, applyLimit: false });
-        await ReadOnlyDatabase.closeDb();
-
+        const beaches = await DatabaseActions.getBeachesFromDb({ keyword: keyword, applyLimit: false });
         setMatchedBeaches(beaches);
     }
 

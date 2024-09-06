@@ -13,12 +13,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { addKeyboardListener } from '@/constants/Utils';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
 
 const pageKey = '_bchSnapEdtr';
 
 export default function NewBeachSnapLayout(props: any) {
     const navigation = useNavigation();
     const showScreen = useRef(pageKey);
+    const currSnapData = useRef(null);
     const [isKeyboardShown, setIsKeyboardShown] = useState(false);
     const [dimBackground, setDimBackground] = useState(false);
     const [saveCtaEnabled, setSaveCtaEnabled] = useState(false);
@@ -27,7 +29,18 @@ export default function NewBeachSnapLayout(props: any) {
         navigation.goBack();
     }
 
-    const handleOnSaveClick = () => {
+    const handleOnSaveClick = async () => {
+        if (currSnapData === null) {
+            return;
+        }
+
+        const result = await DatabaseActions.saveSnap({
+            beachId: currSnapData.current?.beach.id,
+            photoUrl: currSnapData.current?.image,
+            caption: currSnapData.current?.caption,
+            dateVisited: currSnapData.current?.dateVisited
+        })
+
         navigation.goBack();
     }
 
@@ -81,6 +94,7 @@ export default function NewBeachSnapLayout(props: any) {
             && beach.name !== ''
             && dateVisited !== null
 
+        currSnapData.current = data;
         setSaveCtaEnabled(isValidData);
     }
 

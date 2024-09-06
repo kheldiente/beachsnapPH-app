@@ -11,7 +11,7 @@ import { Chip } from '@rneui/themed';
 import { useEffect, useRef, useState } from 'react';
 import { secondaryHeaderBar } from '@/constants/SharedComponent';
 import { snapsLayoutKeys } from '@/constants/Global';
-import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
 
 const NO_FILTER = {
     id: 'ALLPROV',
@@ -27,9 +27,7 @@ export default function BeachListLayout({ navigation, route }) {
     const [provinces, setProvinces] = useState([]);
 
     const getProvinces = async () => {
-        await ReadOnlyDatabase.openDb();
-        const cProvinces = await ReadOnlyDatabase.getProvincesWithBeaches(id);
-        await ReadOnlyDatabase.closeDb();
+        const cProvinces = await DatabaseActions.getAllProvinces(id);
 
         allProvinces.current = cProvinces;
         setProvinces(cProvinces);

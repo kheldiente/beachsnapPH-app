@@ -13,8 +13,7 @@ import ProfileLayout from './beach/[profile]';
 import { defaultHeaderWithBackBar } from '@/constants/SharedComponent';
 import PhotoPostLayout from '@/app/post';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import * as ReadOnlyDatabase from './db/ReadOnlyDatabase';
-import * as UserDatabase from './db/UserDatabase';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,9 +29,8 @@ export default function RootLayout() {
         }, 500);
     }
 
-    const setupDbs = () => {
-        ReadOnlyDatabase.initDb();
-        UserDatabase.initDb();
+    const setupDbs = async () => {
+        await DatabaseActions.setupAllDbs();
     }
 
     useEffect(() => {

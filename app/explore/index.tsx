@@ -11,7 +11,7 @@ import BeachGridList from "@/components/BeachGridList";
 import { DefaultFont } from "@/constants/Fonts";
 import { useNavigation } from "expo-router";
 import { exploreLayoutKeys } from "@/constants/Global";
-import * as ReadOnlyDatabase from "../db/ReadOnlyDatabase";
+import * as DatabaseActions from "@/app/db/DatabaseActions";
 
 export default function RegionListLayout(props: any) {
     const getItemId = (item: { id: any; }) => (item.id)
@@ -29,9 +29,7 @@ export default function RegionListLayout(props: any) {
     }
 
     const getRegionGridData = async () => {
-        await ReadOnlyDatabase.openDb();
-        const cRegions = await ReadOnlyDatabase.getAllRegions();
-        await ReadOnlyDatabase.closeDb();
+        const cRegions = await DatabaseActions.getAllRegions();
 
         if (cRegions === null) {
             return [];
