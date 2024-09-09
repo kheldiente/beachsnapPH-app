@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -11,14 +11,23 @@ import { DefaultFont } from "@/constants/Fonts";
 import { useNavigation } from "expo-router";
 import { photoGrid } from "@/data/photos";
 import { snapsLayoutKeys } from "@/constants/Global";
+import * as DatabaseActions from "@/app/db/DatabaseActions";
+import { RefreshControl } from "react-native-gesture-handler";
 
 export default function SnapsAlbumLayout(props: any) {
-    const getItemId = (item: { id: any; }) => (item.id)
     const navigation = useNavigation();
+    const getItemId = (item: { id: any; }) => (item.id)
 
-    const getSegmentButtons = () => {
-        return ["All", "Visited"];
-    };
+    const [snaps, setSnaps] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(async () => {
+            await fetchData();
+            setRefreshing(false);
+        }, 500)
+    })
 
     const getGridData = () => {
         return {
@@ -30,23 +39,41 @@ export default function SnapsAlbumLayout(props: any) {
         if (item.name === '') {
             return;
         }
-        
+
         navigation.navigate({
             name: `${snapsLayoutKeys.BEACH_PROFILE}`,
-            params: { 
-                name: item.name 
+            params: {
+                name: item.name
             },
         });
     };
+
+    const fetchData = async () => {
+        const result = await DatabaseActions.getAllSnaps();
+        console.log(`snaps: ${JSON.stringify(result)}`);
+        setSnaps(result);
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
             >
                 <View style={styles.container1}>
                     <PhotoGrid
-                        data={getGridData()}
+                        data={{
+                            gridItemArray: snaps,
+                        }}
                         onClick={(key: string) => handleOnBeachItemClick(key)}
                     />
                 </View>

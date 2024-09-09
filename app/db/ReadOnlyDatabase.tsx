@@ -4,6 +4,7 @@ import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 
 var db: SQLite.SQLiteDatabase;
+
 var cachedRegions = null;
 var cachedProvinces = {};
 var cachedBeaches = {}; // Key is Region Id
@@ -120,7 +121,8 @@ export const getMatchingBeaches = async ({
 
     var beaches = [];
     try {
-        var statement = `SELECT beach.id, beach.name, beach.municipality, province.name as province
+        var statement = `SELECT beach.id, beach.name, beach.municipality, province.name as province,
+                beach.provinceId, beach.regionId
                 FROM province
                 INNER JOIN beach ON province.id = beach.provinceId 
                 WHERE beach.name LIKE "${keyword}%" ORDER BY beach.name`
@@ -135,6 +137,58 @@ export const getMatchingBeaches = async ({
             limit: ${limit}, 
             offset: ${offset},
             applyLimit: ${applyLimit}`)
+    } catch (e) {
+        console.log(e);
+    }
+    return beaches;
+}
+
+export const getProvincesWithDetails = async (ids) => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    const createWhereClause = (ids) => {
+        var output = '('
+        output = output + ids.map((id) => `'${id}'`).join(',')
+        output = output + ')'
+        return output
+    }
+
+    var provinces = [];
+    try {
+        provinces = await db.getAllAsync(
+            `SELECT * FROM province WHERE id in ${createWhereClause(ids)}`
+        )
+    } catch (e) {
+        console.log(e);
+    }
+    return provinces;
+}
+
+export const getBeachesWithIds = async (ids) => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    const createWhereClause = (beachIds) => {
+        var output = '('
+        output = output + beachIds.map((id) => `'${id}'`).join(',')
+        output = output + ')'
+        return output
+    }
+
+    var beaches = [];
+    try {
+        beaches = await db.getAllAsync(
+            `SELECT beach.id, beach.name, beach.municipality, province.name as province,
+            beach.provinceId, beach.regionId
+            FROM province
+            INNER JOIN beach ON province.id = beach.provinceId 
+            WHERE beach.id in ${createWhereClause(ids)}`
+        )
     } catch (e) {
         console.log(e);
     }

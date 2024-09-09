@@ -34,8 +34,10 @@ export default function NewBeachSnapLayout(props: any) {
             return;
         }
 
+        console.log(`saveClick: ${JSON.stringify(currSnapData.current)}`)
         const result = await DatabaseActions.saveSnap({
             beachId: currSnapData.current?.beach.id,
+            provinceId: currSnapData.current?.beach.provinceId,
             photoUrl: currSnapData.current?.image,
             caption: currSnapData.current?.caption,
             dateVisited: currSnapData.current?.dateVisited

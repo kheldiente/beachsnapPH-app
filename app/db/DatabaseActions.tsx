@@ -45,3 +45,11 @@ export const saveSnap = async (snap) => {
 
     return result
 }
+
+export const getAllSnaps = async () => {
+    await UserDatabase.openDb();
+    const snaps = await UserDatabase.getAllSnaps();
+    await UserDatabase.closeDb();   
+
+    return snaps;
+}

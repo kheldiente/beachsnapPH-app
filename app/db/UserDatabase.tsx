@@ -1,6 +1,6 @@
 import { userDbName, userDbVersions } from '@/constants/Global';
 import * as SQLite from 'expo-sqlite';
-import * as FileSystem from 'expo-file-system';
+import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase'
 
 var db: SQLite.SQLiteDatabase;
 
@@ -22,9 +22,11 @@ export const createTables = async () => {
     try {
         await db.execAsync(`
             PRAGMA journal_mode = WAL;
+
             CREATE TABLE IF NOT EXISTS "snap" (
                 "id"	INTEGER NOT NULL,
-                "beachId"	INTEGER NOT NULL,
+                "beachId"	TEXT NOT NULL,
+                "provinceId"	TEXT NOT NULL,
                 "photoUrl"	TEXT NOT NULL,
                 "caption"	TEXT,
                 "dateVisited"	TEXT NOT NULL,
@@ -61,12 +63,48 @@ export const getAllSnaps = async () => {
         return;
     }
 
+    var uniqueBeachIds = {};
+    var uniqueProvinceIds = {};
     try {
-        const allRows = await db.getAllAsync('SELECT * FROM snap ORDER BY dateVisited DESC, beachId DESC');
-        console.log(`snaps available: ${allRows.length}`)
+        const allSnaps = await db.getAllAsync('SELECT * FROM snap ORDER BY dateVisited DESC, beachId DESC');
+        allSnaps.forEach((snap) => {
+            if (uniqueProvinceIds[snap.provinceId] === undefined) {
+                uniqueProvinceIds[snap.provinceId] = {
+                    id: snap.provinceId,
+                    snaps: [],
+                    beaches: [],
+                }
+            }
+
+            if (uniqueBeachIds[snap.beachId] === undefined) {
+                uniqueBeachIds[snap.beachId] = {
+                    id: snap.beachId,
+                }
+            }
+
+            uniqueProvinceIds[snap.provinceId]['snaps'].push(snap);
+        })
+
+        await ReadOnlyDatabase.openDb()
+        // const allProvinceDetails = await ReadOnlyDatabase.getProvincesWithDetails(Object.keys(uniqueProvinceIds))
+        const allBeachDetails = await ReadOnlyDatabase.getBeachesWithIds(Object.keys(uniqueBeachIds))
+        await ReadOnlyDatabase.closeDb()
+
+        allBeachDetails?.forEach((beach) => {
+            uniqueProvinceIds[beach.provinceId]['beaches'].push(beach);
+        })
+
+        // console.log(`provinces with snaps: ${allProvinceDetails.length}`)
+        // console.log(`beaches with snaps: ${allBeachDetails.length}`)
+
+        // console.log(`beachIds: ${JSON.stringify(uniqueBeachIds)}`)
+
+        console.log(`snaps available: ${allSnaps.length}`)
+        // console.log(`provinceIds: ${JSON.stringify(uniqueProvinceIds)}`)
     } catch (e) {
         console.log(e);
     }
+    return uniqueProvinceIds;
 }
 
 export const getAllGoals = async () => {
@@ -93,8 +131,8 @@ export const saveSnap = async (snap) => {
     var result = null;
     try {
         result = await db.runAsync(
-            'INSERT INTO snap (beachId, photoUrl, caption, dateVisited) VALUES (?, ?, ?, ?)',
-            [`${snap.beachId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`]
+            'INSERT INTO snap (beachId, provinceId, photoUrl, caption, dateVisited) VALUES (?, ?, ?, ?, ?)',
+            [`${snap.beachId}`, `${snap.provinceId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`]
         )
         console.log(`inserted snap id: ${result.lastInsertRowId}`);
     } catch (e) {
@@ -123,6 +161,5 @@ export const closeDb = async () => {
 export const initDb = async () => {
     await openDb();
     await createTables();
-    await getAllSnaps();
     await closeDb();
 }
