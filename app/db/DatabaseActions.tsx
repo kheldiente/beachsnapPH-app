@@ -31,8 +31,16 @@ export const getAllProvinces = async (id) => {
 }
 
 export const saveSnap = async (snap) => {
+    // Expected format -- 9/9/2024, 5:40:19 PM
+    const sanitizedDate = new Date(snap.dateVisited).toLocaleString()
+    const snapParams = {
+        ...snap,
+        dateVisited: sanitizedDate
+    }
+    console.log(`saveSnap: ${JSON.stringify(snapParams)}`)
+
     await UserDatabase.openDb();
-    const result = await UserDatabase.saveSnap(snap);
+    const result = await UserDatabase.saveSnap(snapParams);
     await UserDatabase.closeDb();
 
     return result

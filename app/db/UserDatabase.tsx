@@ -62,7 +62,7 @@ export const getAllSnaps = async () => {
     }
 
     try {
-        const allRows = await db.getAllAsync('SELECT * FROM snap');
+        const allRows = await db.getAllAsync('SELECT * FROM snap ORDER BY dateVisited DESC, beachId DESC');
         console.log(`snaps available: ${allRows.length}`)
     } catch (e) {
         console.log(e);
@@ -94,13 +94,26 @@ export const saveSnap = async (snap) => {
     try {
         result = await db.runAsync(
             'INSERT INTO snap (beachId, photoUrl, caption, dateVisited) VALUES (?, ?, ?, ?)',
-            [`'${snap.beachId}'`, `'${snap.photoUrl}'`, `'${snap.caption}'`, `'${snap.dateVisited}'`]
+            [`${snap.beachId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`]
         )
         console.log(`inserted snap id: ${result.lastInsertRowId}`);
     } catch (e) {
         console.log(e);
     }
     return result;
+}
+
+export const removeAllSnaps = async () => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    try {
+        await db.runAsync('DELETE FROM snap');
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 export const closeDb = async () => {
