@@ -26,6 +26,17 @@ const imgDimension = 300;
 const modalBorderRadius = 10;
 const maxCharacters = 200;
 
+export const generateParams = (currSnapData) => {
+    return {
+        beachId: currSnapData.current?.beach.id,
+        provinceId: currSnapData.current?.beach.provinceId,
+        photoUrl: currSnapData.current?.image,
+        caption: currSnapData.current?.caption,
+        dateVisited: currSnapData.current?.dateVisited,
+        metadata: currSnapData.current?.beach.province + `+${currSnapData.current?.beach.name}` + `_${new Date().getMilliseconds()}`
+    }
+};
+
 export default function BeachSnapEditor(props) {
     const insets = useSafeAreaInsets();
     const estListSize = 500;

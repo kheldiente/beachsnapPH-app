@@ -29,7 +29,8 @@ export default function PhotoGrid(props) {
                     return (index < item.beaches.length) ?
                         renderGridCard(item.beaches[index])
                         : renderGridCard({
-                            id: 'empty_' + item.id + `_${index}`
+                            id: 'empty_' + item.id + `_${index}`,
+                            name: '',
                         })
                 })}
             </View>
@@ -41,8 +42,12 @@ export default function PhotoGrid(props) {
     }
 
     const renderGridCard = (item) => {
-        const showData = item.id.includes('empty_')
+        const showData = !item.id.includes('empty_')
         const fileImg = 'file:///Users/mikediente/Library/Developer/CoreSimulator/Devices/D154F7E4-684E-4666-811D-681AAC334BC2/data/Containers/Data/Application/1F23EC99-02ED-4D28-81FB-80B1CA3E30EC/Library/Caches/ExponentExperienceData/@anonymous/beach-snap-ph-175ae04c-e255-4cae-9c82-f3bf935d29f8/ImagePicker/74127695-7A3B-444D-82EA-346B7767B69D.jpg'
+        const maxNameLength = 15;
+        const name = item.name.length < maxNameLength
+        ? `${item.name}`
+        : `${item.name.substring(0, maxNameLength)}...`
 
         return (
             <View key={`_phGrid_${item.id}`}>
@@ -53,21 +58,21 @@ export default function PhotoGrid(props) {
                     <View style={styles.card}>
                         {true &&
                             <View style={styles.gridItemImg}>
-                                {!item.id.includes('empty_') ?
+                                {showData ?
                                     (<Image
                                         source={{ uri: getLatestSnap(item) }}
                                         style={styles.img}
-                                    />)
-                                    : (<Image
-                                        source={{ uri: 'empty' }}
-                                        style={styles.img}
-                                    />)
+                                    />) : (<View />)
                                 }
                             </View>
                         }
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.gridItemTxt}>{item.name}</Text>
+                <Text
+                    style={styles.gridItemTxt}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                >{name}</Text>
                 <Text style={styles.gridItemSubTxt}>{item.photos ? item.photos.length : ''}</Text>
             </View>
         )
@@ -174,5 +179,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         width: 110,
         marginTop: 10,
+        marginHorizontal: 6
     },
 });

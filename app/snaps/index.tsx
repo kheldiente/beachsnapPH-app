@@ -18,7 +18,7 @@ export default function SnapsAlbumLayout(props: any) {
     const navigation = useNavigation();
     const getItemId = (item: { id: any; }) => (item.id)
 
-    const [snaps, setSnaps] = useState([]);
+    const [snaps, setSnaps] = useState({});
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = useCallback(() => {
@@ -60,24 +60,32 @@ export default function SnapsAlbumLayout(props: any) {
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
-            >
-                <View style={styles.container1}>
-                    <PhotoGrid
-                        data={{
-                            gridItemArray: snaps,
-                        }}
-                        onClick={(key: string) => handleOnBeachItemClick(key)}
-                    />
+            {Object.keys(snaps).length > 0 ?
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                >
+                    <View style={styles.container1}>
+                        <PhotoGrid
+                            data={{
+                                gridItemArray: snaps,
+                            }}
+                            onClick={(key: string) => handleOnBeachItemClick(key)}
+                        />
+                    </View>
+                </ScrollView>
+                : <View style={styles.container2}>
+                    <Text style={styles.noSnaps}>
+                        {`You don't have any snaps! \r\n Click the + button below to add some`
+                        }
+                    </Text>
                 </View>
-            </ScrollView>
+            }
         </SafeAreaView>
     );
 };
@@ -99,11 +107,27 @@ const styles = StyleSheet.create({
     container1: {
         flexDirection: "column",
     },
+    container2: {
+        flex: 1,
+        flexGrow: 1,
+        flexDirection: "column",
+        alignContent: 'center',
+        justifyContent: 'center',
+    },
     header1: {
         fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 18,
         marginRight: 15,
         marginLeft: 8,
         marginTop: 10
+    },
+    noSnaps: {
+        fontFamily: DefaultFont.fontFamilyMedium,
+        fontSize: 15,
+        color: 'gray',
+        marginRight: 15,
+        marginLeft: 8,
+        marginTop: 10,
+        textAlign: 'center',
     },
 });

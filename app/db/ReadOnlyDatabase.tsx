@@ -17,20 +17,28 @@ export const dbFileSystemUrl = () => {
 export const importDbToFileSystem = async () => {
 
     try {
-        const fileInfo = await FileSystem
-            .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
+        await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
+            intermediates: true
+        });
 
-        if (fileInfo.exists) {
-            console.log(`DB ${readOnlyDbName} is in the file system`);
-            return;
+        try {
+            const fileInfo = await FileSystem
+                .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
+
+            if (fileInfo.exists) {
+                console.log(`DB ${readOnlyDbName} is in the file system`);
+                return;
+            }
+
+            console.log(`Importing db ${readOnlyDbName} to file system...`);
+            const { uri } = await FileSystem.downloadAsync(
+                Asset.fromModule(readOnlyDbVersions[0].fileUrl).uri,
+                `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`
+            )
+            console.log(`Finished moving db ${readOnlyDbName} to `, uri);
+        } catch (e) {
+
         }
-
-        console.log(`Importing db ${readOnlyDbName} to file system...`);
-        const { uri } = await FileSystem.downloadAsync(
-            Asset.fromModule(readOnlyDbVersions[0].fileUrl).uri,
-            `${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`
-        )
-        console.log(`Finished moving db ${readOnlyDbName} to `, uri);
     } catch (e) {
         console.log(e)
     }
@@ -53,7 +61,7 @@ export const getAllRegions = async () => {
 
     try {
         if (cachedRegions === null) {
-            cachedRegions = await db.getAllAsync('SELECT * FROM region');
+            cachedRegions = await db.getAllAsync('SELECT * FROM region ORDER BY name');
         } else {
             console.log('using cached regions')
         }

@@ -7,7 +7,7 @@ import {
     Platform,
 } from 'react-native';
 import FullScreenModal from '@/components/FullScreenModal';
-import BeachSnapEditor from '@/app/editor/index';
+import BeachSnapEditor, { generateParams } from '@/app/editor/index';
 import { useEffect, useRef, useState } from 'react';
 import { DefaultFont } from '@/constants/Fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -105,13 +105,9 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
         }
 
         console.log(`saveClick: ${JSON.stringify(currSnapData.current)}`)
-        const result = await DatabaseActions.saveSnap({
-            beachId: currSnapData.current?.beach.id,
-            provinceId: currSnapData.current?.beach.provinceId,
-            photoUrl: currSnapData.current?.image,
-            caption: currSnapData.current?.caption,
-            dateVisited: currSnapData.current?.dateVisited
-        })
+        const _ = await DatabaseActions.saveSnap(
+            generateParams(currSnapData)
+        )
 
         onSave();
     }

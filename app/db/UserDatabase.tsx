@@ -30,6 +30,7 @@ export const createTables = async () => {
                 "photoUrl"	TEXT NOT NULL,
                 "caption"	TEXT,
                 "dateVisited"	TEXT NOT NULL,
+                "metadata"  TEXT NOT NULL,
                 PRIMARY KEY("id" AUTOINCREMENT)
             );
 
@@ -66,7 +67,9 @@ export const getAllSnaps = async () => {
     var uniqueBeachIds = {};
     var uniqueProvinceIds = {};
     try {
-        const allSnaps = await db.getAllAsync('SELECT * FROM snap ORDER BY dateVisited DESC, beachId DESC');
+        const allSnaps = await db.getAllAsync(`
+            SELECT * FROM snap ORDER BY metadata
+        `);
         allSnaps.forEach((snap) => {
             if (uniqueProvinceIds[snap.provinceId] === undefined) {
                 uniqueProvinceIds[snap.provinceId] = {
@@ -131,8 +134,8 @@ export const saveSnap = async (snap) => {
     var result = null;
     try {
         result = await db.runAsync(
-            'INSERT INTO snap (beachId, provinceId, photoUrl, caption, dateVisited) VALUES (?, ?, ?, ?, ?)',
-            [`${snap.beachId}`, `${snap.provinceId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`]
+            'INSERT INTO snap (beachId, provinceId, photoUrl, caption, dateVisited, metadata) VALUES (?, ?, ?, ?, ?, ?)',
+            [`${snap.beachId}`, `${snap.provinceId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`, `${snap.metadata}`]
         )
         console.log(`inserted snap id: ${result.lastInsertRowId}`);
     } catch (e) {
