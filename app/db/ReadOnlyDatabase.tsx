@@ -92,7 +92,8 @@ export const getProvincesWithBeaches = async (regionId) => {
         ///// GET BEACHES from REGIONS /////
 
         const statement2 = await db.prepareAsync(
-            `SELECT beach.id, beach.name, beach.municipality, beach.regionId, beach.provinceId
+            `SELECT beach.id, beach.name, beach.municipality, beach.regionId, 
+            beach.provinceId, province.name as province
             FROM province
             INNER JOIN beach ON province.id = beach.provinceId  where beach.regionId = $regionId;`
         );

@@ -58,6 +58,22 @@ export const createTables = async () => {
     }
 }
 
+export const getAllSnapFromBeach = async (beachId) => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    var results = []
+    try {
+        results = await db.getAllAsync(`SELECT * FROM snap WHERE beachId = '${beachId}'`);
+        // console.log(`goals available: ${allRows.length}`)
+    } catch (e) {
+        console.log(e);
+    }
+    return results;
+}
+
 export const getAllSnaps = async () => {
     if (!db) {
         console.log('Database not initialized!');

@@ -1,6 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-    Image,
     View,
     ScrollView,
     StyleSheet,
@@ -13,52 +12,63 @@ import { Dimensions } from 'react-native';
 import NewBeachSnapModal from './addbeach-modal';
 import { snapsLayoutKeys } from '@/constants/Global';
 import Animated from 'react-native-reanimated';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const cardMargin = 5;
 
-const samplePhotoGrid = [
-    {
-        name: 'test',
-        id: 1,
-        img: require('@/assets/images/thumbnail/bicol-thumbnail.jpeg'),
-    },
-    {
-        name: 'test',
-        id: 2,
-        img: require('@/assets/images/thumbnail/bicol-thumbnail.jpeg'),
-    },
-    {
-        name: 'test',
-        id: 3,
-        img: require('@/assets/images/thumbnail/bicol-thumbnail.jpeg'),
-    },
-]
-
 export default function ProfileLayout({ navigation, route }) {
-    const { name } = route.params;
+    const { name, id, municipality, province } = route.params.data;
     const headerTitle = `${name}`
-    const description = `Bagasbas Beach is a scenic strip of white sand located in Daet, Camarines Norte. It is known for its calm and clear waters, making it perfect for swimming and snorkeling. The beach is also a popular spot for fishing and sunset-watching, offering breathtaking views of the surrounding landscape.`
+    const address = `${municipality}, ${province}`
 
-    const [showModal, setShowModal] = useState(false);
-    const data = {
-        id: 20020,
-        image: 'https://plus.unsplash.com/premium_photo-1676750395664-3ac0783ae2c2?q=80&w=474&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    const [snaps, setSnaps] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    var photoSizeLabel = `${snaps.length}`;
+    if (snaps.length === 1) {
+        photoSizeLabel = photoSizeLabel + ' photo'
+    } else {
+        if (snaps.length === 0) {
+            photoSizeLabel = 'No photos'
+        } else {
+            photoSizeLabel = photoSizeLabel + ' photos'
+        }
     }
 
-    const onNavigateDetail = useCallback(
-        (currentData: { id: number; img: string }) => {
-            navigation.navigate(snapsLayoutKeys.PHOTO_POST, {
-                data: {
-                    ...currentData,
-                    image: 'https://picsum.photos/id/39/200',
-                },
-                parentId: data.id,
-                callback: null,
-                from: 'Profile',
-            });
-        },
-        [data.id, navigation],
+    const [showModal, setShowModal] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(async () => {
+            await fetchData();
+            setRefreshing(false);
+        }, 500)
+    })
+
+    const fetchData = async () => {
+        const result = await DatabaseActions.getAllSnapFromBeach(id);
+        console.log(`profile snaps: ${result?.length}`)
+        setSnaps(result);
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, [])
+
+    const onNavigateDetail = useCallback((currentData: { id: number; img: string }) => {
+        navigation.navigate(snapsLayoutKeys.PHOTO_POST, {
+            data: {
+                ...currentData,
+                image: currentData.photoUrl,
+            },
+            parentId: id,
+            callback: null,
+            from: 'Profile',
+        });
+    },
+        [id, navigation],
     );
 
     const parentTransitionTag = (item) => {
@@ -66,7 +76,7 @@ export default function ProfileLayout({ navigation, route }) {
     }
 
     const childTransitionTag = (item) => {
-        return 'Profile' + item.id.toString() + data.id.toString();
+        return 'Profile' + item.id.toString() + id.toString();
     }
 
     const renderPhoto = (item) => {
@@ -81,15 +91,15 @@ export default function ProfileLayout({ navigation, route }) {
                 >
                     <Animated.View
                         style={styles.card}
-                        // sharedTransitionTag={parentTransitionTag(item)}
+                    // sharedTransitionTag={parentTransitionTag(item)}
                     >
                         {true &&
                             <View style={styles.gridItemImg}>
                                 <Animated.Image
-                                    source={{ uri: 'https://picsum.photos/id/39/200' }}
+                                    source={{ uri: item.photoUrl }}
                                     style={styles.img}
-                                    // sharedTransitionTag={childTransitionTag(item)}
-                                    // sharedTransitionStyle={customTransition}
+                                // sharedTransitionTag={childTransitionTag(item)}
+                                // sharedTransitionStyle={customTransition}
                                 />
                             </View>
                         }
@@ -99,13 +109,24 @@ export default function ProfileLayout({ navigation, route }) {
         )
     }
 
-    const renderPhotoGrid = (photos) => {
-        var count = 6;
-        const columns = photos.length / 3;
-        const columnArr = [...Array(columns).keys()];
-        const countArr = [...Array(count).keys()];
+    const renderPhotoGrid = (data) => {
+        var count = 3;
+        var startIdx = 0;
 
-        const gridRow = (photos) => {
+        const photos = [...data];
+        const columns = Math.ceil(photos.length / 3);
+        const columnArr = [...Array(columns).keys()];
+
+        const remaining = (columnArr.length * count) - photos.length
+        if (remaining !== 0) {
+            [...Array(remaining).keys()].forEach((index) => {
+                photos.push({
+                    id: `empty_${index}+snap+${new Date().toDateString()}`
+                })
+            })
+        }
+
+        const gridRow = (column, photos) => {
             return (
                 <View
                     style={{
@@ -113,6 +134,7 @@ export default function ProfileLayout({ navigation, route }) {
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                     }}
+                    key={`photoGrid_${column}+row`}
                 >
                     {photos.map((photo) => renderPhoto(photo))}
                 </View>
@@ -129,7 +151,11 @@ export default function ProfileLayout({ navigation, route }) {
                 }}
             >
                 {columnArr.map((column) => {
-                    return countArr.map((count) => gridRow(photos))
+                    var endIdx = startIdx + count
+                    const row = gridRow(column, photos.slice(startIdx, endIdx))
+                    
+                    startIdx = endIdx;
+                    return row;
                 })}
             </View>
         )
@@ -151,6 +177,12 @@ export default function ProfileLayout({ navigation, route }) {
         <ScrollView
             style={styles.container}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
         >
             <NewBeachSnapModal
                 isVisible={showModal}
@@ -168,29 +200,24 @@ export default function ProfileLayout({ navigation, route }) {
                 key={'_profBch_location'}
                 style={styles.location}
             >
-                {`Daet, Camarines Norte`}ּ
+                {address}ּ
             </Text>
             <Text
                 key={'_profBch_photoCount'}
                 style={styles.photoCount}
             >
-                {`10 photos`}ּ
+                {photoSizeLabel}ּ
             </Text>
-            {/* <Text
-                key={'_profBch_desc'}
-                style={styles.description}
-                numberOfLines={3}
-                ellipsizeMode='tail'
-            >
-                {description}
-            </Text> */}
             <Button
                 titleStyle={styles.buttonTitle}
                 buttonStyle={styles.button}
                 onPress={handleAddPhotosCtaClick}
                 title='Add photos'
             />
-            {renderPhotoGrid(samplePhotoGrid)}
+            {snaps.length > 0
+                ? renderPhotoGrid(snaps)
+                : <View />
+            }
         </ScrollView>
     );
 }

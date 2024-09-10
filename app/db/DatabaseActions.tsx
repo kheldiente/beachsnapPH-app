@@ -53,3 +53,11 @@ export const getAllSnaps = async () => {
 
     return snaps;
 }
+
+export const getAllSnapFromBeach = async (beachId) => {
+    await UserDatabase.openDb();
+    const snaps = await UserDatabase.getAllSnapFromBeach(beachId);
+    await UserDatabase.closeDb();   
+
+    return snaps;
+}

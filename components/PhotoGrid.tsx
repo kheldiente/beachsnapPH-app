@@ -10,8 +10,6 @@ import {
 import { getThumbnail } from "@/data/beach";
 import { DefaultFont } from "@/constants/Fonts";
 
-const randomEmptyItemId = 'empty_' + Date.now();
-
 export default function PhotoGrid(props) {
     const data = props.data.gridItemArray;
     const getLatestSnap = (beach) => {
@@ -20,21 +18,80 @@ export default function PhotoGrid(props) {
             .photoUrl;
     }
 
+    const getSnapsSize = (beach) => {
+        if (beach.id.includes('empty_')) {
+            return 0;
+        }
+
+        return props.data.gridItemArray[beach.provinceId]['snaps']
+            .filter((snap) => snap.beachId === beach.id).length;
+    }
+
     // Written like this to prevent 
     // renderItem complaining for a type
     const renderItem = (item) => {
+        var count = 3;
+        var startIdx = 0;
+
+        const beaches = [...item.beaches];
+        const columns = Math.ceil(beaches.length / 3);
+        const columnArr = [...Array(columns).keys()];
+
+        console.log(`renderItem columns: ${columns}`)
+
+        const remaining = (columnArr.length * count) - beaches.length
+        if (remaining !== 0) {
+            [...Array(remaining).keys()].forEach((index) => {
+                beaches.push({
+                    id: `empty_${index}+photoGrid+${new Date().toDateString()}`,
+                    name: '',
+                })
+            })
+        }
+
+        const gridRow = (column, beaches) => {
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        justifyContent: 'space-evenly',
+                    }}
+                    key={`photoGrid_${column}+row`}
+                >
+                    {beaches.map((bch) => renderGridCard(bch))}
+                </View>
+            )
+        }
+
         return (
-            <View style={styles.gridItem}>
-                {[0, 1, 2].map((index) => {
-                    return (index < item.beaches.length) ?
-                        renderGridCard(item.beaches[index])
-                        : renderGridCard({
-                            id: 'empty_' + item.id + `_${index}`,
-                            name: '',
-                        })
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                }}
+            >
+                {columnArr.map((column) => {
+                    var endIdx = startIdx + count
+                    const row = gridRow(column, beaches.slice(startIdx, endIdx))
+                    startIdx = endIdx;
+                    return row;
                 })}
             </View>
         )
+        // return (
+        //     <View style={styles.gridItem}>
+        //         {[...Array(count).keys()].map((index) => {
+        //             return (index < item.beaches.length) ?
+        //                 renderGridCard(item.beaches[index])
+        //                 : renderGridCard({
+        //                     id: 'empty_' + item.id + `_${index}`,
+        //                     name: '',
+        //                 })
+        //         })}
+        //     </View>
+        // )
     }
 
     const handleOnClickCard = (key) => {
@@ -46,8 +103,9 @@ export default function PhotoGrid(props) {
         const fileImg = 'file:///Users/mikediente/Library/Developer/CoreSimulator/Devices/D154F7E4-684E-4666-811D-681AAC334BC2/data/Containers/Data/Application/1F23EC99-02ED-4D28-81FB-80B1CA3E30EC/Library/Caches/ExponentExperienceData/@anonymous/beach-snap-ph-175ae04c-e255-4cae-9c82-f3bf935d29f8/ImagePicker/74127695-7A3B-444D-82EA-346B7767B69D.jpg'
         const maxNameLength = 15;
         const name = item.name.length < maxNameLength
-        ? `${item.name}`
-        : `${item.name.substring(0, maxNameLength)}...`
+            ? `${item.name}`
+            : `${item.name.substring(0, maxNameLength)}...`
+        const photosCount = getSnapsSize(item);
 
         return (
             <View key={`_phGrid_${item.id}`}>
@@ -73,7 +131,9 @@ export default function PhotoGrid(props) {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                 >{name}</Text>
-                <Text style={styles.gridItemSubTxt}>{item.photos ? item.photos.length : ''}</Text>
+                <Text style={styles.gridItemSubTxt}>{
+                    photosCount > 0 ? `${photosCount}` : ''
+                }</Text>
             </View>
         )
     }

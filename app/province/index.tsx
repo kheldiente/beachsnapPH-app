@@ -42,8 +42,7 @@ export default function BeachListLayout({ navigation, route }) {
 
     const handleOnClickCard = (item) => {
         navigation.push(`${snapsLayoutKeys.BEACH_PROFILE}`, {
-            id: item.id,
-            name: item.name,
+            data: item
         })
     }
 

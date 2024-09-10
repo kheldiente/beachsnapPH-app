@@ -43,7 +43,7 @@ export default function SnapsAlbumLayout(props: any) {
         navigation.navigate({
             name: `${snapsLayoutKeys.BEACH_PROFILE}`,
             params: {
-                name: item.name
+                data: item
             },
         });
     };
