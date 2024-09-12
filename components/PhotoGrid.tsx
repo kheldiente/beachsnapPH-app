@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     header: {
         fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 16,
-        marginLeft: 20,
+        marginLeft: 10,
         color: 'darkgray',
     },
     subHeader: {

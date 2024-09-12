@@ -30,6 +30,7 @@ export const generateParams = (currSnapData) => {
     return {
         beachId: currSnapData.current?.beach.id,
         provinceId: currSnapData.current?.beach.provinceId,
+        regionId: currSnapData.current?.beach.regionId,
         photoUrl: currSnapData.current?.image,
         caption: currSnapData.current?.caption,
         dateVisited: currSnapData.current?.dateVisited,

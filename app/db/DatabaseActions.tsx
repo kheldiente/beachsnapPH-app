@@ -61,3 +61,11 @@ export const getAllSnapFromBeach = async (beachId) => {
 
     return snaps;
 }
+
+export const getGeneralGoalStats = async () => {
+    await UserDatabase.openDb();
+    const goalStats = await UserDatabase.getGeneralGoalStats();
+    await UserDatabase.closeDb();   
+
+    return goalStats;
+}

@@ -1,5 +1,6 @@
 import { DefaultFont } from '@/constants/Fonts';
 import { LinearProgress } from '@rneui/themed';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
@@ -7,6 +8,8 @@ import {
     ScrollView
 } from 'react-native';
 import AnimatedProgressWheel from 'react-native-progress-wheel';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 const progressWheelOptions = (progress) => {
     return {
@@ -171,25 +174,43 @@ const renderStatCard = (data) => {
 }
 
 export default function ProgressListLayout() {
-    const totalBeaches = 300;
-    const visitedBeaches = 25;
-    const stats = [
-        {
-            statsCount: 2,
-            total: 17,
-            title: 'regions'
-        },
-        {
-            statsCount: 3,
-            total: 34,
-            title: 'provinces'
-        },
-        {
-            statsCount: 5,
-            total: 50,
-            title: 'municipalities'
-        },
-    ]
+    const totalCounts = useRef({
+        totalBeaches: 500,
+        totalRegions: 500,
+        totalProvinces: 500,
+        totalMunicipalities: 500,
+    })
+    const [generalGoalStats, setGeneralGoalStats] = useState({
+        visitedBeaches: 0,
+        visitedRegions: 0,
+        visitedProvinces: 0,
+        visitedMunicipalities: 0,
+    });
+    const [refreshing, setRefreshing] = useState(false);
+
+    const getGoalTitleByKey = (key) => {
+        var title = '';
+        if (key === 'visitedRegions') {
+            title = 'regions'
+        } else if (key === 'visitedProvinces') {
+            title = 'provinces'
+        } else if (key === 'visitedMunicipalities') {
+            title = 'municipalities'
+        }
+        return title;
+    }
+
+    const getTotalCount = (key) => {
+        var count = 500;
+        if (key === 'visitedRegions') {
+            count = totalCounts.current.totalRegions
+        } else if (key === 'visitedProvinces') {
+            count = totalCounts.current.totalProvinces
+        } else if (key === 'visitedMunicipalities') {
+            count = totalCounts.current.totalMunicipalities
+        }
+        return count;
+    }
 
     const renderStats = (stat) => {
         return (
@@ -216,10 +237,48 @@ export default function ProgressListLayout() {
         )
     }
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(async () => {
+            await fetchData();
+            setRefreshing(false);
+        }, 500)
+    })
+
+    const fetchData = async () => {
+        const data = await DatabaseActions.getGeneralGoalStats();
+
+        totalCounts.current = {
+            totalBeaches: data?.totalBeaches,
+            totalRegions: data?.totalRegions,
+            totalProvinces: data?.totalProvinces,
+            totalMunicipalities: data?.totalMunicipalities
+        }
+
+        setGeneralGoalStats({
+            visitedBeaches: data?.visitedBeaches,
+            visitedRegions: data?.visitedRegions,
+            visitedProvinces: data?.visitedProvinces,
+            visitedMunicipalities: data?.visitedMunicipalities,
+        });
+    }
+
+    useEffect(() => {
+        setTimeout(() => {
+            fetchData();
+        }, 500)
+    }, [])
+
     return (
         <ScrollView
             style={styles.root}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
         >
             <View
                 key={'_progWhl_container'}
@@ -227,23 +286,31 @@ export default function ProgressListLayout() {
             >
                 <AnimatedProgressWheel
                     key={'_progWhl'}
-                    max={totalBeaches}
+                    max={totalCounts?.current.totalBeaches}
                     showProgressLabel={true}
                     rotation={'-90deg'}
-                    subtitle={`visited out of \r\n ${totalBeaches} beaches`}
+                    subtitle={`visited out of \r\n ${totalCounts?.current.totalBeaches} beaches`}
                     labelStyle={styles.labelText}
                     subtitleStyle={styles.text}
                     animateFromValue={0}
-                    {...progressWheelOptions(visitedBeaches)}
+                    {...progressWheelOptions(
+                        generalGoalStats ? generalGoalStats.visitedBeaches : 0
+                    )}
                 />
             </View>
             <View
                 key={'_stat_container'}
                 style={styles.statsContainer}
             >
-                {stats.map((stat) =>
-                    renderStats(stat)
-                )}
+                {Object.keys(generalGoalStats).map((statKey) => {
+                    if (statKey !== 'visitedBeaches') {
+                        return renderStats({
+                            title: getGoalTitleByKey(statKey),
+                            total: getTotalCount(statKey),
+                            statsCount: generalGoalStats[`${statKey}`],
+                        })
+                    }
+                })}
             </View>
             {renderCurrentGoal()}
             {renderStatCard({ title: 'Recent visited beaches', key: 'stat1' })}

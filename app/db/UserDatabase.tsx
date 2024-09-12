@@ -27,6 +27,7 @@ export const createTables = async () => {
                 "id"	INTEGER NOT NULL,
                 "beachId"	TEXT NOT NULL,
                 "provinceId"	TEXT NOT NULL,
+                "regionId"  TEXT NOT NULL,
                 "photoUrl"	TEXT NOT NULL,
                 "caption"	TEXT,
                 "dateVisited"	TEXT NOT NULL,
@@ -139,12 +140,14 @@ export const getAllGoals = async () => {
         return;
     }
 
+    var goals = [];
     try {
-        const allRows = await db.getAllAsync('SELECT * FROM goal');
+        goals = await db.getAllAsync('SELECT * FROM goal');
         // console.log(`goals available: ${allRows.length}`)
     } catch (e) {
         console.log(e);
     }
+    return goals;
 }
 
 export const saveSnap = async (snap) => {
@@ -157,8 +160,8 @@ export const saveSnap = async (snap) => {
     var result = null;
     try {
         result = await db.runAsync(
-            'INSERT INTO snap (beachId, provinceId, photoUrl, caption, dateVisited, metadata) VALUES (?, ?, ?, ?, ?, ?)',
-            [`${snap.beachId}`, `${snap.provinceId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`, `${snap.metadata}`]
+            'INSERT INTO snap (beachId, provinceId, regionId, photoUrl, caption, dateVisited, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [`${snap.beachId}`, `${snap.provinceId}`, `${snap.regionId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`, `${snap.metadata}`]
         )
         console.log(`inserted snap id: ${result.lastInsertRowId}`);
     } catch (e) {
@@ -167,18 +170,73 @@ export const saveSnap = async (snap) => {
     return result;
 }
 
-export const removeAllSnaps = async () => {
+export const getGeneralGoalStats = async () => {
     if (!db) {
         console.log('Database not initialized!');
         return;
     }
 
+    var result = {
+        visitedBeaches: 0,
+        visitedRegions: 0,
+        visitedProvinces: 0,
+        visitedMunicipalities: 0,
+        totalBeaches: 500,
+        totalRegions: 500,
+        totalProvinces: 500,
+        totalMunicipalities: 500,
+    }
+
     try {
-        await db.runAsync('DELETE FROM snap');
+        const output = await db.getAllAsync(
+            `SELECT COUNT(DISTINCT provinceId) as provinceCount,
+            COUNT(DISTINCT regionId) as regionCount
+            FROM snap`
+        );
+        const visBeaches = await db.getAllAsync(
+            `SELECT DISTINCT beachId
+            FROM snap`
+        );
+
+        await ReadOnlyDatabase.openDb()
+        const visMunicipalities = await ReadOnlyDatabase.getMunicipalitiesVisited(
+            visBeaches.map((snap) => snap.beachId));
+        const totalCounts = await ReadOnlyDatabase.getTotalCounts();
+        await ReadOnlyDatabase.closeDb()
+
+        result = {
+            visitedBeaches: visBeaches.length,
+            visitedRegions: output[0].regionCount,
+            visitedProvinces: output[0].provinceCount,
+            visitedMunicipalities: visMunicipalities[0].count,
+            totalBeaches: totalCounts[0].beachCount,
+            totalRegions: totalCounts[0].regionCount,
+            totalProvinces: totalCounts[0].provinceCount,
+            totalMunicipalities: totalCounts[0].municipalityCount,
+        }
+
+        console.log(`generalGoalStats: ${JSON.stringify(result)}`)
     } catch (e) {
         console.log(e);
     }
+    return result;
 }
+
+
+////////// DANGER!!! //////////
+
+// export const removeAllSnaps = async () => {
+//     if (!db) {
+//         console.log('Database not initialized!');
+//         return;
+//     }
+
+//     try {
+//         await db.runAsync('DELETE FROM snap');
+//     } catch (e) {
+//         console.log(e);
+//     }
+// }
 
 export const closeDb = async () => {
     await db.closeAsync();

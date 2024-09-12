@@ -80,6 +80,45 @@ export const getAllRegions = async () => {
     return cachedRegions;
 }
 
+export const getMunicipalitiesVisited = async (beachIds) => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    console.log(`beachIds: ${JSON.stringify(beachIds)}`)
+    var result = [];
+    try {
+        result = await db.getAllAsync(
+            `SELECT COUNT(DISTINCT municipality) as count
+            FROM beach WHERE id in ${createWhereClause(beachIds)}`
+        );
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
+}
+
+export const getTotalCounts = async () => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    var result = [];
+    try {
+        result = await db.getAllAsync(
+            `SELECT (SELECT COUNT(*) FROM region) AS regionCount, 
+            (SELECT COUNT(*) FROM province) AS provinceCount, 
+            (SELECT COUNT(DISTINCT municipality) FROM beach) AS municipalityCount, 
+            (SELECT COUNT(*) FROM beach) AS beachCount`
+        );
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
+}
+
 export const getBeachesCountForProvinces = async (provinceIds) => {
     if (!db) {
         console.log(`Database ${readOnlyDbName} not initialized!`);
