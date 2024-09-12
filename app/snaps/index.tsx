@@ -17,9 +17,11 @@ import { RefreshControl } from "react-native-gesture-handler";
 export default function SnapsAlbumLayout(props: any) {
     const navigation = useNavigation();
     const getItemId = (item: { id: any; }) => (item.id)
+    const noSnapsLabel = `You don't have any snaps! \r\n Click the + button below to add some`;
 
     const [snaps, setSnaps] = useState({});
     const [refreshing, setRefreshing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -54,8 +56,14 @@ export default function SnapsAlbumLayout(props: any) {
         setSnaps(result);
     }
 
+    const initData = async () => {
+        setIsLoading(true);
+        await fetchData();
+        setIsLoading(false);
+    }
+
     useEffect(() => {
-        fetchData();
+        initData();
     }, []);
 
     return (
@@ -79,12 +87,14 @@ export default function SnapsAlbumLayout(props: any) {
                         />
                     </View>
                 </ScrollView>
-                : <View style={styles.container2}>
-                    <Text style={styles.noSnaps}>
-                        {`You don't have any snaps! \r\n Click the + button below to add some`
-                        }
-                    </Text>
-                </View>
+                : isLoading ? <View />
+                    : (
+                        <View style={styles.container2}>
+                            <Text style={styles.noSnaps}>
+                                {noSnapsLabel}
+                            </Text>
+                        </View>
+                    )
             }
         </SafeAreaView>
     );

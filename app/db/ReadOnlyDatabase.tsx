@@ -53,6 +53,13 @@ export const openDb = async () => {
     }
 }
 
+const createWhereClause = (ids) => {
+    var output = '('
+    output = output + ids.map((id) => `'${id}'`).join(',')
+    output = output + ')'
+    return output
+}
+
 export const getAllRegions = async () => {
     if (!db) {
         console.log(`Database ${readOnlyDbName} not initialized!`);
@@ -71,6 +78,27 @@ export const getAllRegions = async () => {
     }
 
     return cachedRegions;
+}
+
+export const getBeachesCountForProvinces = async (provinceIds) => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    console.log(`beachesCount ids: ${provinceIds}`)
+    var result = [];
+    try {
+        result = await db.getAllAsync(
+            `SELECT beach.provinceId, COUNT(*) as count
+            FROM province
+            INNER JOIN beach ON province.id = beach.provinceId WHERE beach.provinceId in ${createWhereClause(provinceIds)} 
+            GROUP BY beach.provinceId`
+        );
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
 }
 
 export const getProvincesWithBeaches = async (regionId) => {
@@ -158,13 +186,6 @@ export const getProvincesWithDetails = async (ids) => {
         return;
     }
 
-    const createWhereClause = (ids) => {
-        var output = '('
-        output = output + ids.map((id) => `'${id}'`).join(',')
-        output = output + ')'
-        return output
-    }
-
     var provinces = [];
     try {
         provinces = await db.getAllAsync(
@@ -180,13 +201,6 @@ export const getBeachesWithIds = async (ids) => {
     if (!db) {
         console.log(`Database ${readOnlyDbName} not initialized!`);
         return;
-    }
-
-    const createWhereClause = (beachIds) => {
-        var output = '('
-        output = output + beachIds.map((id) => `'${id}'`).join(',')
-        output = output + ')'
-        return output
     }
 
     var beaches = [];

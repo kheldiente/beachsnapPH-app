@@ -106,11 +106,18 @@ export const getAllSnaps = async () => {
 
         await ReadOnlyDatabase.openDb()
         // const allProvinceDetails = await ReadOnlyDatabase.getProvincesWithDetails(Object.keys(uniqueProvinceIds))
+        const beachesCountForProvinces = await ReadOnlyDatabase.getBeachesCountForProvinces(Object.keys(uniqueProvinceIds))
         const allBeachDetails = await ReadOnlyDatabase.getBeachesWithIds(Object.keys(uniqueBeachIds))
         await ReadOnlyDatabase.closeDb()
 
+        console.log(`beachesCount: ${beachesCountForProvinces?.length}`)
+
         allBeachDetails?.forEach((beach) => {
             uniqueProvinceIds[beach.provinceId]['beaches'].push(beach);
+            if (uniqueProvinceIds[beach.provinceId]['totalBeaches'] === undefined) {
+                uniqueProvinceIds[beach.provinceId]['totalBeaches'] =
+                    beachesCountForProvinces.filter((info) => info.provinceId === beach.provinceId)[0].count
+            }
         })
 
         // console.log(`provinces with snaps: ${allProvinceDetails.length}`)

@@ -37,8 +37,6 @@ export default function PhotoGrid(props) {
         const columns = Math.ceil(beaches.length / 3);
         const columnArr = [...Array(columns).keys()];
 
-        console.log(`renderItem columns: ${columns}`)
-
         const remaining = (columnArr.length * count) - beaches.length
         if (remaining !== 0) {
             [...Array(remaining).keys()].forEach((index) => {
@@ -147,8 +145,8 @@ export default function PhotoGrid(props) {
                 Object.keys(data).map((key) => {
                     const item = data[key];
                     const provinceName = item['beaches'][0]['province'];
-                    const visited = 1;
-                    const beachesCount = 10;
+                    const visited = item['beaches'].length;
+                    const beachesCount = item['totalBeaches'];
 
                     return (
                         <View
