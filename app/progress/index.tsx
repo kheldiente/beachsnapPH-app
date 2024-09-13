@@ -98,34 +98,6 @@ const renderCurrentGoal = () => {
 }
 
 const renderStatCard = (data) => {
-    const list = data.list ?? [
-        {
-            name: 'Cemento Beach',
-            dateRange: 'Feb 14, 2024',
-            photosTaken: 3
-        },
-        {
-            name: 'Casapsapan Beach',
-            dateRange: 'Feb 13, 2024',
-            photosTaken: 4
-        },
-        {
-            name: 'Canawer Beach',
-            dateRange: 'Feb 13, 2024',
-            photosTaken: 2
-        },
-        {
-            name: 'Pinamuntugan Beach',
-            dateRange: 'Dec 20, 2023',
-            photosTaken: 2
-        },
-        {
-            name: 'Punta Beach',
-            dateRange: 'Dec 20, 2023',
-            photosTaken: 2
-        },
-    ];
-
     return (
         <View
             key={`visited_bchList+${data.key}`}
@@ -137,9 +109,9 @@ const renderStatCard = (data) => {
             }}
         >
             <Text style={styles.headerText}>{data.title}</Text>
-            {list.map((item) => (
+            {data.list.map((item) => (
                 <View
-                    key={`_visited_bchList+${item.name}`}
+                    key={`_visited_bchList+${data.key}+${item.beach.id}}`}
                     style={{
                         flex: 1,
                         flexDirection: 'row',
@@ -154,19 +126,19 @@ const renderStatCard = (data) => {
                             fontFamily: DefaultFont.fontFamily,
                             fontSize: 15,
                             color: 'black',
-                        }}>{item.name}</Text>
+                        }}>{item.beach.name}</Text>
                         <Text style={{
                             fontFamily: DefaultFont.fontFamily,
                             fontSize: 10,
                             color: 'gray'
-                        }}>{item.dateRange}</Text>
+                        }}>{item.dateVisited}</Text>
                     </View>
                     <Text style={{
                         fontFamily: DefaultFont.fontFamilyBold,
                         fontSize: 12,
                         alignSelf: 'center',
                         color: 'black',
-                    }}>{item.photosTaken} photos</Text>
+                    }}>{item.photoCount} photos</Text>
                 </View>
             ))}
         </View>
@@ -186,6 +158,7 @@ export default function ProgressListLayout() {
         visitedProvinces: 0,
         visitedMunicipalities: 0,
     });
+    const [recentVisitedBeaches, setRecentVisitedBeaches] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
 
     const getGoalTitleByKey = (key) => {
@@ -247,6 +220,7 @@ export default function ProgressListLayout() {
 
     const fetchData = async () => {
         const data = await DatabaseActions.getGeneralGoalStats();
+        const recentVisitedBeaches = await DatabaseActions.getRecentVisitedBeaches();
 
         totalCounts.current = {
             totalBeaches: data?.totalBeaches,
@@ -261,6 +235,8 @@ export default function ProgressListLayout() {
             visitedProvinces: data?.visitedProvinces,
             visitedMunicipalities: data?.visitedMunicipalities,
         });
+
+        setRecentVisitedBeaches(recentVisitedBeaches);
     }
 
     useEffect(() => {
@@ -313,9 +289,20 @@ export default function ProgressListLayout() {
                 })}
             </View>
             {renderCurrentGoal()}
-            {renderStatCard({ title: 'Recent visited beaches', key: 'stat1' })}
-            {renderStatCard({ title: 'Top beaches with many photos', key: 'stat2' })}
-            {renderStatCard({ title: 'Favorited beaches', key: 'stat3' })}
+            {recentVisitedBeaches &&
+                renderStatCard({
+                    title: 'Recent visited beaches',
+                    key: 'stat1',
+                    list: recentVisitedBeaches,
+                })
+            }
+            {recentVisitedBeaches &&
+                renderStatCard({
+                    title: 'Top beaches with many photos',
+                    key: 'stat2',
+                    list: recentVisitedBeaches,
+                })
+            }
         </ScrollView>
     );
 }

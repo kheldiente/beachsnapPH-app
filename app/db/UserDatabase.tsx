@@ -106,12 +106,15 @@ export const getAllSnaps = async () => {
         })
 
         await ReadOnlyDatabase.openDb()
-        // const allProvinceDetails = await ReadOnlyDatabase.getProvincesWithDetails(Object.keys(uniqueProvinceIds))
-        const beachesCountForProvinces = await ReadOnlyDatabase.getBeachesCountForProvinces(Object.keys(uniqueProvinceIds))
-        const allBeachDetails = await ReadOnlyDatabase.getBeachesWithIds(Object.keys(uniqueBeachIds))
+        const beachesCountForProvinces = await ReadOnlyDatabase.getBeachesCountForProvinces(
+            Object.keys(uniqueProvinceIds)
+        )
+        const allBeachDetails = await ReadOnlyDatabase.getBeachesWithIds(
+            Object.keys(uniqueBeachIds)
+        )
         await ReadOnlyDatabase.closeDb()
 
-        console.log(`beachesCount: ${beachesCountForProvinces?.length}`)
+        // console.log(`beachesCount: ${beachesCountForProvinces?.length}`)
 
         allBeachDetails?.forEach((beach) => {
             uniqueProvinceIds[beach.provinceId]['beaches'].push(beach);
@@ -121,13 +124,7 @@ export const getAllSnaps = async () => {
             }
         })
 
-        // console.log(`provinces with snaps: ${allProvinceDetails.length}`)
-        // console.log(`beaches with snaps: ${allBeachDetails.length}`)
-
-        // console.log(`beachIds: ${JSON.stringify(uniqueBeachIds)}`)
-
         console.log(`snaps available: ${allSnaps.length}`)
-        // console.log(`provinceIds: ${JSON.stringify(uniqueProvinceIds)}`)
     } catch (e) {
         console.log(e);
     }
@@ -222,6 +219,40 @@ export const getGeneralGoalStats = async () => {
     return result;
 }
 
+export const getRecentVisitedBeaches = async() => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    var visitedBeaches = [];
+    try {
+        visitedBeaches = await db.getAllAsync(`
+            SELECT DISTINCT(beachId), COUNT(*) as photoCount, dateVisited 
+            FROM snap
+            GROUP BY beachId
+            ORDER BY dateVisited DESC LIMIT 5
+        `);
+
+        const beachIds = visitedBeaches.map((beach) => beach.beachId)
+
+        await ReadOnlyDatabase.openDb();
+        const beachDetails = await ReadOnlyDatabase.getBeachesWithIds(beachIds);
+        await ReadOnlyDatabase.closeDb();
+
+        visitedBeaches.forEach((beach, index) => {
+            visitedBeaches[index] = {
+                ...visitedBeaches[index],
+                beach: beachDetails?.filter((details) => details.id === beach.beachId)[0]
+            }
+            // console.log(`visitedBeaches: ${JSON.stringify(visitedBeaches[index])}`)
+        })
+    } catch (e) {
+        console.log(e);
+    }
+    return visitedBeaches;
+}
+
 
 ////////// DANGER!!! //////////
 
@@ -245,5 +276,6 @@ export const closeDb = async () => {
 export const initDb = async () => {
     await openDb();
     await createTables();
+    await getRecentVisitedBeaches();
     await closeDb();
 }

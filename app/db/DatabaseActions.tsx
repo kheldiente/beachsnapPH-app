@@ -69,3 +69,11 @@ export const getGeneralGoalStats = async () => {
 
     return goalStats;
 }
+
+export const getRecentVisitedBeaches = async () => {
+    await UserDatabase.openDb();
+    const visitedBeaches = await UserDatabase.getRecentVisitedBeaches();
+    await UserDatabase.closeDb();   
+
+    return visitedBeaches;
+}

@@ -208,11 +208,11 @@ export const getMatchingBeaches = async ({
         }
         beaches = await db.getAllAsync(statement);
 
-        console.log(`getMatchingBeaches: ${beaches.length}, 
-            keyword: ${keyword}, 
-            limit: ${limit}, 
-            offset: ${offset},
-            applyLimit: ${applyLimit}`)
+        // console.log(`getMatchingBeaches: ${beaches.length}, 
+        //     keyword: ${keyword}, 
+        //     limit: ${limit}, 
+        //     offset: ${offset},
+        //     applyLimit: ${applyLimit}`)
     } catch (e) {
         console.log(e);
     }
