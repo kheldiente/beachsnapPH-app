@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
         fontFamily: DefaultFont.fontFamily,
         fontSize: 12,
         marginRight: 25,
-        color: 'darkgray',
+        color: 'darkviolet',
     },
     gridItemImg: {
         width: '100%',

@@ -77,3 +77,11 @@ export const getRecentVisitedBeaches = async () => {
 
     return visitedBeaches;
 }
+
+export const getTopBeachesWithManyPhotos = async () => {
+    await UserDatabase.openDb();
+    const beaches = await UserDatabase.getTopBeachesWithManyPhotos();
+    await UserDatabase.closeDb();   
+
+    return beaches;
+}

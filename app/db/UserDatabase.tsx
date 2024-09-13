@@ -253,6 +253,42 @@ export const getRecentVisitedBeaches = async() => {
     return visitedBeaches;
 }
 
+export const getTopBeachesWithManyPhotos = async() => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    var beaches = [];
+    try {
+        beaches = await db.getAllAsync(`
+            SELECT DISTINCT(beachId), COUNT(*) as photoCount, dateVisited 
+            FROM snap
+            GROUP BY beachId
+            HAVING photoCount > 1
+            ORDER BY dateVisited DESC LIMIT 5
+        `);
+
+        // console.log(`beachesWithManyPhotos: ${beaches.length}`)
+        const beachIds = beaches.map((beach) => beach.beachId)
+
+        await ReadOnlyDatabase.openDb();
+        const beachDetails = await ReadOnlyDatabase.getBeachesWithIds(beachIds);
+        await ReadOnlyDatabase.closeDb();
+
+        beaches.forEach((beach, index) => {
+            beaches[index] = {
+                ...beaches[index],
+                beach: beachDetails?.filter((details) => details.id === beach.beachId)[0]
+            }
+            // console.log(`beachesWithManyPhotos: ${JSON.stringify(beaches[index])}`)
+        })
+    } catch (e) {
+        console.log(e);
+    }
+    return beaches;
+}
+
 
 ////////// DANGER!!! //////////
 
@@ -276,6 +312,5 @@ export const closeDb = async () => {
 export const initDb = async () => {
     await openDb();
     await createTables();
-    await getRecentVisitedBeaches();
     await closeDb();
 }

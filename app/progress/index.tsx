@@ -159,6 +159,7 @@ export default function ProgressListLayout() {
         visitedMunicipalities: 0,
     });
     const [recentVisitedBeaches, setRecentVisitedBeaches] = useState([]);
+    const [beachesWithManyPhotos, setBeachesWithManyPhotos] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
 
     const getGoalTitleByKey = (key) => {
@@ -221,6 +222,7 @@ export default function ProgressListLayout() {
     const fetchData = async () => {
         const data = await DatabaseActions.getGeneralGoalStats();
         const recentVisitedBeaches = await DatabaseActions.getRecentVisitedBeaches();
+        const topBeachesWithPhotos = await DatabaseActions.getTopBeachesWithManyPhotos();
 
         totalCounts.current = {
             totalBeaches: data?.totalBeaches,
@@ -237,6 +239,7 @@ export default function ProgressListLayout() {
         });
 
         setRecentVisitedBeaches(recentVisitedBeaches);
+        setBeachesWithManyPhotos(topBeachesWithPhotos);
     }
 
     useEffect(() => {
@@ -288,19 +291,19 @@ export default function ProgressListLayout() {
                     }
                 })}
             </View>
-            {renderCurrentGoal()}
+            {/* {renderCurrentGoal()} */}
             {recentVisitedBeaches.length > 0 &&
                 renderStatCard({
                     title: 'Recent visited beaches',
-                    key: 'stat1',
+                    key: 'STAT1',
                     list: recentVisitedBeaches,
                 })
             }
-            {recentVisitedBeaches.length > 0 &&
+            {beachesWithManyPhotos.length > 0 &&
                 renderStatCard({
                     title: 'Top beaches with many photos',
-                    key: 'stat2',
-                    list: recentVisitedBeaches,
+                    key: 'STAT2',
+                    list: beachesWithManyPhotos,
                 })
             }
         </ScrollView>
