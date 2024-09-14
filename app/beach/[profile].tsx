@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     View,
     ScrollView,
     StyleSheet,
     TouchableOpacity,
     Text,
+    Image,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
@@ -16,18 +17,21 @@ import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-elements';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import PagerView from 'react-native-pager-view';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const cardMargin = 5;
 
 export default function ProfileLayout({ navigation, route }) {
-    const { name, id, municipality, province } = route.params.data;
+    const { name, id, municipality, province, description } = route.params.data;
     const headerTitle = `${name}`
     const address = `${municipality}, ${province}`
 
     const [snaps, setSnaps] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [selectedTab, setSelectedTab] = useState(0);
+    const pagerViewRef = useRef<PagerView>();
+
     var photoSizeLabel = `${snaps.length}`;
     if (snaps.length === 1) {
         photoSizeLabel = photoSizeLabel + ' photo'
@@ -81,33 +85,42 @@ export default function ProfileLayout({ navigation, route }) {
         return 'Profile' + item.id.toString() + id.toString();
     }
 
-    const renderPhoto = (item) => {
+    const renderPhoto = (item, listType = 'grid') => {
+        const disabled = typeof item.id !== 'number';
         return (
-            <View
-                key={`_phGrid_${item.id}`}
-            >
-                <TouchableOpacity
-                    onPress={() => {
-                        onNavigateDetail(item)
-                    }}
+            listType === 'grid' ?
+                (<View
+                    key={`_phGrid_${item.id}`}
                 >
-                    <Animated.View
-                        style={styles.card}
-                    // sharedTransitionTag={parentTransitionTag(item)}
+                    <TouchableOpacity
+                        onPress={() => {
+                            onNavigateDetail(item)
+                        }}
+                        disabled={disabled}
                     >
-                        {true &&
-                            <View style={styles.gridItemImg}>
-                                <Animated.Image
-                                    source={{ uri: item.photoUrl }}
-                                    style={styles.img}
-                                // sharedTransitionTag={childTransitionTag(item)}
-                                // sharedTransitionStyle={customTransition}
-                                />
-                            </View>
-                        }
-                    </Animated.View>
-                </TouchableOpacity>
-            </View>
+                        <Animated.View
+                            style={styles.card}
+                        // sharedTransitionTag={parentTransitionTag(item)}
+                        >
+                            {true &&
+                                <View style={styles.gridItemImg}>
+                                    <Animated.Image
+                                        source={{ uri: item.photoUrl }}
+                                        style={styles.img}
+                                    // sharedTransitionTag={childTransitionTag(item)}
+                                    // sharedTransitionStyle={customTransition}
+                                    />
+                                </View>
+                            }
+                        </Animated.View>
+                    </TouchableOpacity>
+                </View>)
+                : (
+                    <Image
+                        source={{ uri: item.photoUrl }}
+                        style={styles.imgListItem}
+                    />
+                )
         )
     }
 
@@ -169,6 +182,7 @@ export default function ProfileLayout({ navigation, route }) {
         const color = 'gray';
         const selectedColor = 'black';
         const sizes = [26, 28, 28];
+
         return (
             <View
                 style={{
@@ -184,22 +198,93 @@ export default function ProfileLayout({ navigation, route }) {
                         name={index === selectedIndex ? selectedTabIconNames[index] : tabName}
                         color={index === selectedIndex ? selectedColor : color}
                         size={sizes[index]}
-                        onPress={() => setSelectedTab(index)}
+                        onPress={() => handleOnTabChange(index)}
                     />
                 ))}
             </View>
         )
     }
 
-    const renderTabPag = (selectedIndex: number) => {
-        if (selectedIndex === 0) {
-            return (
-                snaps.length > 0
-                    ? renderPhotoGrid(snaps)
-                    : <View />
-            )
-        }
-        return <View />
+    const renderTabPage = () => {
+        return (
+            <View
+                style={{
+                    width: '100%',
+                    height: '100%',
+                }}
+            >
+                <PagerView
+                    style={styles.pagerView}
+                    initialPage={0}
+                    scrollEnabled={false}
+                    ref={pagerViewRef}
+                >
+                    <View style={styles.page} key="1">
+                        {renderPhotoGridPage()}
+                    </View>
+                    <View style={styles.page} key="2">
+                        {renderPhotoList()}
+                    </View>
+                    <View style={styles.page} key="3">
+                        {renderInfoPage()}
+                    </View>
+                </PagerView>
+            </View>
+        )
+    }
+
+    const renderPhotoGridPage = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                }}
+            >
+                {snaps.length === 0
+                    ? <Text style={styles.pageText}>No snaps to show</Text>
+                    : renderPhotoGrid(snaps)
+                }
+            </View>
+        )
+    }
+
+    const renderPhotoList = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                }}
+            >
+                {snaps.length === 0
+                    ? <Text style={styles.pageText}>No snaps to show</Text>
+                    : snaps.map((snap) => renderPhoto(snap, 'list'))
+                }
+            </View>
+        )
+    }
+
+    const renderInfoPage = () => {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    margin: 20,
+                }}
+            >
+                <Text style={
+                    styles.pageTextHeader
+                }>Overview</Text>
+                <Text
+                    style={{
+                        ...styles.pageText,
+                        marginTop: 10,
+                    }}
+                >{description}</Text>
+            </View>
+        )
     }
 
     const handleAddPhotosCtaClick = () => {
@@ -212,6 +297,11 @@ export default function ProfileLayout({ navigation, route }) {
 
     const handleOnSaveClick = () => {
         setShowModal(false);
+    }
+
+    const handleOnTabChange = (index: number) => {
+        setSelectedTab(index)
+        pagerViewRef.current?.setPage(index)
     }
 
     return (
@@ -250,7 +340,7 @@ export default function ProfileLayout({ navigation, route }) {
                 title='Add photo'
             />
             {renderTabs(selectedTab)}
-            {renderTabPag(selectedTab)}
+            {renderTabPage()}
         </ScrollView>
     );
 }
@@ -296,6 +386,10 @@ const styles = StyleSheet.create({
         height: undefined,
         aspectRatio: 1,
     },
+    imgListItem: {
+        width: '100%',
+        aspectRatio: '1/1',
+    },
     button: {
         borderRadius: 20,
         paddingHorizontal: 30,
@@ -320,5 +414,21 @@ const styles = StyleSheet.create({
         height: 100,
         overflow: 'hidden',
         borderRadius: 5
+    },
+    pagerView: {
+        flex: 1,
+    },
+    page: {
+        flex: 1,
+    },
+    pageText: {
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 12,
+        color: 'gray',
+    },
+    pageTextHeader: {
+        fontFamily: DefaultFont.fontFamilyBold,
+        fontSize: 15,
+        color: 'black',
     },
 });

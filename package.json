@@ -48,7 +48,8 @@
     "expo-dev-client": "~4.0.25",
     "expo-file-system": "~17.0.1",
     "expo-asset": "~10.0.10",
-    "@shopify/flash-list": "1.6.4"
+    "@shopify/flash-list": "1.6.4",
+    "react-native-pager-view": "6.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

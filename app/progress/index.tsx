@@ -19,7 +19,7 @@ const progressWheelOptions = (progress) => {
         size: 170,
         width: 10,
         duration: 600,
-        progress: progress,
+        progress: progress + 1, // There's a bug in the progress wheel where progress is decreased by 1
         rounded: true
     }
 }
