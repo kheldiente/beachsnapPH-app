@@ -14,6 +14,8 @@ import { snapsLayoutKeys } from '@/constants/Global';
 import Animated from 'react-native-reanimated';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
+import { Icon } from 'react-native-elements';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const cardMargin = 5;
@@ -25,7 +27,7 @@ export default function ProfileLayout({ navigation, route }) {
 
     const [snaps, setSnaps] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-
+    const [selectedTab, setSelectedTab] = useState(0);
     var photoSizeLabel = `${snaps.length}`;
     if (snaps.length === 1) {
         photoSizeLabel = photoSizeLabel + ' photo'
@@ -153,12 +155,51 @@ export default function ProfileLayout({ navigation, route }) {
                 {columnArr.map((column) => {
                     var endIdx = startIdx + count
                     const row = gridRow(column, photos.slice(startIdx, endIdx))
-                    
+
                     startIdx = endIdx;
                     return row;
                 })}
             </View>
         )
+    }
+
+    const renderTabs = (selectedIndex: number) => {
+        const tabIconNames = ['grid-outline', 'reorder-four-outline', 'information-circle-outline'];
+        const selectedTabIconNames = ['grid', 'reorder-four', 'information-circle'];
+        const color = 'gray';
+        const selectedColor = 'black';
+        const sizes = [26, 28, 28];
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    marginTop: 30,
+                }}
+            >
+                {tabIconNames.map((tabName, index) => (
+                    <TabBarIcon
+                        key={tabName}
+                        name={index === selectedIndex ? selectedTabIconNames[index] : tabName}
+                        color={index === selectedIndex ? selectedColor : color}
+                        size={sizes[index]}
+                        onPress={() => setSelectedTab(index)}
+                    />
+                ))}
+            </View>
+        )
+    }
+
+    const renderTabPag = (selectedIndex: number) => {
+        if (selectedIndex === 0) {
+            return (
+                snaps.length > 0
+                    ? renderPhotoGrid(snaps)
+                    : <View />
+            )
+        }
+        return <View />
     }
 
     const handleAddPhotosCtaClick = () => {
@@ -202,22 +243,14 @@ export default function ProfileLayout({ navigation, route }) {
             >
                 {address}ּ
             </Text>
-            <Text
-                key={'_profBch_photoCount'}
-                style={styles.photoCount}
-            >
-                {photoSizeLabel}ּ
-            </Text>
             <Button
                 titleStyle={styles.buttonTitle}
                 buttonStyle={styles.button}
                 onPress={handleAddPhotosCtaClick}
-                title='Add photos'
+                title='Add photo'
             />
-            {snaps.length > 0
-                ? renderPhotoGrid(snaps)
-                : <View />
-            }
+            {renderTabs(selectedTab)}
+            {renderTabPag(selectedTab)}
         </ScrollView>
     );
 }
