@@ -10,6 +10,7 @@ import {
 import AnimatedProgressWheel from 'react-native-progress-wheel';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
+import { dateStringToMDY } from '@/constants/Utils';
 
 const progressWheelOptions = (progress) => {
     return {
@@ -131,14 +132,17 @@ const renderStatCard = (data) => {
                             fontFamily: DefaultFont.fontFamily,
                             fontSize: 10,
                             color: 'gray'
-                        }}>{item.dateVisited}</Text>
+                        }}>{dateStringToMDY(item.dateVisited)}</Text>
                     </View>
                     <Text style={{
                         fontFamily: DefaultFont.fontFamilyBold,
                         fontSize: 12,
                         alignSelf: 'center',
                         color: 'black',
-                    }}>{item.photoCount} photos</Text>
+                    }}>{item.photoCount === 1
+                        ? '1 photo'
+                        : `${item.photoCount} photos`
+                    }</Text>
                 </View>
             ))}
         </View>
