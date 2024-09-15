@@ -167,12 +167,13 @@ export default function ProgressListLayout() {
     const [recentVisitedBeaches, setRecentVisitedBeaches] = useState([]);
     const [beachesWithManyPhotos, setBeachesWithManyPhotos] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const isLoading = useRef(true);
     const isReloadingData = useRef(false);
 
     const subscribeToAppLifecycle = async () => {
         navigation.addListener('focus', async () => {
-            if (!isLoading && !isReloadingData.current) {
+            console.log(`reloading data in progress page... ${isLoading.current} ${isReloadingData.current}`);
+            if (!isLoading.current && !isReloadingData.current) {
                 isReloadingData.current = true;
                 setTimeout(async () => {
                     console.log('Reloading data in goals page...');
@@ -241,6 +242,8 @@ export default function ProgressListLayout() {
     })
 
     const fetchData = async () => {
+        isLoading.current = true;
+
         const data = await DatabaseActions.getGeneralGoalStats();
         const recentVisitedBeaches = await DatabaseActions.getRecentVisitedBeaches();
         const topBeachesWithPhotos = await DatabaseActions.getTopBeachesWithManyPhotos();
@@ -251,6 +254,8 @@ export default function ProgressListLayout() {
             totalProvinces: data?.totalProvinces,
             totalMunicipalities: data?.totalMunicipalities
         }
+
+        isLoading.current = false;
 
         setGeneralGoalStats({
             visitedBeaches: data?.visitedBeaches,
@@ -263,14 +268,17 @@ export default function ProgressListLayout() {
         setBeachesWithManyPhotos(topBeachesWithPhotos);
     }
 
+    const initData = async () => {
+        await fetchData();
+    }
+
     useEffect(() => {
         setTimeout(() => {
-            fetchData();
-            setIsLoading(false);
+            initData();
         }, 500)
-    }, [])
 
-    subscribeToAppLifecycle();
+        subscribeToAppLifecycle();
+    }, [])
 
     return (
         <ScrollView
@@ -283,7 +291,7 @@ export default function ProgressListLayout() {
                 />
             }
         >
-            {isLoading
+            {isLoading.current
                 ? <View />
                 : (<View
                     style={{

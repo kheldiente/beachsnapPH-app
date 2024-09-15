@@ -21,12 +21,12 @@ export default function SnapsAlbumLayout(props: any) {
 
     const [snaps, setSnaps] = useState({});
     const [refreshing, setRefreshing] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const isLoading = useRef(true);
     const isReloadingData = useRef(false);
 
     const subscribeToAppLifecycle = async () => {
         navigation.addListener('focus', async () => {
-            if (isLoading && !isReloadingData.current) {
+            if (!isLoading.current && !isReloadingData.current) {
                 isReloadingData.current = true;
                 setTimeout(async () => {
                     console.log('Reloading data in snaps page...');
@@ -65,22 +65,22 @@ export default function SnapsAlbumLayout(props: any) {
     };
 
     const fetchData = async () => {
+        isLoading.current = true;
+
         const result = await DatabaseActions.getAllSnaps();
-        // console.log(`snaps: ${JSON.stringify(result)}`);
+        isLoading.current = false;
+
         setSnaps(result);
     }
 
     const initData = async () => {
-        setIsLoading(true);
         await fetchData();
-        setIsLoading(false);
     }
 
     useEffect(() => {
         initData();
+        subscribeToAppLifecycle();
     }, []);
-
-    subscribeToAppLifecycle();
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
@@ -103,7 +103,7 @@ export default function SnapsAlbumLayout(props: any) {
                         />
                     </View>
                 </ScrollView>
-                : isLoading ? <View />
+                : isLoading.current ? <View />
                     : (
                         <View style={styles.container2}>
                             <Text style={styles.noSnaps}>
