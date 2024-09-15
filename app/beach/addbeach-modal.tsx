@@ -16,7 +16,12 @@ import * as DatabaseActions from '@/app/db/DatabaseActions';
 
 const pageKey = '_bchSnapEdtr';
 
-export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
+export default function NewBeachSnapModal({
+    isVisible,
+    onClose,
+    onSave,
+    preselectedBeach = null,
+}) {
     const insets = useSafeAreaInsets();
     const showScreen = useRef(pageKey);
     const currSnapData = useRef(null);
@@ -123,6 +128,7 @@ export default function NewBeachSnapModal({ isVisible, onClose, onSave }) {
             onHideKeyboard={hideKeyboard}
         >
             <BeachSnapEditor
+                preselectedBeach={preselectedBeach}
                 onSelectItem={handleOnSelectItem}
                 onSelectDate={handleOnSelectDate}
                 onChangeBeachName={handleOnChangeBeachName}

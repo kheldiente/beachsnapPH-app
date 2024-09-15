@@ -39,13 +39,16 @@ export const generateParams = (currSnapData) => {
 };
 
 export default function BeachSnapEditor(props) {
+    const preselectedBeach = props.preselectedBeach
+        ? props.preselectedBeach
+        : { name: '' }
     const insets = useSafeAreaInsets();
     const estListSize = 500;
     var imageContainerH = 350; // Measured in console.logs
 
     const beachPageDisplayed = useRef(false);
     const dateVisited = useRef(new Date());
-    const selectedBeach = useRef({ name: '' });
+    const selectedBeach = useRef(preselectedBeach);
     const imageRef = useRef(null);
 
     const [caption, setCaption] = useState('');
@@ -114,7 +117,7 @@ export default function BeachSnapEditor(props) {
     }
 
     const handleOnChangeBeachName = (item) => {
-        console.log(`beachName: ${item.name}`)
+        console.log(`changeBeachName: ${JSON.stringify(item)}`)
 
         beachPageDisplayed.current = false;
         selectedBeach.current = item;
