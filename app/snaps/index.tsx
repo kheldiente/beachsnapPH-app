@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -22,6 +22,20 @@ export default function SnapsAlbumLayout(props: any) {
     const [snaps, setSnaps] = useState({});
     const [refreshing, setRefreshing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const isReloadingData = useRef(false);
+
+    const subscribeToAppLifecycle = async () => {
+        navigation.addListener('focus', async () => {
+            if (isLoading && !isReloadingData.current) {
+                isReloadingData.current = true;
+                setTimeout(async () => {
+                    console.log('Reloading data in snaps page...');
+                    await fetchData();
+                    isReloadingData.current = false;
+                }, 500)
+            }
+        });
+    }
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -52,7 +66,7 @@ export default function SnapsAlbumLayout(props: any) {
 
     const fetchData = async () => {
         const result = await DatabaseActions.getAllSnaps();
-        console.log(`snaps: ${JSON.stringify(result)}`);
+        // console.log(`snaps: ${JSON.stringify(result)}`);
         setSnaps(result);
     }
 
@@ -65,6 +79,8 @@ export default function SnapsAlbumLayout(props: any) {
     useEffect(() => {
         initData();
     }, []);
+
+    subscribeToAppLifecycle();
 
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>

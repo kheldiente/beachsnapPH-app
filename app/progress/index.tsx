@@ -11,6 +11,7 @@ import AnimatedProgressWheel from 'react-native-progress-wheel';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
 import { dateStringToMDY } from '@/constants/Utils';
+import { useNavigation } from 'expo-router';
 
 const progressWheelOptions = (progress) => {
     return {
@@ -142,7 +143,7 @@ const renderStatCard = (data) => {
                     }}>{item.photoCount === 1
                         ? '1 photo'
                         : `${item.photoCount} photos`
-                    }</Text>
+                        }</Text>
                 </View>
             ))}
         </View>
@@ -150,6 +151,7 @@ const renderStatCard = (data) => {
 }
 
 export default function ProgressListLayout() {
+    const navigation = useNavigation();
     const totalCounts = useRef({
         totalBeaches: 500,
         totalRegions: 500,
@@ -165,6 +167,21 @@ export default function ProgressListLayout() {
     const [recentVisitedBeaches, setRecentVisitedBeaches] = useState([]);
     const [beachesWithManyPhotos, setBeachesWithManyPhotos] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const isReloadingData = useRef(false);
+
+    const subscribeToAppLifecycle = async () => {
+        navigation.addListener('focus', async () => {
+            if (!isLoading && !isReloadingData.current) {
+                isReloadingData.current = true;
+                setTimeout(async () => {
+                    console.log('Reloading data in goals page...');
+                    await fetchData();
+                    isReloadingData.current = false;
+                }, 500)
+            }
+        });
+    }
 
     const getGoalTitleByKey = (key) => {
         var title = '';
@@ -249,8 +266,11 @@ export default function ProgressListLayout() {
     useEffect(() => {
         setTimeout(() => {
             fetchData();
+            setIsLoading(false);
         }, 500)
     }, [])
+
+    subscribeToAppLifecycle();
 
     return (
         <ScrollView
@@ -263,53 +283,62 @@ export default function ProgressListLayout() {
                 />
             }
         >
-            <View
-                key={'_progWhl_container'}
-                style={styles.container}
-            >
-                <AnimatedProgressWheel
-                    key={'_progWhl'}
-                    max={totalCounts?.current.totalBeaches}
-                    showProgressLabel={true}
-                    rotation={'-90deg'}
-                    subtitle={`visited out of \r\n ${totalCounts?.current.totalBeaches} beaches`}
-                    labelStyle={styles.labelText}
-                    subtitleStyle={styles.text}
-                    animateFromValue={0}
-                    {...progressWheelOptions(
-                        generalGoalStats ? generalGoalStats.visitedBeaches : 0
-                    )}
-                />
-            </View>
-            <View
-                key={'_stat_container'}
-                style={styles.statsContainer}
-            >
-                {Object.keys(generalGoalStats).map((statKey) => {
-                    if (statKey !== 'visitedBeaches') {
-                        return renderStats({
-                            title: getGoalTitleByKey(statKey),
-                            total: getTotalCount(statKey),
-                            statsCount: generalGoalStats[`${statKey}`],
+            {isLoading
+                ? <View />
+                : (<View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                    }}
+                >
+                    <View
+                        key={'_progWhl_container'}
+                        style={styles.container}
+                    >
+                        <AnimatedProgressWheel
+                            key={'_progWhl'}
+                            max={totalCounts?.current.totalBeaches}
+                            showProgressLabel={true}
+                            rotation={'-90deg'}
+                            subtitle={`visited out of \r\n ${totalCounts?.current.totalBeaches} beaches`}
+                            labelStyle={styles.labelText}
+                            subtitleStyle={styles.text}
+                            animateFromValue={0}
+                            {...progressWheelOptions(
+                                generalGoalStats ? generalGoalStats.visitedBeaches : 0
+                            )}
+                        />
+                    </View>
+                    <View
+                        key={'_stat_container'}
+                        style={styles.statsContainer}
+                    >
+                        {Object.keys(generalGoalStats).map((statKey) => {
+                            if (statKey !== 'visitedBeaches') {
+                                return renderStats({
+                                    title: getGoalTitleByKey(statKey),
+                                    total: getTotalCount(statKey),
+                                    statsCount: generalGoalStats[`${statKey}`],
+                                })
+                            }
+                        })}
+                    </View>
+                    {/* {renderCurrentGoal()} */}
+                    {recentVisitedBeaches.length > 0 &&
+                        renderStatCard({
+                            title: 'Recent visited beaches',
+                            key: 'STAT1',
+                            list: recentVisitedBeaches,
                         })
                     }
-                })}
-            </View>
-            {/* {renderCurrentGoal()} */}
-            {recentVisitedBeaches.length > 0 &&
-                renderStatCard({
-                    title: 'Recent visited beaches',
-                    key: 'STAT1',
-                    list: recentVisitedBeaches,
-                })
-            }
-            {beachesWithManyPhotos.length > 0 &&
-                renderStatCard({
-                    title: 'Top beaches with many photos',
-                    key: 'STAT2',
-                    list: beachesWithManyPhotos,
-                })
-            }
+                    {beachesWithManyPhotos.length > 0 &&
+                        renderStatCard({
+                            title: 'Top beaches with many photos',
+                            key: 'STAT2',
+                            list: beachesWithManyPhotos,
+                        })
+                    }
+                </View>)}
         </ScrollView>
     );
 }
