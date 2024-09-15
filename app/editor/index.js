@@ -70,19 +70,24 @@ export default function BeachSnapEditor(props) {
 
         // No permissions request is necessary 
         // for launching the image library
-        let result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
+        const isImage = result.assets[0].type === 'image';
+        const isValid = !result.canceled && isImage;
 
-        // console.log(result);
-        if (!result.canceled && checkIfDiffImg(result)) {
-            imageRef.current = result.assets[0].uri;
+        if (isValid) {
+            if (checkIfDiffImg(result)) {
+                imageRef.current = result.assets[0].uri;
 
-            setImage(imageRef.current);
-            handleOnUpdatedBeachData();
+                setImage(imageRef.current);
+                handleOnUpdatedBeachData();
+            }
+        } else {
+            console.log(`Selected file is ${result.assets[0].type}`)
         }
     };
 
