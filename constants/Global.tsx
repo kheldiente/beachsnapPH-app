@@ -41,9 +41,16 @@ export const items = [
     {
         title: 'Beach name',
         key: '_bchName',
-        icon: 'cloudy',
+        icon: 'footsteps',
         type: 'chevron',
         value: 'Bagasbas'
+    },
+    {
+        title: 'Weather',
+        key: '_weather',
+        icon: 'cloudy',
+        type: 'chevron',
+        value: 'Sunny'
     },
     {
         title: 'Date visited',
