@@ -266,7 +266,7 @@ export const getTopBeachesWithManyPhotos = async() => {
             FROM snap
             GROUP BY beachId
             HAVING photoCount > 1
-            ORDER BY dateVisited DESC LIMIT 5
+            ORDER BY photoCount DESC LIMIT 5
         `);
 
         // console.log(`beachesWithManyPhotos: ${beaches.length}`)

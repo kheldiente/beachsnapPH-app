@@ -22,7 +22,7 @@ import { FlashList } from '@shopify/flash-list';
 import { dateStringToMDY, dateStringToTime } from '@/constants/Utils';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
-const cardMargin = 5;
+const cardMargin = 0;
 
 export default function ProfileLayout({ navigation, route }) {
     const { name, id, municipality, province, description } = route.params.data;
@@ -333,7 +333,19 @@ export default function ProfileLayout({ navigation, route }) {
                     }}
                 >
                     {snaps.length === 0
-                        ? <Text style={styles.pageText}>No snaps to show</Text>
+                        ? (
+                            <View
+                                style={{
+                                    height: 400,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Text
+                                    style={styles.pageText}
+                                >No snaps to show</Text>
+                            </View>
+                        )
                         : renderPhotoGrid(snaps)
                     }
                 </View>
@@ -345,7 +357,19 @@ export default function ProfileLayout({ navigation, route }) {
         prevDateHeader = ''; // Make sure to reset when rendering whole list
 
         return snaps.length === 0
-            ? <Text style={styles.pageText}>No snaps to show</Text>
+            ? (
+                <View
+                    style={{
+                        height: 400,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Text
+                        style={styles.pageText}
+                    >No snaps to show</Text>
+                </View>
+            )
             : <FlashList
                 showsVerticalScrollIndicator={false}
                 data={snaps}
@@ -405,6 +429,7 @@ export default function ProfileLayout({ navigation, route }) {
             }
         >
             <NewBeachSnapModal
+                preselectedBeach={route.params.data}
                 isVisible={showModal}
                 onClose={handleOnModalClose}
                 onSave={handleOnSaveClick}
@@ -495,13 +520,13 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         borderRadius: 5,
         width: cardCalcWidth - cardMargin,
-        marginVertical: 2,
-        marginHorizontal: 2,
+        // marginVertical: 2,
+        // marginHorizontal: 2,
     },
     gridItemImg: {
         width: '100%',
         overflow: 'hidden',
-        borderRadius: 5,
+        // borderRadius: 5,
     },
     pagerView: {
         height: 600,
@@ -511,7 +536,7 @@ const styles = StyleSheet.create({
     },
     pageText: {
         fontFamily: DefaultFont.fontFamily,
-        fontSize: 12,
+        fontSize: 13,
         color: 'gray',
     },
     pageTextHeader: {
