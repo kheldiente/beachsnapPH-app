@@ -67,7 +67,7 @@ export const getAllSnapFromBeach = async (beachId) => {
 
     var results = []
     try {
-        results = await db.getAllAsync(`SELECT * FROM snap WHERE beachId = '${beachId}'`);
+        results = await db.getAllAsync(`SELECT * FROM snap WHERE beachId = '${beachId}' ORDER BY dateVisited ASC`);
         // console.log(`goals available: ${allRows.length}`)
     } catch (e) {
         console.log(e);

@@ -43,3 +43,11 @@ export const dateStringToMDY = (dateString: string) => {
     );
     return date.toDateString();
 }
+
+export const dateStringToTime = (dateString: string) => {
+    const [datePart, timePart] = dateString.split(', ');
+    const [month, day, year] = datePart.split('/');
+    const [hours, minutes, seconds] = timePart.split(':');
+    const [time, period] = timePart.split(/(\s+)/);
+    return `${hours}:${minutes} ${period}`;
+}

@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Text,
     Image,
+    Pressable,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
@@ -15,9 +16,10 @@ import { snapsLayoutKeys } from '@/constants/Global';
 import Animated from 'react-native-reanimated';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
-import { Icon } from 'react-native-elements';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import PagerView from 'react-native-pager-view';
+import { FlashList } from '@shopify/flash-list';
+import { dateStringToMDY, dateStringToTime } from '@/constants/Utils';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const cardMargin = 5;
@@ -33,6 +35,8 @@ export default function ProfileLayout({ navigation, route }) {
     const pagerViewRef = useRef<PagerView>();
 
     var photoSizeLabel = `${snaps.length}`;
+    var prevDateHeader = '';
+
     if (snaps.length === 1) {
         photoSizeLabel = photoSizeLabel + ' photo'
     } else {
@@ -85,42 +89,108 @@ export default function ProfileLayout({ navigation, route }) {
         return 'Profile' + item.id.toString() + id.toString();
     }
 
-    const renderPhoto = (item, listType = 'grid') => {
+    const renderPhotoGridItem = (item) => {
         const disabled = typeof item.id !== 'number';
-        return (
-            listType === 'grid' ?
-                (<View
-                    key={`_phGrid_${item.id}`}
+        return (<View
+            key={`_phGrid_${item.id}`}
+        >
+            <TouchableOpacity
+                onPress={() => {
+                    onNavigateDetail(item)
+                }}
+                disabled={disabled}
+            >
+                <Animated.View
+                    style={styles.card}
+                // sharedTransitionTag={parentTransitionTag(item)}
                 >
-                    <TouchableOpacity
-                        onPress={() => {
-                            onNavigateDetail(item)
+                    {true &&
+                        <View style={styles.gridItemImg}>
+                            <Animated.Image
+                                source={{ uri: item.photoUrl }}
+                                style={styles.img}
+                            // sharedTransitionTag={childTransitionTag(item)}
+                            // sharedTransitionStyle={customTransition}
+                            />
+                        </View>
+                    }
+                </Animated.View>
+            </TouchableOpacity>
+        </View>)
+    }
+
+    const renderPhotoListItem = (item) => {
+        var dateString = dateStringToMDY(item.dateVisited);
+        var showDateHeader = dateString !== prevDateHeader;
+
+        prevDateHeader = dateString;
+        return (
+            <View
+                style={{
+                    // padding: 5,
+                }}
+            >
+                {false &&
+                    <View
+                        style={{
+                            backgroundColor: 'papayawhip',
+                            padding: 10,
+                            borderTopRightRadius: 10,
+                            borderTopLeftRadius: 10,
                         }}
-                        disabled={disabled}
                     >
-                        <Animated.View
-                            style={styles.card}
-                        // sharedTransitionTag={parentTransitionTag(item)}
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamilyBold,
+                                fontSize: 20,
+                                color: 'black',
+                            }}
                         >
-                            {true &&
-                                <View style={styles.gridItemImg}>
-                                    <Animated.Image
-                                        source={{ uri: item.photoUrl }}
-                                        style={styles.img}
-                                    // sharedTransitionTag={childTransitionTag(item)}
-                                    // sharedTransitionStyle={customTransition}
-                                    />
-                                </View>
-                            }
-                        </Animated.View>
-                    </TouchableOpacity>
-                </View>)
-                : (
-                    <Image
-                        source={{ uri: item.photoUrl }}
-                        style={styles.imgListItem}
-                    />
-                )
+                            {dateString}
+                        </Text>
+                    </View>
+                }
+                <Image
+                    key={`_phList_${item.id}`}
+                    source={{ uri: item.photoUrl }}
+                    style={styles.imgListItem}
+                />
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        // backgroundColor: 'papayawhip',
+                        marginVertical: 10,
+                        marginHorizontal: 10,
+                        // paddingVertical: 5,
+                        // paddingHorizontal: 10,
+                        borderRadius: 5,
+                    }}
+                >
+                    {item.caption.length > 0 &&
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 14,
+                                color: 'black',
+                                alignSelf: 'flex-start'
+                            }}
+                        >
+                            {item.caption}
+                        </Text>
+                    }
+                    <Text
+                        style={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontSize: 10,
+                            color: 'gray',
+                            alignSelf: 'flex-start'
+                        }}
+                    >
+                        {dateStringToMDY(item.dateVisited)}
+                    </Text>
+                </View>
+            </View>
         )
     }
 
@@ -145,13 +215,12 @@ export default function ProfileLayout({ navigation, route }) {
             return (
                 <View
                     style={{
-                        flex: 1,
                         flexDirection: 'row',
                         justifyContent: 'space-evenly',
                     }}
                     key={`photoGrid_${column}+row`}
                 >
-                    {photos.map((photo) => renderPhoto(photo))}
+                    {photos.map((photo) => renderPhotoGridItem(photo))}
                 </View>
             )
         }
@@ -161,7 +230,6 @@ export default function ProfileLayout({ navigation, route }) {
                 style={{
                     flex: 1,
                     flexDirection: 'column',
-                    justifyContent: 'center',
                     marginTop: 20,
                 }}
             >
@@ -181,7 +249,8 @@ export default function ProfileLayout({ navigation, route }) {
         const selectedTabIconNames = ['grid', 'reorder-four', 'information-circle'];
         const color = 'gray';
         const selectedColor = 'black';
-        const sizes = [26, 28, 28];
+        const sizes = [24, 32, 30];
+        const disableListTab = snaps.length === 0;
 
         return (
             <View
@@ -189,17 +258,25 @@ export default function ProfileLayout({ navigation, route }) {
                     flex: 1,
                     flexDirection: 'row',
                     justifyContent: 'space-around',
-                    marginTop: 30,
+                    marginTop: 10,
+                    alignItems: 'center',
+                    alignContent: 'center',
                 }}
             >
                 {tabIconNames.map((tabName, index) => (
-                    <TabBarIcon
+                    <Pressable
                         key={tabName}
-                        name={index === selectedIndex ? selectedTabIconNames[index] : tabName}
-                        color={index === selectedIndex ? selectedColor : color}
-                        size={sizes[index]}
-                        onPress={() => handleOnTabChange(index)}
-                    />
+                        onPress={() => {
+                            handleOnTabChange(index);
+                        }}
+                        disabled={index === 1 && disableListTab}
+                    >
+                        <TabBarIcon
+                            name={index === selectedIndex ? selectedTabIconNames[index] : tabName}
+                            color={index === selectedIndex ? selectedColor : color}
+                            size={sizes[index]}
+                        />
+                    </Pressable>
                 ))}
             </View>
         )
@@ -216,13 +293,24 @@ export default function ProfileLayout({ navigation, route }) {
                 <PagerView
                     style={styles.pagerView}
                     initialPage={0}
-                    scrollEnabled={false}
+                    scrollEnabled={true}
                     ref={pagerViewRef}
+                    onPageSelected={(e) => {
+                        setSelectedTab(e.nativeEvent.position)
+                    }}
                 >
-                    <View style={styles.page} key="1">
+                    <View style={{
+                        ...styles.page,
+                        flex: 1,
+                    }} key="1">
                         {renderPhotoGridPage()}
                     </View>
-                    <View style={styles.page} key="2">
+                    <View style={{
+                        ...styles.page,
+                        flex: 1,
+                        flexDirection: 'column',
+                        marginTop: 20,
+                    }} key="2">
                         {renderPhotoList()}
                     </View>
                     <View style={styles.page} key="3">
@@ -235,34 +323,35 @@ export default function ProfileLayout({ navigation, route }) {
 
     const renderPhotoGridPage = () => {
         return (
-            <View
-                style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                }}
-            >
-                {snaps.length === 0
-                    ? <Text style={styles.pageText}>No snaps to show</Text>
-                    : renderPhotoGrid(snaps)
-                }
-            </View>
+            <ScrollView>
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    {snaps.length === 0
+                        ? <Text style={styles.pageText}>No snaps to show</Text>
+                        : renderPhotoGrid(snaps)
+                    }
+                </View>
+            </ScrollView>
         )
     }
 
     const renderPhotoList = () => {
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                }}
-            >
-                {snaps.length === 0
-                    ? <Text style={styles.pageText}>No snaps to show</Text>
-                    : snaps.map((snap) => renderPhoto(snap, 'list'))
-                }
-            </View>
-        )
+        prevDateHeader = ''; // Make sure to reset when rendering whole list
+
+        return snaps.length === 0
+            ? <Text style={styles.pageText}>No snaps to show</Text>
+            : <FlashList
+                showsVerticalScrollIndicator={false}
+                data={snaps}
+                renderItem={({ item }) => renderPhotoListItem(item)}
+                estimatedItemSize={snaps.length + 20} // Allowance of 20 items
+            />
     }
 
     const renderInfoPage = () => {
@@ -384,11 +473,11 @@ const styles = StyleSheet.create({
     img: {
         width: '100%',
         height: undefined,
-        aspectRatio: 1,
+        aspectRatio: '1/1',
     },
     imgListItem: {
-        width: '100%',
         aspectRatio: '1/1',
+        width: '100%',
     },
     button: {
         borderRadius: 20,
@@ -411,12 +500,11 @@ const styles = StyleSheet.create({
     },
     gridItemImg: {
         width: '100%',
-        height: 100,
         overflow: 'hidden',
-        borderRadius: 5
+        borderRadius: 5,
     },
     pagerView: {
-        flex: 1,
+        height: 600,
     },
     page: {
         flex: 1,
