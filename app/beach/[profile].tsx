@@ -22,6 +22,7 @@ import { FlashList } from '@shopify/flash-list';
 import { dateStringToMDY, dateStringToTime } from '@/constants/Utils';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
+const listCalcHeight = Dimensions.get('window').height;
 const cardMargin = 0;
 
 export default function ProfileLayout({ navigation, route }) {
@@ -39,7 +40,6 @@ export default function ProfileLayout({ navigation, route }) {
     const pagerViewRef = useRef<PagerView>();
 
     var photoSizeLabel = `${snaps.length}`;
-    var prevDateHeader = '';
 
     if (snaps.length === 1) {
         photoSizeLabel = photoSizeLabel + ' photo'
@@ -135,36 +135,8 @@ export default function ProfileLayout({ navigation, route }) {
     }
 
     const renderPhotoListItem = (item) => {
-        var dateString = dateStringToMDY(item.dateVisited);
-        var showDateHeader = dateString !== prevDateHeader;
-
-        prevDateHeader = dateString;
         return (
-            <View
-                style={{
-                    // padding: 5,
-                }}
-            >
-                {false &&
-                    <View
-                        style={{
-                            backgroundColor: 'papayawhip',
-                            padding: 10,
-                            borderTopRightRadius: 10,
-                            borderTopLeftRadius: 10,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontFamily: DefaultFont.fontFamilyBold,
-                                fontSize: 20,
-                                color: 'black',
-                            }}
-                        >
-                            {dateString}
-                        </Text>
-                    </View>
-                }
+            <View style={{ marginBottom: 35 }}>
                 <Image
                     key={`_phList_${item.id}`}
                     source={{ uri: item.photoUrl }}
@@ -174,11 +146,8 @@ export default function ProfileLayout({ navigation, route }) {
                     style={{
                         flex: 1,
                         flexDirection: 'column',
-                        // backgroundColor: 'papayawhip',
                         marginVertical: 10,
                         marginHorizontal: 10,
-                        // paddingVertical: 5,
-                        // paddingHorizontal: 10,
                         borderRadius: 5,
                     }}
                 >
@@ -451,26 +420,33 @@ export default function ProfileLayout({ navigation, route }) {
                 onSave={handleOnSaveClick}
             />
 
-            <Text
-                key={'_profBch_header'}
-                style={styles.headerText}
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                }}
             >
-                {headerTitle}
-            </Text>
-            <Text
-                key={'_profBch_location'}
-                style={styles.location}
-            >
-                {address}ּ
-            </Text>
-            <Button
-                titleStyle={styles.buttonTitle}
-                buttonStyle={styles.button}
-                onPress={handleAddPhotosCtaClick}
-                title='Add photo'
-            />
-            {renderTabs(selectedTab)}
-            {renderTabPage()}
+                <Text
+                    key={'_profBch_header'}
+                    style={styles.headerText}
+                >
+                    {headerTitle}
+                </Text>
+                <Text
+                    key={'_profBch_location'}
+                    style={styles.location}
+                >
+                    {address}ּ
+                </Text>
+                <Button
+                    titleStyle={styles.buttonTitle}
+                    buttonStyle={styles.button}
+                    onPress={handleAddPhotosCtaClick}
+                    title='Add photo'
+                />
+                {renderTabs(selectedTab)}
+                {renderTabPage()}
+            </View>
         </ScrollView>
     );
 }
@@ -536,16 +512,13 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         borderRadius: 5,
         width: cardCalcWidth - cardMargin,
-        // marginVertical: 2,
-        // marginHorizontal: 2,
     },
     gridItemImg: {
         width: '100%',
         overflow: 'hidden',
-        // borderRadius: 5,
     },
     pagerView: {
-        height: 600,
+        height: listCalcHeight - 250,
     },
     page: {
         flex: 1,
