@@ -32,6 +32,10 @@ export default function ProfileLayout({ navigation, route }) {
     const [snaps, setSnaps] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
     const [selectedTab, setSelectedTab] = useState(0);
+    const [showModal, setShowModal] = useState(false);
+
+    const isLoading = useRef(true);
+    const isReloadingData = useRef(false);
     const pagerViewRef = useRef<PagerView>();
 
     var photoSizeLabel = `${snaps.length}`;
@@ -47,7 +51,14 @@ export default function ProfileLayout({ navigation, route }) {
         }
     }
 
-    const [showModal, setShowModal] = useState(false);
+    const reloadData = () => {
+        isReloadingData.current = true;
+        setTimeout(async () => {
+            console.log('Reloading data in beach profile page...');
+            await fetchData();
+            isReloadingData.current = false;
+        }, 500)
+    }
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -58,8 +69,12 @@ export default function ProfileLayout({ navigation, route }) {
     })
 
     const fetchData = async () => {
+        isLoading.current = true;
+
         const result = await DatabaseActions.getAllSnapFromBeach(id);
         console.log(`profile snaps: ${result?.length}`)
+
+        isLoading.current = false;
         setSnaps(result);
     }
 
@@ -409,6 +424,7 @@ export default function ProfileLayout({ navigation, route }) {
     }
 
     const handleOnSaveClick = () => {
+        reloadData();
         setShowModal(false);
     }
 
