@@ -15,7 +15,6 @@ import NewBeachSnapModal from './addbeach-modal';
 import { snapsLayoutKeys } from '@/constants/Global';
 import Animated from 'react-native-reanimated';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
-import { RefreshControl } from 'react-native-gesture-handler';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import PagerView from 'react-native-pager-view';
 import { FlashList } from '@shopify/flash-list';
@@ -31,7 +30,6 @@ export default function ProfileLayout({ navigation, route }) {
     const address = `${municipality}, ${province}`
 
     const [snaps, setSnaps] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
     const [selectedTab, setSelectedTab] = useState(0);
     const [showModal, setShowModal] = useState(false);
 
@@ -59,14 +57,6 @@ export default function ProfileLayout({ navigation, route }) {
             isReloadingData.current = false;
         }, 500)
     }
-
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        setTimeout(async () => {
-            await fetchData();
-            setRefreshing(false);
-        }, 500)
-    })
 
     const fetchData = async () => {
         isLoading.current = true;
@@ -406,12 +396,6 @@ export default function ProfileLayout({ navigation, route }) {
         <ScrollView
             style={styles.container}
             showsVerticalScrollIndicator={false}
-            refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                />
-            }
         >
             <NewBeachSnapModal
                 preselectedBeach={route.params.data}
