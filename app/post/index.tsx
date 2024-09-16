@@ -1,6 +1,12 @@
+import { DefaultFont } from '@/constants/Fonts';
+import { dateStringToMDY } from '@/constants/Utils';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
     interpolateColor,
@@ -80,14 +86,50 @@ const PhotoPostLayout: React.FC<IProps> = () => {
         <GestureDetector gesture={gesture}>
             <Animated.View
                 style={[styles.container, animatedStyle]}
-                // sharedTransitionTag={parentTransitionTag}
+            // sharedTransitionTag={parentTransitionTag}
             >
-                <Animated.Image
-                    // sharedTransitionTag={childrenTransitionTag}
-                    // sharedTransitionStyle={customTransition}
-                    source={{ uri: data.image }}
-                    style={styles.image}
-                />
+                <View
+                    style={{
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                    }}
+                >
+                    <Animated.Image
+                        // sharedTransitionTag={childrenTransitionTag}
+                        // sharedTransitionStyle={customTransition}
+                        source={{ uri: data.image }}
+                        style={styles.image}
+                    />
+                    <View
+                        style={{
+                            marginHorizontal: 10,
+                        }}
+                    >
+                        {data.caption.length > 0 &&
+                            <Text
+                                style={{
+                                    fontFamily: DefaultFont.fontFamily,
+                                    fontSize: 18,
+                                    color: 'black',
+                                    alignSelf: 'flex-start',
+                                    marginTop: 10,
+                                }}
+                            >
+                                {data.caption}
+                            </Text>
+                        }
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 15,
+                                color: 'gray',
+                                alignSelf: 'flex-start'
+                            }}
+                        >
+                            {dateStringToMDY(data.dateVisited)}
+                        </Text>
+                    </View>
+                </View>
             </Animated.View>
         </GestureDetector>
     );
@@ -102,7 +144,6 @@ const styles = StyleSheet.create({
     image: {
         width: '100%',
         aspectRatio: '1/1',
-        justifyContent: 'center',
     },
 });
 
