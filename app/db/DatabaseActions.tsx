@@ -85,3 +85,11 @@ export const getTopBeachesWithManyPhotos = async () => {
 
     return beaches;
 }
+
+export const getAllWeathers = async () => {
+    await ReadOnlyDatabase.openDb();
+    const weathers = await ReadOnlyDatabase.getAllWeathers();
+    await ReadOnlyDatabase.closeDb();
+
+    return weathers;
+}

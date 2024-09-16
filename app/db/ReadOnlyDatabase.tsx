@@ -257,6 +257,23 @@ export const getBeachesWithIds = async (ids) => {
     return beaches;
 }
 
+export const getAllWeathers = async () => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    var weathers = [];
+    try {
+        weathers = await db.getAllAsync('SELECT * FROM WEATHER');
+        console.log(`weathers available: ${weathers.length}`)
+    } catch (e) {
+        console.log(e);
+    }
+
+    return weathers;
+}
+
 export const closeDb = async () => {
     await db.closeAsync();
 }

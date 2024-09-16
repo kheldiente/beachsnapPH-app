@@ -5,7 +5,7 @@ export const readOnlyDbVersions = [
     {
         name: 'beachsnap-v1',
         version: '1.0.0',
-        fileUrl: require ('@/assets/db/beachsnap-v1.db'),
+        fileUrl: require('@/assets/db/beachsnap-v1.db'),
     }
 ]
 
@@ -46,18 +46,23 @@ export const items = [
         value: 'Bagasbas'
     },
     {
-        title: 'Weather',
-        key: '_weather',
-        icon: 'cloudy',
-        type: 'chevron',
-        value: 'Sunny'
-    },
-    {
         title: 'Date visited',
         key: '_dateVstd',
         icon: 'calendar',
         type: 'chevron',
         value: 'Jan 1, 2024'
     },
+    {
+        title: 'Weather',
+        key: '_weather',
+        icon: 'cloudy',
+        type: 'chip',
+        value: 0,
+    },
 ]
+
+export const defaultWeather = {
+    id: 'WEA1',
+    name: 'Sunny',
+}
 

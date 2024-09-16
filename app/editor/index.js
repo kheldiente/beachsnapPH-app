@@ -13,12 +13,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useRef, useState } from 'react';
 import { Divider, Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Switch } from '@rneui/themed';
+import { Button, Switch, Chip } from '@rneui/themed';
 import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
 import { addKeyboardListener, dateToMDY } from '@/constants/Utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { items } from '@/constants/Global';
+import { defaultWeather, items } from '@/constants/Global';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { FlashList } from '@shopify/flash-list';
 
@@ -34,6 +34,7 @@ export const generateParams = (currSnapData) => {
         photoUrl: currSnapData.current?.image,
         caption: currSnapData.current?.caption,
         dateVisited: currSnapData.current?.dateVisited,
+        weatherId: currSnapData.current?.weather.id,
         metadata: currSnapData.current?.beach.province + `+${currSnapData.current?.beach.name}` + `_${new Date().getMilliseconds()}`
     }
 };
@@ -55,12 +56,13 @@ export default function BeachSnapEditor(props) {
     const [favorited, setFavorited] = useState(false);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
 
+    const calcImageContainerH = useSharedValue(imageContainerH);
     const [showDate, setShowDate] = useState(false);
     const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
     const [image, setImage] = useState(null);
     const [matchedBeaches, setMatchedBeaches] = useState(null);
-
-    const calcImageContainerH = useSharedValue(imageContainerH);
+    const [weathers, setWeathers] = useState(null);
+    const [selectedWeather, setSelectedWeather] = useState(null);
 
     const pickImage = async () => {
         const checkIfDiffImg = (result) => {
@@ -122,6 +124,7 @@ export default function BeachSnapEditor(props) {
                 dateVisited: dateVisited.current,
                 caption: caption,
                 favorited: favorited,
+                weather: selectedWeather,
             }) : null
     }
 
@@ -196,6 +199,11 @@ export default function BeachSnapEditor(props) {
         }, 200)
     }
 
+    const handleOnWeatherItemClick = (item) => {
+        setSelectedWeather(item);
+        handleOnUpdatedBeachData();
+    }
+
     const renderListItemOptions = () => {
         const handleOnBeachNameItemClick = () => {
             beachPageDisplayed.current = true;
@@ -208,12 +216,44 @@ export default function BeachSnapEditor(props) {
             setShowDate(true);
         }
 
+        const renderWeatherChipFilter = () => {
+            const markAsSelected = selectedWeather ? selectedWeather : defaultWeather;
+            return (
+                <ScrollView
+                    key={'_chipFilters'}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    style={{
+                        paddingHorizontal: 10,
+                    }}
+                >
+                    {weathers.map((item) => (
+                        <Chip
+                            title={item.name}
+                            key={`_chip_${item.id}`}
+                            color={
+                                item.id === markAsSelected.id
+                                    ? styles.chipSelected.color
+                                    : styles.chipUnselected.color
+                            }
+                            containerStyle={styles.chipFilterContainer}
+                            titleStyle={styles.chipFilterTitle}
+                            onPress={() => handleOnWeatherItemClick(item)}
+                        />
+                    ))}
+                </ScrollView>
+            )
+        }
         const renderItemValue = (key) => {
             var value = ''
             if (key === '_bchName') {
                 value = selectedBeach.current.name
             } else if (key === '_dateVstd') {
                 value = dateToMDY(dateVisited.current)
+            } else if (key === '_weather') {
+                value = selectedWeather
+                    ? selectedWeather.name
+                    : defaultWeather.name
             }
 
             if (!value || value.length === 0) {
@@ -222,6 +262,7 @@ export default function BeachSnapEditor(props) {
 
             return (
                 <Text
+                    key={key}
                     style={{
                         fontFamily: DefaultFont.fontFamily,
                         fontSize: 12,
@@ -240,79 +281,93 @@ export default function BeachSnapEditor(props) {
         return (
             <View
                 style={{
+                    flexDirection: 'column',
                     marginVertical: 10,
                 }}
             >
-                {items.map((item, index) => (
-                    <TouchableOpacity
-                        key={`_chevronList+${item.key}`}
-                        onPress={() => {
-                            if (item.key === '_bchName') {
-                                handleOnBeachNameItemClick();
-                            } else if (item.key === '_dateVstd') {
-                                handleOnDateVisitedItemClick();
-                            }
-
-                            props.onSelectItem ? props.onSelectItem(
-                                `_chevronList+${item.key}`
-                            ) : null
-                        }}
-                    >
-                        {index === 0 && <Divider />}
+                {items.map((item, index) => {
+                    return (
                         <View
-                            style={{
-                                flex: 1,
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                paddingVertical: 10,
-                                paddingHorizontal: 12,
-                            }}
+                            key={`_listItem+${item.key}`}
                         >
-                            <View
-                                style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
+                            <TouchableOpacity
+                                key={`_chevronList+${item.key}`}
+                                onPress={() => {
+                                    if (item.key === '_bchName') {
+                                        handleOnBeachNameItemClick();
+                                    } else if (item.key === '_dateVstd') {
+                                        handleOnDateVisitedItemClick();
+                                    }
+
+                                    props.onSelectItem ? props.onSelectItem(
+                                        `_chevronList+${item.key}`
+                                    ) : null
                                 }}
+                                disabled={item.key === '_weather'}
                             >
-                                <Ionicons name={`${item.icon}-outline`} color="black" size={22} />
-                                <Text style={{
-                                    marginLeft: 10,
-                                    fontFamily: DefaultFont.fontFamily,
-                                    alignSelf: 'center',
-                                }}>{item.title}</Text>
-                            </View>
-                            <View>
-                                {item.type === 'chevron' ?
-                                    (
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                                flexDirection: 'row',
-                                            }}
-                                        >
-                                            {renderItemValue(item.key)}
-                                            <Ionicons style={{ alignSelf: 'flex-end' }} name="chevron-forward" color="black" size={22} />
-                                        </View>
-                                    )
-                                    : <Switch
+                                {index === 0 && <Divider />}
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        paddingVertical: 10,
+                                        paddingHorizontal: 12,
+                                    }}
+                                >
+                                    <View
                                         style={{
-                                            alignSelf: 'flex-end',
-                                            padding: 0,
-                                            transform: Platform.OS === 'ios'
-                                                ? [{ scaleX: .7 }, { scaleY: .7 }]
-                                                : [{ scaleX: 1 }, { scaleY: 1 }],
+                                            flex: 1,
+                                            flexDirection: 'row',
                                         }}
-                                        value={favorited}
-                                        trackColor={'green'}
-                                        thumbColor={'white'}
-                                        onValueChange={handleOnChangeFavorited}
-                                    />
-                                }
-                            </View>
+                                    >
+                                        <Ionicons name={`${item.icon}-outline`} color="black" size={22} />
+                                        <Text style={{
+                                            marginLeft: 10,
+                                            fontFamily: DefaultFont.fontFamily,
+                                            alignSelf: 'center',
+                                        }}>{item.title}</Text>
+                                    </View>
+                                    <View>
+                                        {item.type === 'chevron' ?
+                                            (
+                                                <View
+                                                    style={{
+                                                        flex: 1,
+                                                        flexDirection: 'row',
+                                                    }}
+                                                >
+                                                    {renderItemValue(item.key)}
+                                                    <Ionicons style={{ alignSelf: 'flex-end' }} name="chevron-forward" color="black" size={22} />
+                                                </View>
+                                            )
+                                            : item.type === 'chip' ? renderItemValue(item.key)
+                                                : <Switch
+                                                    style={{
+                                                        alignSelf: 'flex-end',
+                                                        padding: 0,
+                                                        transform: Platform.OS === 'ios'
+                                                            ? [{ scaleX: .7 }, { scaleY: .7 }]
+                                                            : [{ scaleX: 1 }, { scaleY: 1 }],
+                                                    }}
+                                                    value={favorited}
+                                                    trackColor={'green'}
+                                                    thumbColor={'white'}
+                                                    onValueChange={handleOnChangeFavorited}
+                                                />
+                                        }
+                                    </View>
+                                </View>
+                                {item.type !== 'chip' && <Divider />}
+                            </TouchableOpacity>
+                            {item.type === 'chip' && (
+                                <View>
+                                    {weathers && renderWeatherChipFilter()}
+                                </View>
+                            )}
                         </View>
-                        <Divider />
-                    </TouchableOpacity>
-                ))}
+                    )
+                })}
             </View>
         )
     }
@@ -511,7 +566,12 @@ export default function BeachSnapEditor(props) {
         setImageCtrOpacity(1);
     }
 
-    useEffect(() => {
+    const fetchData = async () => {
+        const availWeathers = await DatabaseActions.getAllWeathers();
+        setWeathers(availWeathers);
+    }
+
+    const subscribeToKeyboardEvents = () => {
         const duration = Platform.OS === 'ios' ? 100 : 50;
         addKeyboardListener(
             () => {
@@ -529,6 +589,11 @@ export default function BeachSnapEditor(props) {
                 doOnHideKeyboard(duration)
             }
         )
+    }
+
+    useEffect(() => {
+        fetchData();
+        subscribeToKeyboardEvents();
     }, []);
 
     return (
@@ -622,6 +687,19 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: 'transparent',
         color: 'black',
+    },
+    chipFilterContainer: {
+        marginHorizontal: 1,
+    },
+    chipSelected: {
+        color: 'dodgerblue',
+    },
+    chipUnselected: {
+        color: 'lightgray',
+    },
+    chipFilterTitle: {
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 12,
     },
 });
 

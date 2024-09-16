@@ -80,6 +80,8 @@ export const mockData: BeachList = {
     ]
 }
 
+export const defaultThumbnail = require('@/assets/images/thumbnail/beach-emoji-hd.png')
+
 export const getThumbnail = (regionKey) => {
     // Note: require() doesn't work with dynamic values. 
     // Hence, we're using static strings here

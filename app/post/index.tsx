@@ -121,7 +121,7 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                         <Text
                             style={{
                                 fontFamily: DefaultFont.fontFamily,
-                                fontSize: 15,
+                                fontSize: 14,
                                 color: 'gray',
                                 alignSelf: 'flex-start'
                             }}

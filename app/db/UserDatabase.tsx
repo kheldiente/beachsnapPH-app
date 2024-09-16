@@ -32,6 +32,7 @@ export const createTables = async () => {
                 "caption"	TEXT,
                 "dateVisited"	TEXT NOT NULL,
                 "metadata"  TEXT NOT NULL,
+                "weatherId" TEXT NOT NULL,
                 PRIMARY KEY("id" AUTOINCREMENT)
             );
 
@@ -157,8 +158,17 @@ export const saveSnap = async (snap) => {
     var result = null;
     try {
         result = await db.runAsync(
-            'INSERT INTO snap (beachId, provinceId, regionId, photoUrl, caption, dateVisited, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [`${snap.beachId}`, `${snap.provinceId}`, `${snap.regionId}`, `${snap.photoUrl}`, `${snap.caption}`, `${snap.dateVisited}`, `${snap.metadata}`]
+            'INSERT INTO snap (beachId, provinceId, regionId, photoUrl, caption, dateVisited, metadata, weatherId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [
+                `${snap.beachId}`, 
+                `${snap.provinceId}`, 
+                `${snap.regionId}`, 
+                `${snap.photoUrl}`, 
+                `${snap.caption}`, 
+                `${snap.dateVisited}`, 
+                `${snap.metadata}`, 
+                `${snap.weatherId}`
+            ]
         )
         console.log(`inserted snap id: ${result.lastInsertRowId}`);
     } catch (e) {
