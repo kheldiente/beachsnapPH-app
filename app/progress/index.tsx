@@ -17,7 +17,9 @@ import { useNavigation } from 'expo-router';
 const progressWheelOptions = (progress) => {
     var fixedProgress = progress; // Only works for android
     if (Platform.OS === 'ios') {
-        fixedProgress = progress + 1;
+        if (progress > 0) {
+            fixedProgress = progress + 1;
+        }
     }
 
     return {
