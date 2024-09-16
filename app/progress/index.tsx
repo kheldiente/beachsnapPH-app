@@ -5,7 +5,8 @@ import {
     View,
     Text,
     StyleSheet,
-    ScrollView
+    ScrollView,
+    Platform
 } from 'react-native';
 import AnimatedProgressWheel from 'react-native-progress-wheel';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
@@ -14,13 +15,18 @@ import { dateStringToMDY } from '@/constants/Utils';
 import { useNavigation } from 'expo-router';
 
 const progressWheelOptions = (progress) => {
+    var fixedProgress = progress; // Only works for android
+    if (Platform.OS === 'ios') {
+        fixedProgress = progress + 1;
+    }
+
     return {
         color: 'darkseagreen',
         backgroundColor: 'lightgray',
         size: 170,
         width: 10,
         duration: 600,
-        progress: progress + 1, // There's a bug in the progress wheel where progress is decreased by 1
+        progress: fixedProgress,
         rounded: true
     }
 }
