@@ -51,6 +51,7 @@ export default function BeachSnapEditor(props) {
     const dateVisited = useRef(new Date());
     const selectedBeach = useRef(preselectedBeach);
     const imageRef = useRef(null);
+    const selectedWeatherRef = useRef(defaultWeather);
 
     const [caption, setCaption] = useState('');
     const [favorited, setFavorited] = useState(false);
@@ -124,7 +125,7 @@ export default function BeachSnapEditor(props) {
                 dateVisited: dateVisited.current,
                 caption: caption,
                 favorited: favorited,
-                weather: selectedWeather,
+                weather: selectedWeatherRef.current,
             }) : null
     }
 
@@ -200,6 +201,8 @@ export default function BeachSnapEditor(props) {
     }
 
     const handleOnWeatherItemClick = (item) => {
+        selectedWeatherRef.current = item;
+
         setSelectedWeather(item);
         handleOnUpdatedBeachData();
     }

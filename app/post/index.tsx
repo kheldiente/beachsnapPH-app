@@ -103,6 +103,7 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                     <View
                         style={{
                             marginHorizontal: 10,
+                            paddingVertical: 5,
                         }}
                     >
                         {data.caption.length > 0 &&
@@ -118,16 +119,32 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                                 {data.caption}
                             </Text>
                         }
-                        <Text
+                        <View
                             style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontSize: 14,
-                                color: 'gray',
-                                alignSelf: 'flex-start'
+                                marginTop: 5,
                             }}
                         >
-                            {dateStringToMDY(data.dateVisited)}
-                        </Text>
+                            <Text
+                                style={{
+                                    fontFamily: DefaultFont.fontFamily,
+                                    fontSize: 14,
+                                    color: 'green',
+                                    alignSelf: 'flex-start'
+                                }}
+                            >
+                                {`It was ${data.weather.name.toLowerCase()} that time`}
+                            </Text>
+                            <Text
+                                style={{
+                                    fontFamily: DefaultFont.fontFamily,
+                                    fontSize: 12,
+                                    color: 'gray',
+                                    alignSelf: 'flex-start'
+                                }}
+                            >
+                                {dateStringToMDY(data.dateVisited)}
+                            </Text>
+                        </View>
                     </View>
                 </View>
             </Animated.View>

@@ -69,7 +69,17 @@ export const getAllSnapFromBeach = async (beachId) => {
     var results = []
     try {
         results = await db.getAllAsync(`SELECT * FROM snap WHERE beachId = '${beachId}' ORDER BY dateVisited ASC`);
-        // console.log(`goals available: ${allRows.length}`)
+        
+        await ReadOnlyDatabase.openDb()
+        const allWeathers = await ReadOnlyDatabase.getAllWeathers();
+        await ReadOnlyDatabase.closeDb()
+        
+        results = results.map((snap) => {
+            return {
+                ...snap,
+                weather: allWeathers.filter((weather) => weather.id === snap.weatherId)[0]
+            }
+        })
     } catch (e) {
         console.log(e);
     }
@@ -109,19 +119,26 @@ export const getAllSnaps = async () => {
         await ReadOnlyDatabase.openDb()
         const beachesCountForProvinces = await ReadOnlyDatabase.getBeachesCountForProvinces(
             Object.keys(uniqueProvinceIds)
-        )
+        );
         const allBeachDetails = await ReadOnlyDatabase.getBeachesWithIds(
             Object.keys(uniqueBeachIds)
-        )
+        );
+        const allWeathers = await ReadOnlyDatabase.getAllWeathers();
         await ReadOnlyDatabase.closeDb()
 
         // console.log(`beachesCount: ${beachesCountForProvinces?.length}`)
 
         allBeachDetails?.forEach((beach) => {
-            uniqueProvinceIds[beach.provinceId]['beaches'].push(beach);
-            if (uniqueProvinceIds[beach.provinceId]['totalBeaches'] === undefined) {
-                uniqueProvinceIds[beach.provinceId]['totalBeaches'] =
-                    beachesCountForProvinces.filter((info) => info.provinceId === beach.provinceId)[0].count
+            const beachWithWeather = {
+                ...beach,
+                weather: allWeathers.filter((weather) => weather.id === beach.weatherId)[0]
+            }
+            uniqueProvinceIds[beachWithWeather.provinceId]['beaches'].push(beachWithWeather);
+            if (uniqueProvinceIds[beachWithWeather.provinceId]['totalBeaches'] === undefined) {
+                uniqueProvinceIds[beachWithWeather.provinceId]['totalBeaches'] =
+                    beachesCountForProvinces.filter((info) =>
+                        info.provinceId === beachWithWeather.provinceId
+                    )[0].count
             }
         })
 
@@ -160,13 +177,13 @@ export const saveSnap = async (snap) => {
         result = await db.runAsync(
             'INSERT INTO snap (beachId, provinceId, regionId, photoUrl, caption, dateVisited, metadata, weatherId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [
-                `${snap.beachId}`, 
-                `${snap.provinceId}`, 
-                `${snap.regionId}`, 
-                `${snap.photoUrl}`, 
-                `${snap.caption}`, 
-                `${snap.dateVisited}`, 
-                `${snap.metadata}`, 
+                `${snap.beachId}`,
+                `${snap.provinceId}`,
+                `${snap.regionId}`,
+                `${snap.photoUrl}`,
+                `${snap.caption}`,
+                `${snap.dateVisited}`,
+                `${snap.metadata}`,
                 `${snap.weatherId}`
             ]
         )
@@ -229,7 +246,7 @@ export const getGeneralGoalStats = async () => {
     return result;
 }
 
-export const getRecentVisitedBeaches = async() => {
+export const getRecentVisitedBeaches = async () => {
     if (!db) {
         console.log('Database not initialized!');
         return;
@@ -263,7 +280,7 @@ export const getRecentVisitedBeaches = async() => {
     return visitedBeaches;
 }
 
-export const getTopBeachesWithManyPhotos = async() => {
+export const getTopBeachesWithManyPhotos = async () => {
     if (!db) {
         console.log('Database not initialized!');
         return;

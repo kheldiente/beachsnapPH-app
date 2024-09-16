@@ -155,16 +155,32 @@ export default function ProfileLayout({ navigation, route }) {
                             {item.caption}
                         </Text>
                     }
-                    <Text
+                    <View
                         style={{
-                            fontFamily: DefaultFont.fontFamily,
-                            fontSize: 10,
-                            color: 'gray',
-                            alignSelf: 'flex-start'
+                            marginTop: 5,
                         }}
                     >
-                        {dateStringToMDY(item.dateVisited)}
-                    </Text>
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 12,
+                                color: 'green',
+                                alignSelf: 'flex-start'
+                            }}
+                        >
+                            {`It was ${item.weather.name.toLowerCase()} that time`}
+                        </Text>
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 10,
+                                color: 'gray',
+                                alignSelf: 'flex-start'
+                            }}
+                        >
+                            {dateStringToMDY(item.dateVisited)}
+                        </Text>
+                    </View>
                 </View>
             </View>
         )
