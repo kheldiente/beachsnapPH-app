@@ -76,18 +76,22 @@ export default function BeachSnapEditor(props) {
             aspect: [4, 3],
             quality: 1,
         });
-        const isImage = result.assets[0].type === 'image';
-        const isValid = !result.canceled && isImage;
+        const isValid = !result.canceled;
 
         if (isValid) {
-            if (checkIfDiffImg(result)) {
+            const isImage = result.assets[0].type === 'image';
+            if (isImage && checkIfDiffImg(result)) {
                 imageRef.current = result.assets[0].uri;
 
                 setImage(imageRef.current);
                 handleOnUpdatedBeachData();
             }
         } else {
-            console.log(`Selected file is ${result.assets[0].type}`)
+            if (result.assets) {
+                console.log(`Selected file is ${result.assets[0].type}`)
+            } else {
+                console.log('No file selected')
+            }
         }
     };
 

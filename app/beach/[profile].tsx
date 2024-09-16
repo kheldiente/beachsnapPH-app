@@ -111,12 +111,14 @@ export default function ProfileLayout({ navigation, route }) {
                 >
                     {true &&
                         <View style={styles.gridItemImg}>
-                            <Animated.Image
-                                source={{ uri: item.photoUrl }}
-                                style={styles.img}
-                            // sharedTransitionTag={childTransitionTag(item)}
-                            // sharedTransitionStyle={customTransition}
-                            />
+                            {item.photoUrl &&
+                                <Animated.Image
+                                    source={{ uri: item.photoUrl }}
+                                    style={styles.img}
+                                // sharedTransitionTag={childTransitionTag(item)}
+                                // sharedTransitionStyle={customTransition}
+                                />
+                            }
                         </View>
                     }
                 </Animated.View>
@@ -328,8 +330,6 @@ export default function ProfileLayout({ navigation, route }) {
     }
 
     const renderPhotoList = () => {
-        prevDateHeader = ''; // Make sure to reset when rendering whole list
-
         return snaps.length === 0
             ? (
                 <View
