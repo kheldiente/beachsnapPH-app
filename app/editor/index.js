@@ -396,6 +396,7 @@ export default function BeachSnapEditor(props) {
                         marginTop: 10,
                         backgroundColor: 'white',
                     }}
+                    mode='date'
                     value={dateVisited.current}
                     maximumDate={new Date()}
                     onChange={onDateChange}
@@ -429,6 +430,7 @@ export default function BeachSnapEditor(props) {
                             marginTop: 10,
                             backgroundColor: 'white',
                         }}
+                        mode='date'
                         display={'spinner'}
                         value={dateVisited.current}
                         maximumDate={new Date()}
