@@ -121,7 +121,7 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                         }
                         <View
                             style={{
-                                marginTop: 5,
+                                marginTop: data.caption.length > 0 ? 5 : 0,
                             }}
                         >
                             <Text

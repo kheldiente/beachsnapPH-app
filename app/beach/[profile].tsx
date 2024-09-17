@@ -7,6 +7,7 @@ import {
     Text,
     Image,
     Pressable,
+    Platform,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
 import { Button } from '@rneui/themed';
@@ -22,6 +23,7 @@ import { createWeatherLabel, dateStringToMDY, dateStringToTime } from '@/constan
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const listCalcHeight = Dimensions.get('window').height;
+const listOffset = Platform.OS === 'ios' ? 250 : 210;
 const cardMargin = 0;
 
 export default function ProfileLayout({ navigation, route }) {
@@ -157,7 +159,7 @@ export default function ProfileLayout({ navigation, route }) {
                     }
                     <View
                         style={{
-                            marginTop: 5,
+                            marginTop: item.caption.length > 0 ? 5 : 0,
                         }}
                     >
                         <Text
@@ -283,7 +285,10 @@ export default function ProfileLayout({ navigation, route }) {
                 }}
             >
                 <PagerView
-                    style={styles.pagerView}
+                    style={{
+                        ...styles.pagerView,
+                        height: listCalcHeight - listOffset,
+                    }}
                     initialPage={0}
                     scrollEnabled={true}
                     ref={pagerViewRef}
@@ -518,7 +523,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     pagerView: {
-        height: listCalcHeight - 250,
+        height: listCalcHeight
     },
     page: {
         flex: 1,
