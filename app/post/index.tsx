@@ -1,5 +1,5 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { dateStringToMDY } from '@/constants/Utils';
+import { createWeatherLabel, dateStringToMDY } from '@/constants/Utils';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import {
@@ -132,7 +132,7 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                                     alignSelf: 'flex-start'
                                 }}
                             >
-                                {`It was ${data.weather.name.toLowerCase()} that time`}
+                                {createWeatherLabel(data)}
                             </Text>
                             <Text
                                 style={{

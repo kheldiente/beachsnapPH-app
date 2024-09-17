@@ -18,7 +18,7 @@ import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import PagerView from 'react-native-pager-view';
 import { FlashList } from '@shopify/flash-list';
-import { dateStringToMDY, dateStringToTime } from '@/constants/Utils';
+import { createWeatherLabel, dateStringToMDY, dateStringToTime } from '@/constants/Utils';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const listCalcHeight = Dimensions.get('window').height;
@@ -168,7 +168,7 @@ export default function ProfileLayout({ navigation, route }) {
                                 alignSelf: 'flex-start'
                             }}
                         >
-                            {`It was ${item.weather.name.toLowerCase()} that time`}
+                            {createWeatherLabel(item)}
                         </Text>
                         <Text
                             style={{
@@ -178,7 +178,7 @@ export default function ProfileLayout({ navigation, route }) {
                                 alignSelf: 'flex-start'
                             }}
                         >
-                            {dateStringToMDY(item.dateVisited)}
+                            {`${dateStringToMDY(item.dateVisited)}`}
                         </Text>
                     </View>
                 </View>

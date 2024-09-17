@@ -11,7 +11,7 @@ import {
 import AnimatedProgressWheel from 'react-native-progress-wheel';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
-import { dateStringToMDY } from '@/constants/Utils';
+import { dateStringToMDY, dateStringToTime } from '@/constants/Utils';
 import { useNavigation } from 'expo-router';
 
 const progressWheelOptions = (progress) => {
@@ -141,7 +141,7 @@ const renderStatCard = (data) => {
                             fontFamily: DefaultFont.fontFamily,
                             fontSize: 10,
                             color: 'gray'
-                        }}>{dateStringToMDY(item.dateVisited)}</Text>
+                        }}>{dateStringToMDY(item.dateVisited)} - {dateStringToTime(item.dateVisited)}</Text>
                     </View>
                     <Text style={{
                         fontFamily: DefaultFont.fontFamilyBold,

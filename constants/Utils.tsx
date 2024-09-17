@@ -28,7 +28,8 @@ export const dateToMDY = (date: Date) => {
 }
 
 export const dateStringToMDY = (dateString: string) => {
-    const [datePart, timePart] = dateString.split(', ');
+    const origDate = new Date(dateString).toLocaleString();
+    const [datePart, timePart] = origDate.split(', ');
     const [month, day, year] = datePart.split('/');
     const [time, period] = timePart.split(' ');
     const [hours, minutes, seconds] = time.split(':');
@@ -45,9 +46,27 @@ export const dateStringToMDY = (dateString: string) => {
 }
 
 export const dateStringToTime = (dateString: string) => {
-    const [datePart, timePart] = dateString.split(', ');
+    const origDate = new Date(dateString).toLocaleString();
+    const [datePart, timePart] = origDate.split(', ');
     const [month, day, year] = datePart.split('/');
     const [hours, minutes, seconds] = timePart.split(':');
-    const [time, period] = timePart.split(/(\s+)/);
+    const period = timePart.includes('PM') ? 'PM' : 'AM';
     return `${hours}:${minutes} ${period}`;
+}
+
+export const createWeatherLabel = (item) => {
+    const isANoun = ["thunderstorm", "earthquake"];
+    var weatherDesc = `it was ${item.weather.name.toLowerCase()}`;
+
+    if (isANoun.includes(item.weather.name.toLowerCase())) {
+        const isFirstLetterConsonant = ["a", "e", "i", "o", "u"]
+            .includes(item.weather.name.charAt(0).toLowerCase());
+
+        var article = 'a';
+        if (isFirstLetterConsonant) {
+            article = 'an';
+        }
+        weatherDesc = `there was ${article} ${item.weather.name.toLowerCase()}`;
+    }
+    return `At ${dateStringToTime(item.dateVisited)}, ${weatherDesc}`;
 }
