@@ -25,6 +25,7 @@ import { FlashList } from '@shopify/flash-list';
 const imgDimension = 300;
 const modalBorderRadius = 10;
 const maxCharacters = 200;
+const ANDROID_PICKER_MODE_HIDDEN = 'hidden';
 
 export const generateParams = (currSnapData) => {
     return {
@@ -52,18 +53,20 @@ export default function BeachSnapEditor(props) {
     const selectedBeach = useRef(preselectedBeach);
     const imageRef = useRef(null);
     const selectedWeatherRef = useRef(defaultWeather);
+    const datePickerMode = useRef('date');
 
     const [caption, setCaption] = useState('');
     const [favorited, setFavorited] = useState(false);
     const [imageCtrOpacity, setImageCtrOpacity] = useState(1);
 
     const calcImageContainerH = useSharedValue(imageContainerH);
-    const [showDate, setShowDate] = useState(false);
+    const [showDateTimePicker, setShowDateTimePicker] = useState(false);
     const [showSearchBeachPage, setShowSearchBeachPage] = useState(false);
     const [image, setImage] = useState(null);
     const [matchedBeaches, setMatchedBeaches] = useState(null);
     const [weathers, setWeathers] = useState(null);
     const [selectedWeather, setSelectedWeather] = useState(null);
+    const [showiOStimePicker, setShowiOStimePicker] = useState(false);
 
     const pickImage = async () => {
         const checkIfDiffImg = (result) => {
@@ -109,12 +112,38 @@ export default function BeachSnapEditor(props) {
     }
 
     const handleOnSelectDate = () => {
-        setShowDate(false);
+        datePickerMode.current = 'time';
+
+        if (Platform.OS === 'android') {
+            setShowDateTimePicker(false)
+            setTimeout(() => {
+                setShowDateTimePicker(true);
+            }, 100)
+        } else {
+            setShowiOStimePicker(true);
+        }
+    }
+
+    const handleOnSelectTime = () => {
+        if (Platform.OS === 'ios') {
+            setShowiOStimePicker(false);
+            setShowDateTimePicker(false);
+        } else {
+            setShowDateTimePicker(false);
+        }
+
         props.onSelectDate
             ? props.onSelectDate()
             : null
 
         handleOnUpdatedBeachData();
+
+        datePickerMode.current = 'date'; // Reset to date mode
+    }
+
+    const handleDateTimeAndroidPickerDismissed = () => {
+        datePickerMode.current = 'date';
+        setShowDateTimePicker(false);
     }
 
     const handleOnUpdatedBeachData = () => {
@@ -216,7 +245,8 @@ export default function BeachSnapEditor(props) {
         }
 
         const handleOnDateVisitedItemClick = () => {
-            setShowDate(true);
+            console.log(`handleOnDateVisitedItemClick showDateTimePicker: ${showDateTimePicker}`)
+            setShowDateTimePicker(true);
         }
 
         const renderWeatherChipFilter = () => {
@@ -376,41 +406,49 @@ export default function BeachSnapEditor(props) {
     }
 
     const renderDatePickerModal = () => {
-        const onDateChange = (event, selectedDate) => {
-            console.log(`onDateChange: ${event.type}, selected: ${selectedDate}`)
-            dateVisited.current = selectedDate;
+        const pickerMode = datePickerMode.current;
+        const pickerCta = pickerMode === 'time' ? 'Select' : 'Confirm date';
 
-            if (Platform.OS === 'android') {
-                if (event.type === 'dismissed'
-                    || event.type === 'set'
-                ) {
+        const onDateChangeDefault = (event, selectedDate) => {
+            console.log(`onDateChange: ${JSON.stringify(event.type)}, selected: ${selectedDate}`)
+            dateVisited.current = selectedDate;
+        }
+
+        const onDateChangeOnAndroid = (event, selectedDate) => {
+            if (event.type === 'set') {
+                console.log(`onDateChange: ${JSON.stringify(event.type)}, selected: ${selectedDate}`)
+                dateVisited.current = selectedDate;
+
+                if (pickerMode === 'date') {
                     handleOnSelectDate();
+                } else {
+                    handleOnSelectTime();
                 }
+            } else if (event.type === 'dismissed') {
+                handleDateTimeAndroidPickerDismissed();
             }
         };
 
         if (Platform.OS === 'android') {
-            return (
-                <RNDateTimePicker
-                    style={{
-                        marginTop: 10,
-                        backgroundColor: 'white',
-                    }}
-                    mode='date'
-                    value={dateVisited.current}
-                    maximumDate={new Date()}
-                    onChange={onDateChange}
-                    positiveButton={{ label: 'Select', textColor: 'green' }}
-                    negativeButton={{ label: 'Cancel', textColor: 'black' }}
-                />
-            )
+            return (<RNDateTimePicker
+                style={{
+                    marginTop: 10,
+                    backgroundColor: 'white',
+                }}
+                mode={pickerMode}
+                value={dateVisited.current}
+                maximumDate={new Date()}
+                onChange={onDateChangeOnAndroid}
+                positiveButton={{ label: pickerCta, textColor: 'green' }}
+                negativeButton={{ label: 'Cancel', textColor: 'black' }}
+            />)
         }
 
         return (
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showDate}
+                visible={showDateTimePicker}
             >
                 <View
                     style={{
@@ -430,11 +468,11 @@ export default function BeachSnapEditor(props) {
                             marginTop: 10,
                             backgroundColor: 'white',
                         }}
-                        mode='date'
+                        mode={pickerMode}
                         display={'spinner'}
                         value={dateVisited.current}
                         maximumDate={new Date()}
-                        onChange={onDateChange}
+                        onChange={onDateChangeDefault}
 
                     />
                     {Platform.OS === 'ios'
@@ -447,9 +485,13 @@ export default function BeachSnapEditor(props) {
                             titleStyle={{
                                 fontFamily: DefaultFont.fontFamilyBold,
                             }}
-                            title='Select'
+                            title={pickerCta}
                             onPress={() => {
-                                handleOnSelectDate();
+                                if (showiOStimePicker) {
+                                    handleOnSelectTime();
+                                } else {
+                                    handleOnSelectDate();
+                                }
                             }}
                         />)
                         : null
@@ -643,7 +685,7 @@ export default function BeachSnapEditor(props) {
                     />
                     {renderListItemOptions()}
                 </View>
-                {showDate && renderDatePickerModal()}
+                {showDateTimePicker && renderDatePickerModal()}
                 {showSearchBeachPage && renderSearchBeachModal()}
             </View>
         </ScrollView>
