@@ -1,5 +1,6 @@
 import * as UserDatabase from '@/app/db/UserDatabase';
 import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase';
+import { dateToUnixTimestamp } from '@/constants/Utils';
 
 export const setupAllDbs = async () => {
     await ReadOnlyDatabase.initDb();
@@ -31,8 +32,12 @@ export const getAllProvinces = async (id) => {
 }
 
 export const saveSnap = async (snap) => {
+    const snapParams = {
+        ...snap,
+        dateVisited: dateToUnixTimestamp(new Date(snap.dateVisited)),
+    }
     await UserDatabase.openDb();
-    const result = await UserDatabase.saveSnap(snap);
+    const result = await UserDatabase.saveSnap(snapParams);
     await UserDatabase.closeDb();
 
     return result

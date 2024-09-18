@@ -28,10 +28,10 @@ export const dateToMDY = (date: Date) => {
     return `${week} ${month}, ${day} ${year}`;
 }
 
-export const dateStringToMDY = (dateString: string) => {
+export const dateStringToMDY = (dateString: string, noWeekday: boolean = false) => {
     const origDate = new Date(dateString).toDateString();
     const [week, month, day, year] = origDate.split(' ');
-    return `${week} ${month}, ${day} ${year}`;
+    return noWeekday ? `${month}, ${day} ${year}` : `${week} ${month}, ${day} ${year}`;
 }
 
 export const dateStringToTime = (dateString: string) => {
@@ -40,6 +40,10 @@ export const dateStringToTime = (dateString: string) => {
     const [hours, minutes, _seconds] = timePart.split(':');
     const period = timePart.includes('PM') ? 'PM' : 'AM';
     return `${hours}:${minutes} ${period}`;
+}
+
+export const dateToUnixTimestamp = (date: Date) => {
+    return Math.round(date.getTime() / 1000);
 }
 
 export const createWeatherLabel = (item) => {

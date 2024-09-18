@@ -6,7 +6,6 @@ import {
     Text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { gridRegions } from "@/data/beach";
 import BeachGridList from "@/components/BeachGridList";
 import { DefaultFont } from "@/constants/Fonts";
 import { useNavigation } from "expo-router";
@@ -14,22 +13,12 @@ import { exploreLayoutKeys } from "@/constants/Global";
 import * as DatabaseActions from "@/app/db/DatabaseActions";
 
 export default function RegionListLayout(props: any) {
-    const getItemId = (item: { id: any; }) => (item.id)
     const navigation = useNavigation();
     const [regions, setRegions] = useState(null);
 
-    const getSegmentButtons = () => {
-        return ["All", "Visited"];
-    };
-
-    const getGridData = () => {
-        return gridRegions.map((arr) => (
-            { gridItemArray: arr }
-        ))
-    }
-
     const getRegionGridData = async () => {
         const cRegions = await DatabaseActions.getAllRegions();
+        console.log(cRegions);
 
         if (cRegions === null) {
             return [];

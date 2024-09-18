@@ -30,7 +30,7 @@ export const createTables = async () => {
                 "regionId"  TEXT NOT NULL,
                 "photoUrl"	TEXT NOT NULL,
                 "caption"	TEXT,
-                "dateVisited"	TEXT NOT NULL,
+                "dateVisited"	INTEGER NOT NULL,
                 "metadata"  TEXT NOT NULL,
                 "weatherId" TEXT NOT NULL,
                 PRIMARY KEY("id" AUTOINCREMENT)
@@ -47,7 +47,7 @@ export const createTables = async () => {
                 "goalListId"	INTEGER NOT NULL,
                 "beachId"	TEXT NOT NULL,
                 "name"	TEXT,
-                "dateVisited"	TEXT,
+                "dateVisited"	INTEGER NOT NULL,
                 "targetDateToVisit"	TEXT NOT NULL,
                 "notes"	TEXT,
                 PRIMARY KEY("id" AUTOINCREMENT),
@@ -68,12 +68,16 @@ export const getAllSnapFromBeach = async (beachId) => {
 
     var results = []
     try {
-        results = await db.getAllAsync(`SELECT * FROM snap WHERE beachId = '${beachId}' ORDER BY dateVisited ASC`);
-        
+        results = await db.getAllAsync(
+            `SELECT *, 
+            datetime(dateVisited, 'unixepoch') as dateVisited 
+            FROM snap WHERE beachId = '${beachId}' ORDER BY dateVisited DESC`
+        );
+
         await ReadOnlyDatabase.openDb()
         const allWeathers = await ReadOnlyDatabase.getAllWeathers();
         await ReadOnlyDatabase.closeDb()
-        
+
         results = results.map((snap) => {
             return {
                 ...snap,
@@ -96,7 +100,9 @@ export const getAllSnaps = async () => {
     var uniqueProvinceIds = {};
     try {
         const allSnaps = await db.getAllAsync(`
-            SELECT * FROM snap ORDER BY metadata
+            SELECT *,
+            datetime(dateVisited, 'unixepoch') as dateVisited 
+            FROM snap ORDER BY metadata
         `);
         allSnaps.forEach((snap) => {
             if (uniqueProvinceIds[snap.provinceId] === undefined) {
@@ -157,7 +163,11 @@ export const getAllGoals = async () => {
 
     var goals = [];
     try {
-        goals = await db.getAllAsync('SELECT * FROM goal');
+        goals = await db.getAllAsync(`
+            SELECT *, 
+            datetime(dateVisited, 'unixepoch') as dateVisited 
+            FROM goal
+        `);
         // console.log(`goals available: ${allRows.length}`)
     } catch (e) {
         console.log(e);
@@ -254,8 +264,20 @@ export const getRecentVisitedBeaches = async () => {
 
     var visitedBeaches = [];
     try {
+        // visitedBeaches = await db.getAllAsync(`
+        //     SELECT DISTINCT(beachId) 
+        //     FROM snap
+        //     WHERE beachId IN (
+        //         SELECT COUNT(snap2.photoUrl)
+        //         FROM snap snap2
+        //         GROUP BY snap2.beachId
+        //     )
+        //     ORDER BY strftime('%Y-%m-%dT%H:%i:%s.%fZ', dateVisited) DESC LIMIT 5
+        // `);
+
         visitedBeaches = await db.getAllAsync(`
-            SELECT DISTINCT(beachId), COUNT(*) as photoCount, dateVisited 
+            SELECT DISTINCT(beachId), COUNT(*) as photoCount, 
+            datetime(dateVisited, 'unixepoch') as dateVisited 
             FROM snap
             GROUP BY beachId
             ORDER BY dateVisited DESC LIMIT 5
@@ -272,7 +294,7 @@ export const getRecentVisitedBeaches = async () => {
                 ...visitedBeaches[index],
                 beach: beachDetails?.filter((details) => details.id === beach.beachId)[0]
             }
-            // console.log(`visitedBeaches: ${JSON.stringify(visitedBeaches[index])}`)
+            console.log(`visitedBeaches: ${JSON.stringify(visitedBeaches[index])}`)
         })
     } catch (e) {
         console.log(e);
@@ -289,7 +311,8 @@ export const getTopBeachesWithManyPhotos = async () => {
     var beaches = [];
     try {
         beaches = await db.getAllAsync(`
-            SELECT DISTINCT(beachId), COUNT(*) as photoCount, dateVisited 
+            SELECT DISTINCT(beachId), COUNT(*) as photoCount, 
+            datetime(dateVisited, 'unixepoch') as dateVisited
             FROM snap
             GROUP BY beachId
             HAVING photoCount > 1
