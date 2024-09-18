@@ -424,7 +424,6 @@ export default function ProfileLayout({ navigation, route }) {
                 onClose={handleOnModalClose}
                 onSave={handleOnSaveClick}
             />
-
             <View
                 style={{
                     flex: 1,
