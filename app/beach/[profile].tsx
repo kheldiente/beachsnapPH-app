@@ -130,7 +130,7 @@ export default function ProfileLayout({ navigation, route }) {
 
     const renderPhotoListItem = (item) => {
         return (
-            <View style={{ marginBottom: 35 }}>
+            <View style={{ marginBottom: 0 }}>
                 <Image
                     key={`_phList_${item.id}`}
                     source={{ uri: item.photoUrl }}
