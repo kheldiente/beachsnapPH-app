@@ -15,7 +15,7 @@ import { Divider, Image } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Switch, Chip } from '@rneui/themed';
 import Animated, { Easing, ReduceMotion, useSharedValue, withTiming } from 'react-native-reanimated';
-import { addKeyboardListener, dateToMDY } from '@/constants/Utils';
+import { addKeyboardListener, dateStringToTime, dateToMDY } from '@/constants/Utils';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { defaultWeather, items } from '@/constants/Global';
@@ -282,7 +282,7 @@ export default function BeachSnapEditor(props) {
             if (key === '_bchName') {
                 value = selectedBeach.current.name
             } else if (key === '_dateVstd') {
-                value = dateToMDY(dateVisited.current)
+                value = dateToMDY(dateVisited.current) + ' - ' + dateStringToTime(dateVisited.current)
             } else if (key === '_weather') {
                 value = selectedWeather
                     ? selectedWeather.name
