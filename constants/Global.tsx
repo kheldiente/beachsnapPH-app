@@ -20,6 +20,7 @@ export const userDbVersions = [
 export const exploreLayoutKeys = {
     REGION_LIST: "_RegionList",
     BEACH_LIST: "_BeachList",
+    SEARCH: "_Search",
 }
 
 export const snapsLayoutKeys = {

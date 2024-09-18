@@ -82,7 +82,6 @@ export default function RootLayout() {
                             presentation: 'transparentModal'
                         }}
                     />
-
                 </Stack.Navigator>
             </NavigationContainer>
         </GestureHandlerRootView>

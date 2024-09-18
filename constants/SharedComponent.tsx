@@ -38,6 +38,38 @@ export const secondaryHeaderBar = (title) => {
     }
 }
 
+export const secondaryHeaderWithBackBar = (navigation) => {
+    return {
+        headerBackVisible: false,
+        headerLeft: () => (
+            <Ionicons
+                name="chevron-back-outline"
+                size={20}
+                style={{
+                    backgroundColor: 'transparent',
+                    color: 'black'
+                }}
+                onPress={() => navigation.goBack()}
+            />
+        ),
+        headerTitle: (props) => (
+            <TabHeaderBar
+                id="tabHeaderBar"
+                title={``}
+                {...props}
+            />
+        )
+    }
+}
+
+
+export const noHeaderBar = () => {
+    return {
+        headerBackVisible: false,
+        headerShown: false,
+    }
+}
+
 export const defaultHeaderWithBackBar = (title = '') => {
     const tabHeaderOptions = ({ navigation }) => {
         return {
@@ -86,6 +118,36 @@ export const defaultHeaderWithRightBar = ({ title = appName, component = null })
                     id="tabHeaderBar"
                     title={`${title}`}
                     {...props}
+                />
+            )
+        }
+    };
+    return tabHeaderOptions;
+}
+
+/// SEARCH BAR HEADER ///
+export const defaultHeaderWithSearchBar = (title, onSearchBarPress) => {
+    const tabHeaderOptions = ({ navigation }) => {
+        return {
+            headerShadowVisible: false,
+            headerStyle: {
+                backgroundColor: 'white',
+                    id="tabHeaderBar"
+                    title={`${title}`}
+                    {...props}
+                />
+            ),
+            headerRight: (props) => (
+                <Ionicons
+                    name="search-outline"
+                    size={25}
+                    style={{
+                        backgroundColor: 'transparent',
+                        color: 'black'
+                    }}
+                    onPress={() => {
+                        onSearchBarPress(navigation)
+                    }}
                 />
             )
         }

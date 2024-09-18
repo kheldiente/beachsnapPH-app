@@ -198,7 +198,7 @@ export const getMatchingBeaches = async ({
     var beaches = [];
     try {
         var statement = `SELECT beach.id, beach.name, beach.municipality, province.name as province,
-                beach.provinceId, beach.regionId
+                beach.provinceId, beach.regionId, beach.description
                 FROM province
                 INNER JOIN beach ON province.id = beach.provinceId 
                 WHERE beach.name LIKE "${keyword}%" ORDER BY beach.name`
