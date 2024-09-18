@@ -132,6 +132,11 @@ export const defaultHeaderWithSearchBar = (title, onSearchBarPress) => {
             headerShadowVisible: false,
             headerStyle: {
                 backgroundColor: 'white',
+                elevation: 0,
+                shadowOpacity: 0
+            },
+            headerTitle: (props) => (
+                <TabHeaderBar
                     id="tabHeaderBar"
                     title={`${title}`}
                     {...props}
