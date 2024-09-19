@@ -8,8 +8,8 @@ import {
 
 export default function TabHeaderBar(props) {
     return (
-        <View style={styles.toolbar}>
-            <Text style={styles.title}>{props.title}</Text>
+        <View style={props.toolbarStyle || styles.toolbar}>
+            <Text style={props.titleStyle || styles.title}>{props.title}</Text>
         </View>
     )
 };

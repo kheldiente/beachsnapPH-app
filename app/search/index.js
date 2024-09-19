@@ -1,4 +1,4 @@
-import { noHeaderBar } from '@/constants/SharedComponent';
+import { noHeaderBar, secondaryHeaderWithBackBar } from '@/constants/SharedComponent';
 import { useEffect, useState } from 'react';
 import {
     StyleSheet,
@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlashList } from '@shopify/flash-list';
-import { Ionicons } from '@expo/vector-icons';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { DefaultFont } from '@/constants/Fonts';
 import { snapsLayoutKeys } from '@/constants/Global';
+import { Divider } from '@rneui/themed';
 
 export default function SearchLayout({ navigation, route }) {
     const estListSize = 500;
+    const headerTitle = 'Beaches';
     const insets = useSafeAreaInsets();
 
     const [matchedBeaches, setMatchedBeaches] = useState(null);
-    const [searchInput, setSearchInput] = useState('');
 
     const getBeachesFromDb = async (keyword = '') => {
         const beaches = await DatabaseActions.getBeachesFromDb({ keyword: keyword, applyLimit: false });
@@ -91,7 +91,9 @@ export default function SearchLayout({ navigation, route }) {
     }
 
     const setupStyling = () => {
-        navigation.setOptions(noHeaderBar())
+        navigation.setOptions(
+            secondaryHeaderWithBackBar(navigation, headerTitle)
+        )
     }
 
     useEffect(() => {
@@ -103,10 +105,11 @@ export default function SearchLayout({ navigation, route }) {
         <SafeAreaView
             style={{
                 ...styles.container,
-                paddingTop: insets.top + 20,
+                // paddingTop: insets.top + 20,
             }}
             edges={['right', 'left']}
         >
+            <Divider />
             <View
                 style={{
                     flex: 1,
@@ -123,26 +126,31 @@ export default function SearchLayout({ navigation, route }) {
                         paddingBottom: 10,
                     }}
                 >
-                    <Ionicons
+                    {/* <Ionicons
                         style={{ marginRight: 10 }}
                         name='chevron-back'
                         size={25}
                         onPress={() => { navigation.goBack() }}
                     />
-                    <TextInput
-                        style={{
-                            height: 40,
-                            width: '85%',
-                            borderWidth: 1,
-                            borderRadius: 5,
-                            borderColor: 'lightgray',
-                            padding: 10,
-                        }}
-                        placeholder={`Search for a beach...`}
-                        cursorColor={'black'}
-                        onChangeText={handleSearchInputChange}
-                    />
+                    <Text style={{
+                        fontFamily: DefaultFont.fontFamily,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>Search</Text> */}
                 </View>
+                <TextInput
+                    style={{
+                        height: 40,
+                        width: '100%',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        borderColor: 'lightgray',
+                        padding: 10,
+                    }}
+                    placeholder={`Search for a beach...`}
+                    cursorColor={'black'}
+                    onChangeText={handleSearchInputChange}
+                />
                 {renderBeachList()}
             </View>
         </SafeAreaView>

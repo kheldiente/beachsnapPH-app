@@ -3,6 +3,7 @@ import { appName } from "./Global"
 import { Ionicons } from "@expo/vector-icons";
 import { DefaultFont } from "./Fonts";
 import { SharedTransition, withSpring } from "react-native-reanimated";
+import { Text } from "react-native";
 
 export const defaultHeaderBar = (title = appName) => {
     const tabHeaderOptions = ({ navigation }) => {
@@ -38,24 +39,39 @@ export const secondaryHeaderBar = (title) => {
     }
 }
 
-export const secondaryHeaderWithBackBar = (navigation) => {
+export const secondaryHeaderWithBackBar = (navigation, title = '') => {
     return {
         headerBackVisible: false,
-        headerLeft: () => (
-            <Ionicons
-                name="chevron-back-outline"
-                size={20}
-                style={{
-                    backgroundColor: 'transparent',
-                    color: 'black'
-                }}
-                onPress={() => navigation.goBack()}
-            />
-        ),
+        headerShadowVisible: false,
+        // headerLeft: () => (
+        //     <Ionicons
+        //         name="chevron-back-outline"
+        //         size={20}
+        //         style={{
+        //             backgroundColor: 'transparent',
+        //             color: 'black'
+        //         }}
+        //         onPress={() => navigation.goBack()}
+        //     />
+        // ),
+        headerTitleAlign: 'center',
+        headerLeft: () => null,
         headerTitle: (props) => (
             <TabHeaderBar
                 id="tabHeaderBar"
-                title={``}
+                title={`${title}`}
+                toolbarStyle={{
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: 30, // Adjust this value to move the title to the left
+                }}
+                titleStyle={{
+                    fontFamily: DefaultFont.fontFamilyBold,
+                    fontSize: 15,
+                    color: 'black',
+                }}
                 {...props}
             />
         )
