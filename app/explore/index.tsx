@@ -3,7 +3,6 @@ import {
     StyleSheet,
     View,
     ScrollView,
-    Text
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BeachGridList from "@/components/BeachGridList";
@@ -46,13 +45,6 @@ export default function RegionListLayout(props: any) {
         }
     }
 
-    const handleScroll = (event: any) => {
-        // console.log(props);
-        // console.log(event.nativeEvent.contentOffset.y);
-    };
-
-    const handleSegmentButtonClick = (index: number) => { };
-
     const handleRegionClick = (item) => {
         navigation.navigate({
             name: `${exploreLayoutKeys.BEACH_LIST}`,
@@ -67,8 +59,8 @@ export default function RegionListLayout(props: any) {
     return (
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
             <ScrollView
-                onScroll={handleScroll}
                 showsVerticalScrollIndicator={false}
+                scrollEnabled={false}
             >
                 {regions &&
                     <View style={styles.container1}>

@@ -407,7 +407,7 @@ export default function BeachSnapEditor(props) {
 
     const renderDatePickerModal = () => {
         const pickerMode = datePickerMode.current;
-        const pickerCta = pickerMode === 'time' ? 'Select' : 'Confirm date';
+        const pickerCta = pickerMode === 'time' ? 'Select time' : 'Select date';
 
         const onDateChangeDefault = (event, selectedDate) => {
             console.log(`onDateChange: ${JSON.stringify(event.type)}, selected: ${selectedDate}`)
