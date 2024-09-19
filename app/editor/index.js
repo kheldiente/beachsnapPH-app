@@ -25,7 +25,6 @@ import { FlashList } from '@shopify/flash-list';
 const imgDimension = 300;
 const modalBorderRadius = 10;
 const maxCharacters = 200;
-const ANDROID_PICKER_MODE_HIDDEN = 'hidden';
 
 export const generateParams = (currSnapData) => {
     return {

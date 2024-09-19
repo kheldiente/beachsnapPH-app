@@ -20,6 +20,7 @@ import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import PagerView from 'react-native-pager-view';
 import { FlashList } from '@shopify/flash-list';
 import { createWeatherLabel, dateStringToMDY, dateStringToTime } from '@/constants/Utils';
+import { Ionicons } from '@expo/vector-icons';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
 const listCalcHeight = Dimensions.get('window').height;
@@ -79,6 +80,7 @@ export default function ProfileLayout({ navigation, route }) {
             data: {
                 ...currentData,
                 image: currentData.photoUrl,
+                beachName: name,
             },
             parentId: id,
             callback: null,
@@ -131,6 +133,45 @@ export default function ProfileLayout({ navigation, route }) {
     const renderPhotoListItem = (item) => {
         return (
             <View style={{ marginBottom: 0 }}>
+                <View
+                    style={{
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                        marginBottom: 5,
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontSize: 12,
+                            color: 'green',
+                            alignSelf: 'flex-start'
+                        }}
+                    >
+                        {createWeatherLabel(item)}
+                    </Text>
+                    <Text
+                        style={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontSize: 10,
+                            color: 'gray',
+                            alignSelf: 'flex-start'
+                        }}
+                    >
+                        {`${dateStringToMDY(item.dateVisited)}`}
+                    </Text>
+                    <Ionicons
+                        name='ellipsis-horizontal-outline'
+                        size={20}
+                        color='gray'
+                        style={{
+                            alignSelf: 'flex-end',
+                            position: 'absolute',
+                            paddingHorizontal: 10,
+                            paddingVertical: 5,
+                        }}
+                    />
+                </View>
                 <Image
                     key={`_phList_${item.id}`}
                     source={{ uri: item.photoUrl }}
@@ -157,32 +198,7 @@ export default function ProfileLayout({ navigation, route }) {
                             {item.caption}
                         </Text>
                     }
-                    <View
-                        style={{
-                            marginTop: item.caption.length > 0 ? 5 : 0,
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontSize: 12,
-                                color: 'green',
-                                alignSelf: 'flex-start'
-                            }}
-                        >
-                            {createWeatherLabel(item)}
-                        </Text>
-                        <Text
-                            style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontSize: 10,
-                                color: 'gray',
-                                alignSelf: 'flex-start'
-                            }}
-                        >
-                            {`${dateStringToMDY(item.dateVisited)}`}
-                        </Text>
-                    </View>
+
                 </View>
             </View>
         )

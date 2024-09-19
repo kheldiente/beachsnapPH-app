@@ -1,5 +1,6 @@
 import { DefaultFont } from '@/constants/Fonts';
 import { createWeatherLabel, dateStringToMDY } from '@/constants/Utils';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import {
@@ -68,6 +69,7 @@ const PhotoPostLayout: React.FC<IProps> = () => {
         borderRadius: 20,
         overflow: 'hidden',
     }));
+
     const parentTransitionTag = useMemo(() => {
         if (from) {
             return from + data.id.toString();
@@ -94,6 +96,35 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                         alignSelf: 'center',
                     }}
                 >
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            paddingHorizontal: 10,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 14,
+                                color: 'black',
+                                backgroundColor: 'lightgray',
+                                paddingVertical: 4,
+                                paddingHorizontal: 10,
+                                borderRadius: 5,
+                                overflow: 'hidden',
+                                marginBottom: 10,
+                            }}
+                        >{data.beachName}</Text>
+                        <Ionicons
+                            name='share-outline'
+                            size={22}
+                            color='gray'
+                            style={{
+                                marginRight: 5,
+                            }}
+                        />
+                    </View>
                     <Animated.Image
                         // sharedTransitionTag={childrenTransitionTag}
                         // sharedTransitionStyle={customTransition}

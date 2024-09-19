@@ -149,8 +149,8 @@ const renderStatCard = (data) => {
                         alignSelf: 'center',
                         color: 'black',
                     }}>{item.photoCount === 1
-                        ? '1 photo'
-                        : `${item.photoCount} photos`
+                        ? '1 snap'
+                        : `${item.photoCount} snaps`
                         }</Text>
                 </View>
             ))}
