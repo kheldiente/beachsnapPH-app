@@ -70,7 +70,7 @@ export const getAllSnapFromBeach = async (beachId) => {
     try {
         results = await db.getAllAsync(
             `SELECT *, 
-            datetime(dateVisited, 'unixepoch') as dateVisited 
+            datetime(dateVisited, 'unixepoch', 'localtime') as dateVisited 
             FROM snap WHERE beachId = '${beachId}' ORDER BY dateVisited DESC`
         );
 
@@ -101,7 +101,7 @@ export const getAllSnaps = async () => {
     try {
         const allSnaps = await db.getAllAsync(`
             SELECT *,
-            datetime(dateVisited, 'unixepoch') as dateVisited 
+            datetime(dateVisited, 'unixepoch', 'localtime') as dateVisited 
             FROM snap ORDER BY metadata
         `);
         allSnaps.forEach((snap) => {
@@ -165,7 +165,7 @@ export const getAllGoals = async () => {
     try {
         goals = await db.getAllAsync(`
             SELECT *, 
-            datetime(dateVisited, 'unixepoch') as dateVisited 
+            datetime(dateVisited, 'unixepoch', 'localtime') as dateVisited 
             FROM goal
         `);
         // console.log(`goals available: ${allRows.length}`)
@@ -264,20 +264,9 @@ export const getRecentVisitedBeaches = async () => {
 
     var visitedBeaches = [];
     try {
-        // visitedBeaches = await db.getAllAsync(`
-        //     SELECT DISTINCT(beachId) 
-        //     FROM snap
-        //     WHERE beachId IN (
-        //         SELECT COUNT(snap2.photoUrl)
-        //         FROM snap snap2
-        //         GROUP BY snap2.beachId
-        //     )
-        //     ORDER BY strftime('%Y-%m-%dT%H:%i:%s.%fZ', dateVisited) DESC LIMIT 5
-        // `);
-
         visitedBeaches = await db.getAllAsync(`
             SELECT DISTINCT(beachId), COUNT(*) as photoCount, 
-            datetime(dateVisited, 'unixepoch') as dateVisited 
+            datetime(MAX(dateVisited), 'unixepoch', 'localtime') as dateVisited 
             FROM snap
             GROUP BY beachId
             ORDER BY dateVisited DESC LIMIT 5
@@ -312,7 +301,7 @@ export const getTopBeachesWithManyPhotos = async () => {
     try {
         beaches = await db.getAllAsync(`
             SELECT DISTINCT(beachId), COUNT(*) as photoCount, 
-            datetime(dateVisited, 'unixepoch') as dateVisited
+            datetime(MAX(dateVisited), 'unixepoch', 'localtime') as dateVisited
             FROM snap
             GROUP BY beachId
             HAVING photoCount > 1
