@@ -254,7 +254,7 @@ export default function ProfileLayout({ navigation, route }) {
                         const calcIdx = column === 0 ? index + 1 : (column * count) + (index + 1)
                         const ordinal = getOrdinal(calcIdx)
 
-                        console.log(`calcIdx: ${calcIdx}, ${ordinal}`)
+                        // console.log(`calcIdx: ${calcIdx}, ${ordinal}`)
                         return renderPhotoGridItem(photo, ordinal)
                     })}
                 </View>
