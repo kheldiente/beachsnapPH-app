@@ -8,9 +8,10 @@ import {
     Image,
     Pressable,
     Platform,
+    Modal,
 } from 'react-native';
 import { DefaultFont } from '@/constants/Fonts';
-import { Button } from '@rneui/themed';
+import { Button, Divider } from '@rneui/themed';
 import { Dimensions } from 'react-native';
 import NewBeachSnapModal from './addbeach-modal';
 import { snapsLayoutKeys } from '@/constants/Global';
@@ -19,7 +20,7 @@ import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import PagerView from 'react-native-pager-view';
 import { FlashList } from '@shopify/flash-list';
-import { createWeatherLabel, dateStringToMDY, dateStringToTime } from '@/constants/Utils';
+import { createWeatherLabel, dateStringToMDY, dateStringToTime, getOrdinal } from '@/constants/Utils';
 import { Ionicons } from '@expo/vector-icons';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;
@@ -28,13 +29,21 @@ const listOffset = Platform.OS === 'ios' ? 250 : 210;
 const cardMargin = 0;
 
 export default function ProfileLayout({ navigation, route }) {
-    const { name, id, municipality, province, description } = route.params.data;
+    const {
+        name,
+        id,
+        municipality,
+        province,
+        description,
+    } = route.params.data;
     const headerTitle = `${name}`
     const address = `${municipality}, ${province}`
 
     const [snaps, setSnaps] = useState([]);
     const [selectedTab, setSelectedTab] = useState(0);
     const [showModal, setShowModal] = useState(false);
+    const [showMenuModal, setShowMenuModal] = useState(false);
+    const [dimBackground, setDimBackground] = useState(false);
 
     const isLoading = useRef(true);
     const isReloadingData = useRef(false);
@@ -71,16 +80,13 @@ export default function ProfileLayout({ navigation, route }) {
         setSnaps(result);
     }
 
-    useEffect(() => {
-        fetchData();
-    }, [])
-
     const onNavigateDetail = useCallback((currentData: { id: number; img: string }) => {
         navigation.navigate(snapsLayoutKeys.PHOTO_POST, {
             data: {
                 ...currentData,
-                image: currentData.photoUrl,
                 beachName: name,
+                image: currentData.photoUrl,
+                ordinal: currentData.ordinal,
             },
             parentId: id,
             callback: null,
@@ -98,14 +104,17 @@ export default function ProfileLayout({ navigation, route }) {
         return 'Profile' + item.id.toString() + id.toString();
     }
 
-    const renderPhotoGridItem = (item) => {
+    const renderPhotoGridItem = (item, ordinal) => {
         const disabled = typeof item.id !== 'number';
         return (<View
             key={`_phGrid_${item.id}`}
         >
             <TouchableOpacity
                 onPress={() => {
-                    onNavigateDetail(item)
+                    onNavigateDetail({
+                        ...item,
+                        ordinal: ordinal,
+                    })
                 }}
                 disabled={disabled}
             >
@@ -170,6 +179,7 @@ export default function ProfileLayout({ navigation, route }) {
                             paddingHorizontal: 10,
                             paddingVertical: 5,
                         }}
+                        onPress={handleMenuModalItemClick}
                     />
                 </View>
                 <Image
@@ -230,7 +240,10 @@ export default function ProfileLayout({ navigation, route }) {
                     }}
                     key={`photoGrid_${column}+row`}
                 >
-                    {photos.map((photo) => renderPhotoGridItem(photo))}
+                    {photos.map((photo, index) => {
+                        const ordinal = getOrdinal((column + 1) * (index + 1))
+                        return renderPhotoGridItem(photo, ordinal)
+                    })}
                 </View>
             )
         }
@@ -245,7 +258,10 @@ export default function ProfileLayout({ navigation, route }) {
             >
                 {columnArr.map((column) => {
                     var endIdx = startIdx + count
-                    const row = gridRow(column, photos.slice(startIdx, endIdx))
+                    const row = gridRow(
+                        column,
+                        photos.slice(startIdx, endIdx)
+                    )
 
                     startIdx = endIdx;
                     return row;
@@ -411,6 +427,16 @@ export default function ProfileLayout({ navigation, route }) {
         )
     }
 
+    const handleMenuModalItemClick = () => {
+        setDimBackground(true);
+        setShowMenuModal(true)
+    }
+
+    const handleMenuModalCloseCtaClick = () => {
+        setDimBackground(false);
+        setShowMenuModal(false)
+    }
+
     const handleAddPhotosCtaClick = () => {
         setShowModal(true);
     }
@@ -428,6 +454,85 @@ export default function ProfileLayout({ navigation, route }) {
         setSelectedTab(index)
         pagerViewRef.current?.setPage(index)
     }
+
+    const renderMenuModal = () => {
+        const items = [
+            { key: '_delete', title: 'Delete' },
+            { key: '_cancel', title: 'Cancel' },
+        ]
+        const renderItem = (item) => {
+            return (
+                <View>
+                    <TouchableOpacity
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}
+                        onPress={() => {
+                            if (item.key === '_cancel') {
+                                handleMenuModalCloseCtaClick()
+                            }
+                        }}
+                    >
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                padding: 20,
+                            }}
+                        >
+                            <Text
+                                key={item.key}
+                                style={{
+                                    fontFamily: DefaultFont.fontFamilyBold,
+                                    fontSize: 15,
+                                    color: item.key === '_delete' ? 'red' : 'black',
+                                }}
+                            >{item.title}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    <Divider />
+                </View>
+            )
+        }
+
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={showMenuModal}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        backgroundColor: 'white',
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
+                        width: '100%',
+                        position: 'absolute',
+                        bottom: 0,
+                        paddingBottom: 50,
+                    }}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                        }}
+                    >
+                        {items.map((item) => renderItem(item))}
+                    </View>
+                </View>
+            </Modal>
+        )
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, [])
 
     return (
         <ScrollView
@@ -466,6 +571,17 @@ export default function ProfileLayout({ navigation, route }) {
                 />
                 {renderTabs(selectedTab)}
                 {renderTabPage()}
+                {renderMenuModal()}
+                {dimBackground &&
+                <View
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                    }}
+                />
+            }
             </View>
         </ScrollView>
     );

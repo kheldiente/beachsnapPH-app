@@ -160,6 +160,10 @@ export default function BeachSnapEditor(props) {
     const handleOnChangeBeachName = (item) => {
         console.log(`changeBeachName: ${JSON.stringify(item)}`)
 
+        if (item === null) {
+            return;
+        }
+
         beachPageDisplayed.current = false;
         selectedBeach.current = item;
 
@@ -573,7 +577,7 @@ export default function BeachSnapEditor(props) {
                         }}
                         name='close'
                         size={25}
-                        onPress={() => { handleOnChangeBeachName('') }}
+                        onPress={() => { handleOnChangeBeachName(preselectedBeach ? preselectedBeach : null) }}
                     />
                     <TextInput
                         style={{
