@@ -43,11 +43,14 @@ export default function ProfileLayout({ navigation, route }) {
     const [selectedTab, setSelectedTab] = useState(0);
     const [showModal, setShowModal] = useState(false);
     const [showMenuModal, setShowMenuModal] = useState(false);
+    const [showConfirmationMenuModal, setShowConfirmationMenuModal] = useState(false);
     const [dimBackground, setDimBackground] = useState(false);
 
     const isLoading = useRef(true);
     const isReloadingData = useRef(false);
     const pagerViewRef = useRef<PagerView>();
+    const confirmationAction = useRef('');
+    const photoListItemClick = useRef(null);
 
     var photoSizeLabel = `${snaps.length}`;
 
@@ -78,6 +81,13 @@ export default function ProfileLayout({ navigation, route }) {
 
         isLoading.current = false;
         setSnaps(result);
+    }
+
+    const deleteSnap = async (snapId) => {
+        await DatabaseActions.deleteSnap(snapId);
+
+        photoListItemClick.current = null;
+        reloadData();
     }
 
     const onNavigateDetail = useCallback((currentData: { id: number; img: string }) => {
@@ -179,7 +189,7 @@ export default function ProfileLayout({ navigation, route }) {
                             paddingHorizontal: 10,
                             paddingVertical: 5,
                         }}
-                        onPress={handleMenuModalItemClick}
+                        onPress={() => handleMenuModalItemClick(item)}
                     />
                 </View>
                 <Image
@@ -427,14 +437,16 @@ export default function ProfileLayout({ navigation, route }) {
         )
     }
 
-    const handleMenuModalItemClick = () => {
+    const handleMenuModalItemClick = (item) => {
+        photoListItemClick.current = item;
+
         setDimBackground(true);
         setShowMenuModal(true)
     }
 
     const handleMenuModalCloseCtaClick = () => {
         setDimBackground(false);
-        setShowMenuModal(false)
+        setShowMenuModal(false);
     }
 
     const handleAddPhotosCtaClick = () => {
@@ -455,25 +467,125 @@ export default function ProfileLayout({ navigation, route }) {
         pagerViewRef.current?.setPage(index)
     }
 
+    const handleMenuItemAction = () => {
+        console.log(`handleMenuItemAction action: ${confirmationAction.current}, photoListItemClick: ${photoListItemClick.current}`);
+        if (photoListItemClick.current === null) {
+            return;
+        }
+
+        if (confirmationAction.current === 'delete') {
+            deleteSnap(photoListItemClick.current.id);
+        }
+    }
+
     const renderMenuModal = () => {
         const items = [
-            { key: '_delete', title: 'Delete' },
-            { key: '_cancel', title: 'Cancel' },
+            { key: '_delete', title: 'Delete', action: 'delete' },
+            { key: '_cancel', title: 'Cancel', action: 'cancel' },
         ]
+
+        const handleItemClick = (item) => {
+            confirmationAction.current = item.action;
+
+            if (item.key === '_delete') {
+                setShowConfirmationMenuModal(true);
+            } else {
+                handleMenuModalCloseCtaClick();
+            }
+        }
+
+        const renderConfirmationMenu = (action) => {
+            const menuItems = [
+                { key: '_confirm+yes', title: 'Yes' },
+                { key: '_confirm+cancel', title: 'Cancel' },
+            ]
+
+            const title = `Are you sure you want to ${action} this snap?`
+
+            const handleMenuItemClick = (item) => {
+                const isYes = item.key === menuItems[0].key
+                if (isYes) {
+                    handleMenuModalCloseCtaClick();
+                } else {
+                    handleMenuModalCloseCtaClick();
+                }
+                setShowConfirmationMenuModal(false);
+
+                if (isYes) {
+                    handleMenuItemAction();
+                }
+            }
+
+            const renderMenuItem = (item) => {
+                return (
+                    <View>
+                        <TouchableOpacity
+                            key={item.key}
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                            onPress={() => handleMenuItemClick(item)}
+                        >
+                            <View
+                                style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    padding: 20,
+                                }}
+                            >
+                                <Text
+                                    key={item.key}
+                                    style={{
+                                        fontFamily: DefaultFont.fontFamilyBold,
+                                        fontSize: 15,
+                                        color: item.key === menuItems[0].key ? 'red' : 'black',
+                                    }}
+                                >{item.title}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <Divider />
+                    </View>
+                )
+            }
+
+            return (
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: DefaultFont.fontFamilyBold,
+                            fontSize: 15,
+                            color: 'black',
+                            alignSelf: 'center',
+                            marginVertical: 20,
+                        }}
+                    >
+                        {title}
+                    </Text>
+                    <Divider />
+                    {menuItems.map((item) => renderMenuItem(item))}
+                </View>
+            )
+        }
+
         const renderItem = (item) => {
             return (
                 <View>
                     <TouchableOpacity
+                        key={item.key}
                         style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}
-                        onPress={() => {
-                            if (item.key === '_cancel') {
-                                handleMenuModalCloseCtaClick()
-                            }
-                        }}
+                        onPress={() => handleItemClick(item)}
                     >
                         <View
                             style={{
@@ -488,7 +600,7 @@ export default function ProfileLayout({ navigation, route }) {
                                 style={{
                                     fontFamily: DefaultFont.fontFamilyBold,
                                     fontSize: 15,
-                                    color: item.key === '_delete' ? 'red' : 'black',
+                                    color: item.key === items[0].key ? 'red' : 'black',
                                 }}
                             >{item.title}</Text>
                         </View>
@@ -517,14 +629,18 @@ export default function ProfileLayout({ navigation, route }) {
                         paddingBottom: 50,
                     }}
                 >
-                    <View
-                        style={{
-                            flex: 1,
-                            flexDirection: 'column',
-                        }}
-                    >
-                        {items.map((item) => renderItem(item))}
-                    </View>
+                    {showConfirmationMenuModal
+                        ? renderConfirmationMenu(confirmationAction.current)
+                        : (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'column',
+                                }}
+                            >
+                                {items.map((item) => renderItem(item))}
+                            </View>
+                        )}
                 </View>
             </Modal>
         )
@@ -573,15 +689,15 @@ export default function ProfileLayout({ navigation, route }) {
                 {renderTabPage()}
                 {renderMenuModal()}
                 {dimBackground &&
-                <View
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'absolute',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)'
-                    }}
-                />
-            }
+                    <View
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'absolute',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                        }}
+                    />
+                }
             </View>
         </ScrollView>
     );

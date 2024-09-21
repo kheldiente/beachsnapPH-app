@@ -1,6 +1,5 @@
 import { DefaultFont } from '@/constants/Fonts';
 import { createWeatherLabel, dateStringToMDY } from '@/constants/Utils';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useMemo } from 'react';
 import {

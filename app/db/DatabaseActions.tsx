@@ -90,3 +90,11 @@ export const getAllWeathers = async () => {
 
     return weathers;
 }
+
+export const deleteSnap = async (snapId) => {
+    await UserDatabase.openDb();
+    const result = await UserDatabase.deleteSnap(snapId);
+    await UserDatabase.closeDb();
+
+    return result;
+}

@@ -344,6 +344,16 @@ export const getTopBeachesWithManyPhotos = async () => {
 //     }
 // }
 
+export const deleteSnap = async (snapId) => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    const result = await db.runAsync(`DELETE FROM snap WHERE id = ${snapId}`);
+    return result;
+}
+
 export const closeDb = async () => {
     await db.closeAsync();
 }
