@@ -99,14 +99,46 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                     <View
                         style={{
                             flexDirection: 'row',
+                            marginRight: 10,
+                            position: 'absolute',
+                            right: 0,
+                            top: 5,
+                            alignItems: 'baseline',
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamilyBold,
+                                fontSize: 22,
+                                color: 'green',
+                                alignContent: 'center',
+                                textAlign: 'center',
+                            }}
+                        >
+                            {`${data.ordinal}`}
+                        </Text>
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 14,
+                                color: 'black',
+                                marginLeft: 4,
+                            }}
+                        >snap</Text>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
                             justifyContent: 'space-between',
-                            paddingHorizontal: 10,
+                            paddingLeft: 5,
+                            paddingRight: 10,
                         }}
                     >
                         <Text
                             style={{
                                 fontFamily: DefaultFont.fontFamily,
                                 fontSize: 14,
+                                textAlign: 'center',
                                 color: 'black',
                                 backgroundColor: 'lightgray',
                                 paddingVertical: 4,
@@ -116,14 +148,26 @@ const PhotoPostLayout: React.FC<IProps> = () => {
                                 marginBottom: 10,
                             }}
                         >{data.beachName}</Text>
-                        <Ionicons
+                        {/* <Ionicons
                             name='share-outline'
                             size={22}
                             color='gray'
                             style={{
                                 marginRight: 5,
                             }}
-                        />
+                        /> */}
+                        {/* <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamilyBold,
+                                fontSize: 25,
+                                color: 'black',
+                                paddingVertical: 4,
+                                paddingHorizontal: 10,
+                                position: 'absolute',
+                                right: 0,
+                                top: 0,
+                            }}
+                        >{data.ordinal}</Text> */}
                     </View>
                     <Animated.Image
                         // sharedTransitionTag={childrenTransitionTag}
