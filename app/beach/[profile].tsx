@@ -683,7 +683,7 @@ export default function ProfileLayout({ navigation, route }) {
                     titleStyle={styles.buttonTitle}
                     buttonStyle={styles.button}
                     onPress={handleAddPhotosCtaClick}
-                    title='Add photo'
+                    title='Add snap'
                 />
                 {renderTabs(selectedTab)}
                 {renderTabPage()}
@@ -756,7 +756,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
     },
     buttonTitle: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 12,
     },
     card: {
