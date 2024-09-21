@@ -251,7 +251,10 @@ export default function ProfileLayout({ navigation, route }) {
                     key={`photoGrid_${column}+row`}
                 >
                     {photos.map((photo, index) => {
-                        const ordinal = getOrdinal((column + 1) * (index + 1))
+                        const calcIdx = column === 0 ? index + 1 : (column * count) + (index + 1)
+                        const ordinal = getOrdinal(calcIdx)
+
+                        console.log(`calcIdx: ${calcIdx}, ${ordinal}`)
                         return renderPhotoGridItem(photo, ordinal)
                     })}
                 </View>
