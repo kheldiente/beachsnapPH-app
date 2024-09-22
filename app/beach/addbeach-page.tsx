@@ -14,6 +14,7 @@ import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { addKeyboardListener } from '@/constants/Utils';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
+import { strings } from '@/constants/Global';
 
 const pageKey = '_bchSnapEdtr';
 
@@ -189,7 +190,7 @@ export default function NewBeachSnapLayout(props: any) {
                         >
                             <Text
                                 style={styles.saveCta}
-                            >Save</Text>
+                            >{strings.addThisSnap}</Text>
                         </TouchableOpacity>
                     </View>
                 }

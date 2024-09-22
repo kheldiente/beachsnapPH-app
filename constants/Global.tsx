@@ -17,6 +17,11 @@ export const userDbVersions = [
     }
 ]
 
+export const homeLayoutKeys = {
+    ONBOARDING: "_Onboarding",
+    HOME: "(tabs)",
+}
+
 export const exploreLayoutKeys = {
     REGION_LIST: "_RegionList",
     BEACH_LIST: "_BeachList",
@@ -67,3 +72,6 @@ export const defaultWeather = {
     name: 'Sunny',
 }
 
+export const strings = {
+    addThisSnap: 'Add snap',
+}

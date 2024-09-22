@@ -20,7 +20,7 @@ import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import PagerView from 'react-native-pager-view';
 import { FlashList } from '@shopify/flash-list';
-import { createWeatherLabel, dateStringToMDY, dateStringToTime, getOrdinal } from '@/constants/Utils';
+import { createWeatherLabel, dateStringToMDY, getOrdinal } from '@/constants/Utils';
 import { Ionicons } from '@expo/vector-icons';
 
 const cardCalcWidth = Dimensions.get('window').width / 3;

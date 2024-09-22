@@ -18,9 +18,11 @@ export default function FullScreenModal({
     onClose,
     onHideKeyboard,
     onDismiss,
+    onSkip,
     isKeyboardShown = false,
     title = 'Title',
-    keyboardTitle = 'Keyboard'
+    keyboardTitle = 'Keyboard',
+    showSkipButton = false
 }) {
     const insets = useSafeAreaInsets();
 
@@ -52,14 +54,25 @@ export default function FullScreenModal({
                         }}
                     >
                         <TouchableOpacity
-                            style={styles.close}
+                            style={{
+                                ...styles.close,
+                                opacity: showSkipButton ? 0 : 1,
+                            }}
                             onPress={onClose}
                         >
                             <Ionicons name="chevron-back" color="black" size={22} />
                         </TouchableOpacity>
-                        {isKeyboardShown &&
-                            <TouchableOpacity onPress={onHideKeyboard}>
-                                <Text style={styles.ok}>OK</Text>
+                        {(isKeyboardShown || showSkipButton) &&
+                            <TouchableOpacity onPress={() => {
+                                if (showSkipButton) {
+                                    onSkip();
+                                } else {
+                                    onHideKeyboard();
+                                }
+                            }}>
+                                <Text style={styles.ok}>
+                                    {isKeyboardShown ? 'OK' : 'Skip'}
+                                </Text>
                             </TouchableOpacity>
                         }
                     </View>

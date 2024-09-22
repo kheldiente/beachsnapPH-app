@@ -13,6 +13,7 @@ import { DefaultFont } from '@/constants/Fonts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { addKeyboardListener } from '@/constants/Utils';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
+import { strings } from '@/constants/Global';
 
 const pageKey = '_bchSnapEdtr';
 
@@ -20,6 +21,8 @@ export default function NewBeachSnapModal({
     isVisible,
     onClose,
     onSave,
+    onSkip,
+    showSkipButton = false,
     preselectedBeach = null,
 }) {
     const insets = useSafeAreaInsets();
@@ -121,11 +124,13 @@ export default function NewBeachSnapModal({
         <FullScreenModal
             title='New beach snap'
             keyboardTitle='Caption'
+            showSkipButton={showSkipButton}
             isKeyboardShown={isKeyboardShown}
             isVisible={isVisible}
             onClose={onClose}
             onDismiss={onDismiss}
             onHideKeyboard={hideKeyboard}
+            onSkip={onSkip}
         >
             <BeachSnapEditor
                 preselectedBeach={preselectedBeach}
@@ -151,7 +156,7 @@ export default function NewBeachSnapModal({
                     >
                         <Text
                             style={styles.saveCta}
-                        >Save</Text>
+                        >{strings.addThisSnap}</Text>
                     </TouchableOpacity>
                 </View>
             }
