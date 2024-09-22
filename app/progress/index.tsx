@@ -342,14 +342,14 @@ export default function ProgressListLayout() {
                     {/* {renderCurrentGoal()} */}
                     {recentVisitedBeaches.length > 0 &&
                         renderStatCard({
-                            title: 'Recent visited beaches',
+                            title: 'Last visited beaches',
                             key: 'STAT1',
                             list: recentVisitedBeaches,
                         })
                     }
                     {beachesWithManyPhotos.length > 0 &&
                         renderStatCard({
-                            title: 'Top beaches with many photos',
+                            title: 'Top beaches with many snaps',
                             key: 'STAT2',
                             list: beachesWithManyPhotos,
                         })

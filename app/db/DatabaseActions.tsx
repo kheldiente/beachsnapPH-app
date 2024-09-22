@@ -98,3 +98,11 @@ export const deleteSnap = async (snapId) => {
 
     return result;
 }
+
+export const getBeachesWithIds = async (ids) => {
+    await ReadOnlyDatabase.openDb();
+    const beaches = await ReadOnlyDatabase.getBeachesWithIds(ids);
+    await ReadOnlyDatabase.closeDb();
+
+    return beaches;
+}
