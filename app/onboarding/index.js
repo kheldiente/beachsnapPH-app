@@ -3,7 +3,7 @@ import { homeLayoutKeys, snapsLayoutKeys } from '@/constants/Global';
 import { Button } from '@rneui/themed';
 import { useNavigation } from 'expo-router';
 import { useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 import {
     StyleSheet,
 } from 'react-native';
@@ -40,6 +40,11 @@ export default function OnboardingLayout() {
     const currentPageRef = useRef(0);
     const pagerViewRef = useRef();
 
+    const marginBottom = Platform.select({
+        ios: insets.bottom - 20,
+        android: insets.bottom + 10,
+    });
+
     const handleOnboardingAction = (actionKey) => {
         if (actionKey === snapsLayoutKeys.NEW_BEACH_SNAP) {
             setShowNewSnapModal(true);
@@ -66,10 +71,13 @@ export default function OnboardingLayout() {
     }
 
     const renderOnboardingPage = () => {
-        const renderStep = (pageIndex) => {
+        const renderStep = (step) => {
+            const selectBeachPage = step.actionKey === snapsLayoutKeys.NEW_BEACH_SNAP;
             return (
-                <View style={styles.page} key={pageIndex + 1}>
-                    <Text>Step {pageIndex + 1}</Text>
+                <View style={styles.page} key={step.page + 1}>
+                    {selectBeachPage ? <Text style={styles.text}>Select a beach here</Text>
+                    : <Text style={styles.text}>Step {step.page + 1}</Text>
+                    }
                 </View>
             )
         }
@@ -87,7 +95,7 @@ export default function OnboardingLayout() {
                         currentPageRef.current = e.nativeEvent.position;
                     }}
                 >
-                    {onboardingSteps.map((step, index) => renderStep(index))}
+                    {onboardingSteps.map((step) => renderStep(step))}
                 </PagerView>
             </View>
         )
@@ -118,7 +126,7 @@ export default function OnboardingLayout() {
                         position: 'absolute',
                         width: '100%',
                         paddingHorizontal: 20,
-                        bottom: insets.bottom - 20,
+                        bottom: marginBottom,
                     }}
                 >
                     <Button

@@ -64,7 +64,7 @@ export default function FullScreenModal({
                         </TouchableOpacity>
                         {(isKeyboardShown || showSkipButton) &&
                             <TouchableOpacity onPress={() => {
-                                if (showSkipButton) {
+                                if (!isKeyboardShown && showSkipButton) {
                                     onSkip();
                                 } else {
                                     onHideKeyboard();
