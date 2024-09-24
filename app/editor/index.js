@@ -710,6 +710,7 @@ const styles = StyleSheet.create({
         width: imgDimension,
         height: imgDimension,
         borderRadius: 5,
+        resizeMode: 'contain',
     },
     changePhoto: {
         fontFamily: DefaultFont.fontFamilyMedium,

@@ -8,6 +8,7 @@ import {
     Platform,
     Text,
     View,
+    Image,
 } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -17,21 +18,29 @@ import { Ionicons } from '@expo/vector-icons';
 
 const onboardingSteps = [
     {
-        buttonTitle: "Next",
         page: 0,
+        buttonTitle: "Let's start!",
+        imageRes: require('@/assets/images/onboarding/onboarding-step-1.png'),
+        header: "Welcome to BeachSnap PH!",
+        text: "Almost 500 beaches in the Philippines\r\nare waiting to be discovered!"
     },
     {
-        buttonTitle: "Next",
         page: 1,
+        buttonTitle: "Let me add my first snap!",
+        imageRes: require('@/assets/images/onboarding/onboarding-step-2.png'),
+        text: "Collect, save your beach photos\r\nand keep track of them!"
     },
     {
-        buttonTitle: "Let's add your first snap!",
-        actionKey: snapsLayoutKeys.NEW_BEACH_SNAP,
         page: 2,
+        buttonTitle: "Yes, I've been here!",
+        actionKey: snapsLayoutKeys.NEW_BEACH_SNAP,
     },
     {
-        buttonTitle: "Let's start our beach adventure!",
         page: 3,
+        buttonTitle: "Let's go see some beaches!",
+        imageRes: require('@/assets/images/onboarding/onboarding-step-4.png'),
+        header: "You are all set!",
+        text: "Enjoy your time exploring\r\nthe beaches of the Philippines!"
     },
 ];
 
@@ -97,7 +106,7 @@ export default function OnboardingLayout() {
                             marginHorizontal: 20,
                         }}
                     >
-                        {`These are the top visited beaches in the Philippines!\r\n\r\nSelect if you have been to one of them 😎`}
+                        {`Now, these are the top visited beaches in the Philippines!\r\n\r\nSelect if you have been to one of them 😎`}
                     </Text>
                     <View
                         style={{
@@ -151,8 +160,46 @@ export default function OnboardingLayout() {
             return (
                 selectBeachPage ? renderBeachCheckboxPage(step)
                     : (
-                        <View style={styles.page} key={step.page + 1}>
-                            <Text style={styles.text}>Step {step.page + 1}</Text>
+                        <View
+                            style={{
+                                ...styles.page,
+                                paddingHorizontal: 30,
+                            }}
+                            key={step.page + 1}
+                        >
+                            <Image
+                                source={
+                                    step.imageRes ? step.imageRes
+                                        : require('@/assets/images/onboarding/onboarding-step-1.png')
+                                }
+                                style={{
+                                    flex: 1,
+                                    width: '100%',
+                                    height: '100%',
+                                    resizeMode: 'contain',
+                                }}
+                            />
+                            {step.header &&
+                                <Text
+                                    style={{
+                                        fontFamily: DefaultFont.fontFamilyBold,
+                                        fontSize: 18,
+                                        color: 'black',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    {`${step.header}\r\n`}
+                                </Text>
+                            }
+                            <Text
+                                style={{
+                                    ...styles.text,
+                                    textAlign: 'center',
+                                    fontSize: 18,
+                                }}
+                            >
+                                {step.text ? step.text : `Step ${step.page + 1}`}
+                            </Text>
                         </View>
                     )
             )
