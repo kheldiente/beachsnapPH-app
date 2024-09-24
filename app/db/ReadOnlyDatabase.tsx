@@ -37,10 +37,10 @@ export const importDbToFileSystem = async () => {
             )
             console.log(`Finished moving db ${readOnlyDbName} to `, uri);
         } catch (e) {
-
+            console.log(`Error importing db ${readOnlyDbName} to file system: ${e}`);
         }
     } catch (e) {
-        console.log(e)
+        console.log(`Error making directory for db ${readOnlyDbName}: ${e}`);
     }
 }
 
