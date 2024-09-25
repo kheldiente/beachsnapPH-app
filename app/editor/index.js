@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
         width: imgDimension,
         height: imgDimension,
         borderRadius: 5,
-        resizeMode: 'contain',
+        // resizeMode: 'contain', // Keeping this as commented for now. Because it's not working as expected.
     },
     changePhoto: {
         fontFamily: DefaultFont.fontFamilyMedium,

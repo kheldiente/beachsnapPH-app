@@ -22,14 +22,16 @@ export const importDbToFileSystem = async () => {
         });
 
         try {
-            const fileInfo = await FileSystem
-                .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
+            // DOESN'T WORK IN ANDROID FOR SOME REASON
+            // const fileInfo = await FileSystem
+            //     .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
 
-            if (fileInfo.exists) {
-                console.log(`DB ${readOnlyDbName} is in the file system`);
-                return;
-            }
+            // if (fileInfo.exists) {
+                // console.log(`DB ${readOnlyDbName} is in the file system`);
+                // return;
+            // }
 
+            // ALWAYS IMPORT DB ON STARTUP!!!
             console.log(`Importing db ${readOnlyDbName} to file system...`);
             const { uri } = await FileSystem.downloadAsync(
                 Asset.fromModule(readOnlyDbVersions[0].fileUrl).uri,
