@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { myProgressLayoutKeys, snapsLayoutKeys } from "@/constants/Global";
 import ProgressListLayout from '@/app/progress';
 import { defaultHeaderBar } from '@/constants/SharedComponent';
-import NewBeachSnapLayout from '../beach/addbeach-page';
+import GoalListLayout from '@/app/progress/goals';
 
 const Stack = createNativeStackNavigator()
 
@@ -15,18 +15,11 @@ export default function MyProgressLayout(props) {
                 component={ProgressListLayout}
                 options={defaultHeaderBar('Track your progress')}
             />
-            {/* Putting this here so that this screen is loaded on app INIT */}
-            {/* <Stack.Screen
-                name={`${snapsLayoutKeys.NEW_BEACH_SNAP}`}
-                component={NewBeachSnapLayout}
-                options={{
-                    headerShown: false,
-                    headerStyle: {
-                        backgroundColor: 'white'
-                    },
-                    presentation: 'fullScreenModal',
-                }}
-            /> */}
+            <Stack.Screen
+                name={`${myProgressLayoutKeys.GOAL_LIST}`}
+                component={GoalListLayout}
+                options={defaultHeaderBar()}
+            />
         </Stack.Navigator>
     )
 }

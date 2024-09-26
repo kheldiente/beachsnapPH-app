@@ -6,13 +6,16 @@ import {
     Text,
     StyleSheet,
     ScrollView,
-    Platform
+    Platform,
+    Pressable
 } from 'react-native';
 import AnimatedProgressWheel from 'react-native-progress-wheel';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { RefreshControl } from 'react-native-gesture-handler';
 import { dateStringToMDY } from '@/constants/Utils';
 import { useNavigation } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { myProgressLayoutKeys } from '@/constants/Global';
 
 const progressWheelOptions = (progress) => {
     var fixedProgress = progress; // Only works for android
@@ -33,14 +36,18 @@ const progressWheelOptions = (progress) => {
     }
 }
 
-const renderCurrentGoal = () => {
+const renderCurrentGoal = (navigation) => {
     const visited = 1;
     const totalBeachGoal = 3;
     const caption = `Complete your goal this month and unlock achievements. Share it with your friends!`;
     const progress = visited / totalBeachGoal;
 
+    const handleCurrentGoalClick = () => {
+        navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
+    }
+
     return (
-        <View
+        <Pressable
             key={'_currGoal'}
             style={{
                 backgroundColor: 'papayawhip',
@@ -48,13 +55,31 @@ const renderCurrentGoal = () => {
                 padding: 15,
                 margin: 10,
             }}
+            // onPress={() => {
+            //     handleCurrentGoalClick();
+            // }}
         >
-            <Text
-                key={'_currGoal_header'}
-                style={styles.headerText}
+            <View
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingRight: 5,
+                }}
             >
-                Current Goal
-            </Text>
+                <Text
+                    key={'_currGoal_header'}
+                    style={styles.headerText}
+                >Current Goal</Text>
+                <Ionicons
+                    name="eye-outline"
+                    color="black"
+                    size={22}
+                    onPress={() => {
+                        handleCurrentGoalClick();
+                    }}
+                />
+            </View>
             <View
                 key={'_currGoal_msg'}
                 style={{
@@ -80,7 +105,7 @@ const renderCurrentGoal = () => {
                         alignSelf: 'center'
                     }}
                 >
-                    {`visted out of ${totalBeachGoal} beaches`}
+                    {`visited out of ${totalBeachGoal} beaches`}
                 </Text>
             </View>
             <LinearProgress
@@ -103,7 +128,7 @@ const renderCurrentGoal = () => {
             >
                 {caption}
             </Text>
-        </View>
+        </Pressable>
     )
 }
 
@@ -339,7 +364,7 @@ export default function ProgressListLayout() {
                             }
                         })}
                     </View>
-                    {/* {renderCurrentGoal()} */}
+                    {renderCurrentGoal(navigation)}
                     {recentVisitedBeaches.length > 0 &&
                         renderStatCard({
                             title: 'Last visited beaches',
