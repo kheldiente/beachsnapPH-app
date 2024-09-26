@@ -74,11 +74,15 @@ export default function GoalListLayout() {
         )
     }
 
+    const handleOnDonePress = () => {
+        navigation.goBack()
+    }
+
     const handleOnUpdateSelectedBeaches = (beaches) => {
         setSelectedBeaches(beaches)
 
         const headerOptions = {
-            ...secondaryHeaderWithDoneButton(navigation, headerTitle)
+            ...secondaryHeaderWithDoneButton(navigation, headerTitle, handleOnDonePress)
         }
         if (beaches.length === 5) {
             navigation.setOptions(headerOptions)
@@ -92,7 +96,7 @@ export default function GoalListLayout() {
 
     const setupStyling = () => {
         const headerOptions = {
-            ...secondaryHeaderWithDoneButton(navigation, headerTitle),
+            ...secondaryHeaderWithDoneButton(navigation, headerTitle, handleOnDonePress),
             headerRight: () => null
         }
         navigation.setOptions(headerOptions)
@@ -101,54 +105,6 @@ export default function GoalListLayout() {
     useEffect(() => {
         setupStyling()
     }, []);
-
-    const goalItems = [
-        {
-            title: 'Beach 1',
-            list: [{
-                beach: {
-                    id: '1',
-                    name: 'Description',
-                },
-            }]
-        },
-        {
-            title: 'Beach 2',
-            list: [{
-                beach: {
-                    id: '2',
-                    name: 'Description',
-                },
-            }]
-        },
-        {
-            title: 'Beach 3',
-            list: [{
-                beach: {
-                    id: '3',
-                    name: 'Description',
-                },
-            }]
-        },
-        {
-            title: 'Beach 4',
-            list: [{
-                beach: {
-                    id: '4',
-                    name: 'Description',
-                },
-            }]
-        },
-        {
-            title: 'Beach 5',
-            list: [{
-                beach: {
-                    id: '5',
-                    name: 'Description',
-                },
-            }]
-        }
-    ]
 
     const renderSeletedBeaches = (beaches) => {
         const handleOnClickBeach = (beach) => {
@@ -192,7 +148,6 @@ export default function GoalListLayout() {
                                 fontFamily: DefaultFont.fontFamily,
                                 fontSize: 12,
                                 alignSelf: 'center',
-                                backgroundColor: 'lightgray',
                                 // paddingVertical: 4,
                                 // paddingHorizontal: 10,
                                 // marginHorizontal: 2,

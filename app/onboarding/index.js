@@ -1,5 +1,5 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { homeLayoutKeys, snapsLayoutKeys } from '@/constants/Global';
+import { homeLayoutKeys, myProgressLayoutKeys, snapsLayoutKeys } from '@/constants/Global';
 import { Button, CheckBox } from '@rneui/themed';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -9,6 +9,8 @@ import {
     Text,
     View,
     Image,
+    TouchableOpacity,
+    Pressable,
 } from 'react-native';
 import PagerView from 'react-native-pager-view';
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,6 +18,7 @@ import NewBeachSnapModal from '../beach/addbeach-modal';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { Ionicons } from '@expo/vector-icons';
 
+const minBeachesToSelect = 5;
 const onboardingSteps = [
     {
         page: 0,
@@ -37,6 +40,13 @@ const onboardingSteps = [
     },
     {
         page: 3,
+        buttonTitle: "Yes, I want to go there!",
+        imageRes: require('@/assets/images/onboarding/onboarding-step-4.png'),
+        text: `Pick your next ${minBeachesToSelect} beaches to visit!`,
+        actionKey: myProgressLayoutKeys.GOAL_LIST,
+    },
+    {
+        page: 4,
         buttonTitle: "Let's go see some beaches!",
         imageRes: require('@/assets/images/onboarding/onboarding-step-4.png'),
         header: "You are all set!",
@@ -50,11 +60,15 @@ export default function OnboardingLayout() {
 
     const [currentPageIndex, setCurrentPageIndex] = useState(0);
     const [showNewSnapModal, setShowNewSnapModal] = useState(false);
+    const [showPickBeaches, setShowPickBeaches] = useState(false);
     const [visitedBeachIndex, setVisitedBeachIndex] = useState(0);
+    const [selectedBeaches, setSelectedBeaches] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const currentPageRef = useRef(0);
     const pagerViewRef = useRef();
     const beaches = useRef([]);
+    const selectedBeachesRef = useRef([]);
 
     const marginBottom = Platform.select({
         ios: insets.bottom - 20,
@@ -62,8 +76,12 @@ export default function OnboardingLayout() {
     });
 
     const handleOnboardingAction = (actionKey) => {
+        const nextPage = currentPageRef.current + 1;
+
         if (actionKey === snapsLayoutKeys.NEW_BEACH_SNAP) {
             setShowNewSnapModal(true);
+        } else if (actionKey === snapsLayoutKeys.PICK_BEACHES) {
+            setShowPickBeaches(true);
         } else {
             pagerViewRef.current.setPage(nextPage);
             setCurrentPageIndex(nextPage);
@@ -87,6 +105,8 @@ export default function OnboardingLayout() {
     }
 
     const renderBeachCheckboxPage = (step) => {
+        const only5Beaches = beaches.current.slice(0, minBeachesToSelect);
+
         const handleOnBeachCheckboxChange = (index) => {
             setVisitedBeachIndex(index);
         }
@@ -113,7 +133,7 @@ export default function OnboardingLayout() {
                             marginTop: 10,
                         }}
                     >
-                        {beaches.current.map((beach, index) => (
+                        {only5Beaches.map((beach, index) => (
                             <CheckBox
                                 containerStyle={{
                                     backgroundColor: 'white',
@@ -128,7 +148,7 @@ export default function OnboardingLayout() {
                                     }
                                 }}
                                 title={beach.name}
-                                key={beach.id}
+                                key={`beach_checkbox+${beach.id}`}
                                 checked={visitedBeachIndex === index}
                                 checkedIcon={
                                     <Ionicons
@@ -153,55 +173,144 @@ export default function OnboardingLayout() {
         )
     }
 
+    const renderPickBeachesPage = (step) => {
+        const handleOnSelectBeach = (beach) => {
+            var bchs = selectedBeachesRef.current;
+
+            if (selectedBeachesRef.current.find((bch) => bch.id === beach.id)) {
+                bchs = bchs.filter((bch) => bch.id !== beach.id)
+            } else {
+                if (bchs.length === minBeachesToSelect) {
+                    return;
+                }
+                bchs = [...bchs, beach]
+            }
+
+            selectedBeachesRef.current = bchs;
+            setSelectedBeaches(bchs);
+        }
+
+        return (
+            <View
+                style={{
+                    justifyContent: 'center',
+                    paddingHorizontal: 10,
+                }}
+            >
+                <Text
+                    style={{
+                        ...styles.text,
+                        fontSize: 14,
+                        color: 'green',
+                        textAlign: 'left',
+                        marginHorizontal: 12,
+                    }}
+                >Now, let's list down your beach bucket list...</Text>
+                <Text
+                    style={{
+                        ...styles.textBold,
+                        fontSize: 20,
+                        color: 'black',
+                        textAlign: 'left',
+                        marginHorizontal: 12,
+                        marginTop: 25,
+                    }}
+                >{`Select ${minBeachesToSelect} beaches to visit 😎`}</Text>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        marginHorizontal: 8,
+                        marginTop: 10,
+                        paddingVertical: 5,
+                        flexWrap: 'wrap',
+                    }}
+                >
+                    {beaches.current.map((beach) => {
+                        const isPrevSelected = selectedBeachesRef.current.find((bch) => bch.id === beach.id);
+                        return (
+                            <TouchableOpacity
+                                key={`selected_beach_${beach.id}`}
+                                style={{
+                                    flexDirection: 'row',
+                                    backgroundColor: 'lightgray',
+                                    paddingVertical: 4,
+                                    paddingHorizontal: 10,
+                                    marginHorizontal: 2,
+                                    marginVertical: 4,
+                                    borderRadius: 5,
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    opacity: isPrevSelected ? 1 : 0.3,
+                                }}
+                                onPress={() => handleOnSelectBeach(beach)}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: DefaultFont.fontFamily,
+                                        fontSize: 18,
+                                        alignSelf: 'center',
+                                    }}
+                                >{`${beach.name} - ${beach.province}`}</Text>
+                            </TouchableOpacity>
+                        )
+                    })}
+                </View>
+                {/* <CreateGoalListLayout /> */}
+            </View>
+        )
+    }
+
     const renderOnboardingPage = () => {
         const renderStep = (step) => {
             const selectBeachPage = step.actionKey === snapsLayoutKeys.NEW_BEACH_SNAP;
+            const pickBeachesPage = step.actionKey === myProgressLayoutKeys.GOAL_LIST;
 
             return (
                 selectBeachPage ? renderBeachCheckboxPage(step)
-                    : (
-                        <View
-                            style={{
-                                ...styles.page,
-                                paddingHorizontal: 30,
-                            }}
-                            key={step.page + 1}
-                        >
-                            <Image
-                                source={
-                                    step.imageRes ? step.imageRes
-                                        : require('@/assets/images/onboarding/onboarding-step-1.png')
-                                }
+                    : pickBeachesPage ? renderPickBeachesPage(step)
+                        : (
+                            <View
                                 style={{
-                                    flex: 1,
-                                    width: '100%',
-                                    height: '100%',
-                                    resizeMode: 'contain',
+                                    ...styles.page,
+                                    paddingHorizontal: 30,
                                 }}
-                            />
-                            {step.header &&
+                                key={step.page + 1}
+                            >
+                                <Image
+                                    source={
+                                        step.imageRes ? step.imageRes
+                                            : require('@/assets/images/onboarding/onboarding-step-1.png')
+                                    }
+                                    style={{
+                                        flex: 1,
+                                        width: '100%',
+                                        height: '100%',
+                                        resizeMode: 'contain',
+                                    }}
+                                />
+                                {step.header &&
+                                    <Text
+                                        style={{
+                                            fontFamily: DefaultFont.fontFamilyBold,
+                                            fontSize: 18,
+                                            color: 'black',
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        {`${step.header}\r\n`}
+                                    </Text>
+                                }
                                 <Text
                                     style={{
-                                        fontFamily: DefaultFont.fontFamilyBold,
-                                        fontSize: 18,
-                                        color: 'black',
+                                        ...styles.text,
                                         textAlign: 'center',
+                                        fontSize: 18,
                                     }}
                                 >
-                                    {`${step.header}\r\n`}
+                                    {step.text ? step.text : `Step ${step.page + 1}`}
                                 </Text>
-                            }
-                            <Text
-                                style={{
-                                    ...styles.text,
-                                    textAlign: 'center',
-                                    fontSize: 18,
-                                }}
-                            >
-                                {step.text ? step.text : `Step ${step.page + 1}`}
-                            </Text>
-                        </View>
-                    )
+                            </View>
+                        )
             )
         }
 
@@ -235,56 +344,73 @@ export default function OnboardingLayout() {
     }
 
     const fetchData = async () => {
+        setIsLoading(true);
+
         const topFiveFamousBeacheIds = [
             'LBABACAB87D2',
             'LBABACOREA14',
             'LBABAHINA255',
             'LBABAPAN80AE',
             'LBABAPIN4C51',
+            'LBABASOGF9AD',
+            'LBAMAILO7596',
+            'LBARABATE6E9',
+            'LBARAGUI8D28',
+            'LBATAPUN562C',
         ]
         const data = await DatabaseActions.getBeachesWithIds(topFiveFamousBeacheIds);
         beaches.current = data;
+
+        setIsLoading(false);
     }
 
     useEffect(() => {
         fetchData();
     }, [])
 
+
+    const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.GOAL_LIST;
+    const isBeachGoalSet = selectedBeachesRef.current.length === 5;
+
     return (
         <SafeAreaView
             style={styles.container} edges={['right', 'left']}
         >
-            <View style={{
-                ...styles.content,
-                marginTop: insets.top,
-                marginBottom: insets.bottom,
-            }}>
-                {renderOnboardingPage()}
-                <View
-                    style={{
-                        position: 'absolute',
-                        width: '100%',
-                        paddingHorizontal: 20,
-                        bottom: marginBottom,
-                    }}
-                >
-                    <Button
-                        titleStyle={styles.buttonTitle}
-                        buttonStyle={{
-                            ...styles.button,
+            {!isLoading &&
+                <View style={{
+                    ...styles.content,
+                    marginTop: insets.top,
+                    marginBottom: insets.bottom,
+                }}>
+                    {renderOnboardingPage()}
+                    <View
+                        style={{
+                            position: 'absolute',
+                            width: '100%',
+                            paddingHorizontal: 20,
+                            bottom: marginBottom,
                         }}
-                        title={onboardingSteps[currentPageIndex].buttonTitle}
-                        onPress={handleOnboardingCtaClick}
+                    >
+                        <Button
+                            titleStyle={styles.buttonTitle}
+                            buttonStyle={{
+                                ...styles.button,
+                                // opacity: (isSettingGoalList && !isBeachGoalSet) ? 0.5 : 1,
+                            }}
+                            title={onboardingSteps[currentPageIndex].buttonTitle}
+                            onPress={handleOnboardingCtaClick}
+                            disabled={isSettingGoalList && !isBeachGoalSet}
+                        />
+                    </View>
+                    <NewBeachSnapModal
+                        showSkipButton={true}
+                        isVisible={showNewSnapModal}
+                        onClose={handleOnAddBeachSnapFinish}
+                        onSave={handleOnAddBeachSnapFinish}
+                        onSkip={handleOnAddBeachSnapFinish}
                     />
                 </View>
-                <NewBeachSnapModal
-                    showSkipButton={true}
-                    isVisible={showNewSnapModal}
-                    onClose={handleOnAddBeachSnapFinish}
-                    onSave={handleOnAddBeachSnapFinish}
-                    onSkip={handleOnAddBeachSnapFinish}
-                />
-            </View>
+            }
         </SafeAreaView>
     );
 }

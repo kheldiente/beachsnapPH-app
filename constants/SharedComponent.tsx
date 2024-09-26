@@ -39,7 +39,7 @@ export const secondaryHeaderBar = (title) => {
     }
 }
 
-export const secondaryHeaderWithDoneButton = (navigation, title = '') => {
+export const secondaryHeaderWithDoneButton = (navigation, title = '', onDonePress) => {
     return {
         headerBackVisible: false,
         headerShadowVisible: false,
@@ -54,7 +54,7 @@ export const secondaryHeaderWithDoneButton = (navigation, title = '') => {
             </Text>
         ),
         headerRight: (props) => (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onDonePress}>
                 <Text
                     style={{
                         fontFamily: DefaultFont.fontFamilyBold,
