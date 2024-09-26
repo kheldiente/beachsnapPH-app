@@ -22,6 +22,7 @@ export default function BeachCardList(props) {
             <View style={styles.card}>
                 <View style={styles.item}>
                     <Text style={styles.title}>{item.name}</Text>
+                    <Text style={styles.subtitle}>{item.municipality}, {item.province}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -40,7 +41,6 @@ export default function BeachCardList(props) {
 
 const styles = StyleSheet.create({
     card: {
-        height: 40,
         backgroundColor: 'white',
         borderColor: "white",
         borderRadius: 5,
@@ -50,9 +50,16 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     item: {
-        margin: 10
+        marginHorizontal: 10,
+        marginVertical: 5
     },
     title: {
-        fontFamily: DefaultFont.fontFamily
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 14,
+    },
+    subtitle: {
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 10,
+        color: 'gray'
     }
 });

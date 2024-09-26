@@ -1,5 +1,5 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { secondaryHeaderBar, secondaryHeaderWithBackBar } from '@/constants/SharedComponent';
+import { secondaryHeaderBar, secondaryHeaderWithBackBar, secondaryHeaderWithDoneButton } from '@/constants/SharedComponent';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -74,10 +74,28 @@ export default function GoalListLayout() {
         )
     }
 
+    const handleOnUpdateSelectedBeaches = (beaches) => {
+        setSelectedBeaches(beaches)
+
+        const headerOptions = {
+            ...secondaryHeaderWithDoneButton(navigation, headerTitle)
+        }
+        if (beaches.length === 5) {
+            navigation.setOptions(headerOptions)
+        } else {
+            navigation.setOptions({
+                ...headerOptions,
+                headerRight: () => null
+            })
+        }
+    }
+
     const setupStyling = () => {
-        navigation.setOptions(
-            secondaryHeaderWithBackBar(navigation, headerTitle)
-        )
+        const headerOptions = {
+            ...secondaryHeaderWithDoneButton(navigation, headerTitle),
+            headerRight: () => null
+        }
+        navigation.setOptions(headerOptions)
     }
 
     useEffect(() => {
@@ -136,9 +154,9 @@ export default function GoalListLayout() {
         const handleOnClickBeach = (beach) => {
             if (createGoalListRef.current) {
                 const beaches = selectedBeaches.filter((b) => b.id !== beach.id)
-                
+
                 createGoalListRef.current.forceUpdateBeaches(beaches)
-                setSelectedBeaches(beaches)
+                handleOnUpdateSelectedBeaches(beaches)
             }
         }
 
@@ -233,7 +251,7 @@ export default function GoalListLayout() {
                 {/* {goalItems.map((item) => renderStatCard(item))} */}
 
                 <CreateGoalListLayout
-                    onChangeSelectedBeaches={setSelectedBeaches}
+                    onChangeSelectedBeaches={handleOnUpdateSelectedBeaches}
                     ref={createGoalListRef}
                 />
             </View>

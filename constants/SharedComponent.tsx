@@ -3,7 +3,7 @@ import { appName } from "./Global"
 import { Ionicons } from "@expo/vector-icons";
 import { DefaultFont } from "./Fonts";
 import { SharedTransition, withSpring } from "react-native-reanimated";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 export const defaultHeaderBar = (title = appName) => {
     const tabHeaderOptions = ({ navigation }) => {
@@ -36,6 +36,34 @@ export const secondaryHeaderBar = (title) => {
                 {...props}
             />
         )
+    }
+}
+
+export const secondaryHeaderWithDoneButton = (navigation, title = '') => {
+    return {
+        headerBackVisible: false,
+        headerShadowVisible: false,
+        headerLeft: (props) => (
+            <Text
+                style={{
+                    fontFamily: DefaultFont.fontFamilyBold,
+                    fontSize: 15,
+                    color: 'green',
+                }}
+            >{title}
+            </Text>
+        ),
+        headerRight: (props) => (
+            <TouchableOpacity>
+                <Text
+                    style={{
+                        fontFamily: DefaultFont.fontFamilyBold,
+                        fontSize: 15,
+                        color: 'black',
+                    }}
+                >Done</Text>
+            </TouchableOpacity>
+        ),
     }
 }
 
