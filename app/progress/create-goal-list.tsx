@@ -1,5 +1,4 @@
-import { noHeaderBar, secondaryHeaderWithBackBar } from '@/constants/SharedComponent';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     StyleSheet,
     View,
@@ -11,16 +10,15 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { FlashList } from '@shopify/flash-list';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { DefaultFont } from '@/constants/Fonts';
-import { snapsLayoutKeys } from '@/constants/Global';
-import { CheckBox, Divider } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function CreateGoalListLayout({ navigation }) {
+export default function CreateGoalListLayout({ navigation, props }) {
     const estListSize = 500;
     const headerTitle = 'Beaches';
 
     const [matchedBeaches, setMatchedBeaches] = useState(null);
     const [selectedBeaches, setSelectedBeaches] = useState([]);
+    var selectedBeachesRef = useRef([]);
 
     const getBeachesFromDb = async (keyword = '') => {
         const beaches = await DatabaseActions.getBeachesFromDb({ keyword: keyword, applyLimit: false });
@@ -33,18 +31,23 @@ export default function CreateGoalListLayout({ navigation }) {
     }
 
     const handleOnClickBeach = (item, isPrevSelected) => {
-        // console.log('item', `${item.name} ${isPrevSelected}`);
+        var beaches = [...selectedBeachesRef.current]
         if (isPrevSelected) {
-            setSelectedBeaches(
-                selectedBeaches.filter((selected) => selected.id !== item.id)
-            );
+            beaches = beaches.filter((selected) => selected.id !== item.id)
         } else {
-            if (selectedBeaches.length < 5) {
-                setSelectedBeaches([
-                    ...selectedBeaches,
+            if (beaches.length < 5) {
+                beaches = [
+                    ...beaches,
                     item
-                ]);
+                ]
             }
+        }
+
+        selectedBeachesRef.current = beaches
+        setSelectedBeaches(beaches)
+
+        if (props !== undefined && props.onChangeSelectedBeaches) {
+            props.onChangeSelectedBeaches(beaches)
         }
     }
 
@@ -63,13 +66,13 @@ export default function CreateGoalListLayout({ navigation }) {
                     style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        paddingHorizontal: 12,
-                        marginHorizontal: 10,
-                        marginVertical: 3,
-                        borderColor: 'transparent',
-                        borderWidth: 1,
+                        paddingHorizontal: 10,
+                        marginHorizontal: 5,
+                        marginVertical: 2,
                         borderRadius: 5,
                         backgroundColor: isPrevSelected ? 'papayawhip' : 'transparent',
+                        borderWidth: 0.2,
+                        borderColor: 'lightgray',
                     }}
                     onPress={() => {
                         handleOnClickBeach(item, isPrevSelected)
@@ -127,14 +130,7 @@ export default function CreateGoalListLayout({ navigation }) {
         )
     }
 
-    const setupStyling = () => {
-        navigation.setOptions(
-            secondaryHeaderWithBackBar(navigation, headerTitle)
-        )
-    }
-
     useEffect(() => {
-        // setupStyling()
         getBeachesFromDb()
     }, []);
 
@@ -151,7 +147,7 @@ export default function CreateGoalListLayout({ navigation }) {
                     flex: 1,
                     flexDirection: 'column',
                     backgroundColor: 'white',
-                    // paddingHorizontal: 10,
+                    paddingHorizontal: 5,
                 }}
             >
                 <View
@@ -176,7 +172,7 @@ export default function CreateGoalListLayout({ navigation }) {
                 </View>
                 <View
                     style={{
-                        paddingHorizontal: 10,
+                        paddingHorizontal: 5,
                     }}
                 >
                     <TextInput
@@ -187,7 +183,7 @@ export default function CreateGoalListLayout({ navigation }) {
                             borderRadius: 5,
                             borderColor: 'lightgray',
                             padding: 10,
-                            marginVertical: 5,
+                            marginBottom: 5,
                         }}
                         placeholder={`Search for a beach...`}
                         cursorColor={'black'}

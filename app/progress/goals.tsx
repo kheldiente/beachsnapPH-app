@@ -1,7 +1,7 @@
 import { DefaultFont } from '@/constants/Fonts';
 import { secondaryHeaderBar } from '@/constants/SharedComponent';
 import { useNavigation } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
     ScrollView,
     StyleSheet,
@@ -14,6 +14,7 @@ import CreateGoalListLayout from './create-goal-list';
 export default function GoalListLayout() {
     const headerTitle = 'Pick your next 5 beaches';
     const navigation = useNavigation();
+    const [selectedBeaches, setSelectedBeaches] = useState([])
 
     const renderStatCard = (data) => {
         return (
@@ -121,6 +122,36 @@ export default function GoalListLayout() {
         }
     ]
 
+    const renderSeletedBeaches = (beaches) => {
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    marginHorizontal: 10,
+                    flexWrap: 'wrap',
+                }}
+            >
+                {beaches.map((beach) => (
+                    <Text
+                        key={beach.id}
+                        style={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontSize: 12,
+                            alignSelf: 'center',
+                            backgroundColor: 'lightgray',
+                            paddingVertical: 4,
+                            paddingHorizontal: 10,
+                            marginHorizontal: 2,
+                            marginVertical: 2,
+                            borderRadius: 5,
+                            overflow: 'hidden',
+                        }}
+                    >{beach.name}</Text>
+                ))}
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView
             style={styles.container} edges={['right', 'left']}
@@ -133,6 +164,14 @@ export default function GoalListLayout() {
             }}>{`Select 5 beaches to add to your goal list`}</Text> */}
             <View
                 style={{
+                    flexDirection: 'row',
+                    backgroundColor: 'white',
+                }}
+            >
+                {renderSeletedBeaches(selectedBeaches)}
+            </View>
+            <View
+                style={{
                     flex: 1,
                     flexDirection: 'column',
                     // paddingVertical: 10,
@@ -142,6 +181,11 @@ export default function GoalListLayout() {
 
                 <CreateGoalListLayout
                     navigation={navigation}
+                    props={{
+                        onChangeSelectedBeaches: (beaches) => {
+                            setSelectedBeaches(beaches)
+                        }
+                    }}
                 />
             </View>
         </SafeAreaView>
