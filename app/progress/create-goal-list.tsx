@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import {
     StyleSheet,
     View,
@@ -12,9 +12,8 @@ import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { DefaultFont } from '@/constants/Fonts';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function CreateGoalListLayout({ navigation, props }) {
+export const CreateGoalListLayout = forwardRef((props: any, ref) => {
     const estListSize = 500;
-    const headerTitle = 'Beaches';
 
     const [matchedBeaches, setMatchedBeaches] = useState(null);
     const [selectedBeaches, setSelectedBeaches] = useState([]);
@@ -28,6 +27,11 @@ export default function CreateGoalListLayout({ navigation, props }) {
     const searchBeachFromDb = async (keyword = '') => {
         const beaches = await DatabaseActions.getBeachesFromDb({ keyword: keyword, applyLimit: false });
         setMatchedBeaches(beaches);
+    }
+
+    const forceUpdateBeaches = (beaches) => {
+        selectedBeachesRef.current = beaches
+        setSelectedBeaches(beaches)
     }
 
     const handleOnClickBeach = (item, isPrevSelected) => {
@@ -130,6 +134,10 @@ export default function CreateGoalListLayout({ navigation, props }) {
         )
     }
 
+    useImperativeHandle(ref, () => ({
+        forceUpdateBeaches
+    }));
+
     useEffect(() => {
         getBeachesFromDb()
     }, []);
@@ -149,27 +157,9 @@ export default function CreateGoalListLayout({ navigation, props }) {
                     backgroundColor: 'white',
                     paddingHorizontal: 5,
                 }}
+                // {...props}
+                // ref={ref}
             >
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        // backgroundColor: 'white',
-                        alignItems: 'center',
-                        paddingBottom: 10,
-                    }}
-                >
-                    {/* <Ionicons
-                        style={{ marginRight: 10 }}
-                        name='chevron-back'
-                        size={25}
-                        onPress={() => { navigation.goBack() }}
-                    />
-                    <Text style={{
-                        fontFamily: DefaultFont.fontFamily,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}>Search</Text> */}
-                </View>
                 <View
                     style={{
                         paddingHorizontal: 5,
@@ -194,7 +184,7 @@ export default function CreateGoalListLayout({ navigation, props }) {
             </View>
         </SafeAreaView>
     );
-}
+});
 
 const styles = StyleSheet.create({
     container: {

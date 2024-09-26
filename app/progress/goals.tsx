@@ -1,20 +1,26 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { secondaryHeaderBar } from '@/constants/SharedComponent';
+import { secondaryHeaderBar, secondaryHeaderWithBackBar } from '@/constants/SharedComponent';
 import { useNavigation } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     ScrollView,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View,
 } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
-import CreateGoalListLayout from './create-goal-list';
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { CreateGoalListLayout } from './create-goal-list';
+import { Divider } from '@rneui/themed';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function GoalListLayout() {
     const headerTitle = 'Pick your next 5 beaches';
     const navigation = useNavigation();
+    const insets = useSafeAreaInsets();
+
     const [selectedBeaches, setSelectedBeaches] = useState([])
+    const createGoalListRef = useRef(null);
 
     const renderStatCard = (data) => {
         return (
@@ -68,10 +74,14 @@ export default function GoalListLayout() {
         )
     }
 
-    useEffect(() => {
+    const setupStyling = () => {
         navigation.setOptions(
-            secondaryHeaderBar(headerTitle)
+            secondaryHeaderWithBackBar(navigation, headerTitle)
         )
+    }
+
+    useEffect(() => {
+        setupStyling()
     }, []);
 
     const goalItems = [
@@ -123,30 +133,65 @@ export default function GoalListLayout() {
     ]
 
     const renderSeletedBeaches = (beaches) => {
+        const handleOnClickBeach = (beach) => {
+            if (createGoalListRef.current) {
+                const beaches = selectedBeaches.filter((b) => b.id !== beach.id)
+                
+                createGoalListRef.current.forceUpdateBeaches(beaches)
+                setSelectedBeaches(beaches)
+            }
+        }
+
         return (
             <View
                 style={{
                     flexDirection: 'row',
-                    marginHorizontal: 10,
+                    marginHorizontal: 8,
+                    paddingVertical: 5,
                     flexWrap: 'wrap',
                 }}
             >
                 {beaches.map((beach) => (
-                    <Text
-                        key={beach.id}
+                    <TouchableOpacity
+                        key={`selected_beach_${beach.id}`}
                         style={{
-                            fontFamily: DefaultFont.fontFamily,
-                            fontSize: 12,
-                            alignSelf: 'center',
+                            flexDirection: 'row',
                             backgroundColor: 'lightgray',
                             paddingVertical: 4,
                             paddingHorizontal: 10,
                             marginHorizontal: 2,
                             marginVertical: 2,
                             borderRadius: 5,
-                            overflow: 'hidden',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                         }}
-                    >{beach.name}</Text>
+                        onPress={() => {
+                            handleOnClickBeach(beach)
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontFamily: DefaultFont.fontFamily,
+                                fontSize: 12,
+                                alignSelf: 'center',
+                                backgroundColor: 'lightgray',
+                                // paddingVertical: 4,
+                                // paddingHorizontal: 10,
+                                // marginHorizontal: 2,
+                                // marginVertical: 2,
+                                // borderRadius: 5,
+                                // overflow: 'hidden',
+                            }}
+                        >{`${beach.name} - ${beach.province}`}</Text>
+                        <Ionicons
+                            name="close"
+                            color="black"
+                            size={14}
+                            style={{
+                                marginLeft: 5,
+                            }}
+                        />
+                    </TouchableOpacity>
                 ))}
             </View>
         )
@@ -154,14 +199,22 @@ export default function GoalListLayout() {
 
     return (
         <SafeAreaView
-            style={styles.container} edges={['right', 'left']}
+            style={{
+                ...styles.container,
+                // paddingTop: insets.top,
+                // paddingBottom: insets.bottom,
+            }}
+            edges={['right', 'left']}
         >
-            {/* <Text style={{
+            <Divider />
+            <Text style={{
                 fontFamily: DefaultFont.fontFamily,
-                fontSize: 15,
-                color: 'black',
-                marginLeft: 15,
-            }}>{`Select 5 beaches to add to your goal list`}</Text> */}
+                fontSize: 11,
+                color: 'gray',
+                alignSelf: 'flex-start',
+                marginTop: 10,
+                marginHorizontal: 14,
+            }}>{`Instruction: Click on the beach to select/deselect`}</Text>
             <View
                 style={{
                     flexDirection: 'row',
@@ -180,12 +233,8 @@ export default function GoalListLayout() {
                 {/* {goalItems.map((item) => renderStatCard(item))} */}
 
                 <CreateGoalListLayout
-                    navigation={navigation}
-                    props={{
-                        onChangeSelectedBeaches: (beaches) => {
-                            setSelectedBeaches(beaches)
-                        }
-                    }}
+                    onChangeSelectedBeaches={setSelectedBeaches}
+                    ref={createGoalListRef}
                 />
             </View>
         </SafeAreaView>
@@ -196,6 +245,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
+        backgroundColor: 'white',
     },
     listContainer: {
         flex: 1,
