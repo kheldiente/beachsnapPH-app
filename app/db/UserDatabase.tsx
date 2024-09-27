@@ -13,6 +13,13 @@ export const openDb = async () => {
     }
 }
 
+const createWhereClause = (ids) => {
+    var output = '('
+    output = output + ids.map((id) => `'${id}'`).join(',')
+    output = output + ')'
+    return output
+}
+
 export const createTables = async () => {
     if (!db) {
         console.log('Database not initialized!');
@@ -33,13 +40,15 @@ export const createTables = async () => {
                 "dateVisited"	INTEGER NOT NULL,
                 "metadata"  TEXT NOT NULL,
                 "weatherId" TEXT NOT NULL,
+                "createdAt"	INTEGER NOT NULL,
                 PRIMARY KEY("id" AUTOINCREMENT)
             );
 
             CREATE TABLE IF NOT EXISTS "goalList" (
                 "id"	INTEGER NOT NULL,
                 "name"	TEXT NOT NULL,
-                PRIMARY KEY("id")
+                "createdAt"	INTEGER NOT NULL,
+                PRIMARY KEY("id" AUTOINCREMENT)
             );
 
             CREATE TABLE IF NOT EXISTS "goal" (
@@ -50,6 +59,7 @@ export const createTables = async () => {
                 "dateVisited"	INTEGER NOT NULL,
                 "targetDateToVisit"	TEXT NOT NULL,
                 "notes"	TEXT,
+                "createdAt"	INTEGER NOT NULL,
                 PRIMARY KEY("id" AUTOINCREMENT),
                 FOREIGN KEY("goalListId") REFERENCES "goalList"("id")
             )
@@ -155,20 +165,88 @@ export const getAllSnaps = async () => {
     return uniqueProvinceIds;
 }
 
-export const getAllGoals = async () => {
+export const saveGoal = async (goal) => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    console.log(`saving goal: ${JSON.stringify(goal)}`)
+    var result = null;
+    try {
+        result = await db.runAsync(
+            'INSERT INTO goalList (name, createdAt) VALUES (?, ?)',
+            [
+                `${goal.name}`,
+                `${goal.createdAt}`
+            ]
+        )
+        Object.assign(goal, { goalListId: result.lastInsertRowId })
+
+        var insertGoalItemsQuery = '';
+        goal.items.forEach((item) => {
+            insertGoalItemsQuery += `
+                INSERT INTO goal (goalListId, beachId, name, dateVisited, targetDateToVisit, notes, createdAt) VALUES ('${goal.goalListId}', '${item.id}', '${item.name}', '${item.dateVisited}', '${item.targetDateToVisit}', '${item.notes}', '${item.createdAt}');
+            `
+            insertGoalItemsQuery += '\n'
+        })
+        // console.log(`insertGoalItemsQuery: ${insertGoalItemsQuery}`)
+        await db.execAsync(insertGoalItemsQuery)
+
+        console.log(`inserted goalList id: ${goal.goalListId}`);
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
+}
+
+export const getLatestGoal = async () => {
     if (!db) {
         console.log('Database not initialized!');
         return;
     }
 
     var goals = [];
+    const goalLimit = 5;
     try {
         goals = await db.getAllAsync(`
-            SELECT *, 
-            datetime(dateVisited, 'unixepoch', 'localtime') as dateVisited 
+            SELECT goalList.createdAt as goalListCreatedAt, 
+            goal.*
             FROM goal
+            LEFT JOIN goalList ON goal.goalListId = (SELECT id FROM goalList ORDER BY createdAt DESC LIMIT 1)
+            ORDER BY goalList.createdAt DESC
+            LIMIT ${goalLimit}
         `);
-        // console.log(`goals available: ${allRows.length}`)
+        const photoCounts = await db.getAllAsync(`
+            SELECT COUNT(*) as photoCount, beachId
+            FROM snap
+            WHERE beachId IN ${createWhereClause(goals.map((goal) => goal.beachId))}
+            GROUP BY beachId
+        `);
+
+        // goals = photoCounts.map((count) => {
+        //     const goal = goals.filter((goal) => goal.beachId === count.beachId)[0]
+        //     return {
+        //         ...goal,
+        //         photoCount: count.photoCount ? count.photoCount : 0
+        //     }
+        // })
+
+        goals = goals.map((goal) => {
+            const counts = photoCounts.filter((count) => count.beachId === goal.beachId)
+
+            if (counts.length > 0) {
+                return {
+                    ...goal,
+                    photoCount: counts[0].photoCount
+                }
+            } else {
+                return goal
+            }
+        })
+
+        console.log(`goalId: ${goals[0].goalListId} length: ${goals.length}`)
+        console.log(`photoCounts: ${JSON.stringify(photoCounts)}`)
     } catch (e) {
         console.log(e);
     }
@@ -185,7 +263,7 @@ export const saveSnap = async (snap) => {
     var result = null;
     try {
         result = await db.runAsync(
-            'INSERT INTO snap (beachId, provinceId, regionId, photoUrl, caption, dateVisited, metadata, weatherId) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO snap (beachId, provinceId, regionId, photoUrl, caption, dateVisited, metadata, weatherId, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 `${snap.beachId}`,
                 `${snap.provinceId}`,
@@ -194,7 +272,8 @@ export const saveSnap = async (snap) => {
                 `${snap.caption}`,
                 `${snap.dateVisited}`,
                 `${snap.metadata}`,
-                `${snap.weatherId}`
+                `${snap.weatherId}`,
+                `${snap.createdAt}`
             ]
         )
         console.log(`inserted snap id: ${result.lastInsertRowId}`);

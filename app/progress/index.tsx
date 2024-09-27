@@ -36,14 +36,14 @@ const progressWheelOptions = (progress) => {
     }
 }
 
-const renderCurrentGoal = (navigation) => {
-    const visited = 1;
-    const totalBeachGoal = 3;
+const renderCurrentGoal = (currentGoal, navigation) => {
+    const visited = currentGoal.filter((goal) => goal.photoCount > 0).length;
+    const totalBeachGoal = currentGoal.length;
     const caption = `Complete your goal this month and unlock achievements. Share it with your friends!`;
     const progress = visited / totalBeachGoal;
 
     const handleCurrentGoalClick = () => {
-        navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
+        // navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
     }
 
     return (
@@ -53,81 +53,87 @@ const renderCurrentGoal = (navigation) => {
                 backgroundColor: 'papayawhip',
                 borderRadius: 10,
                 padding: 15,
-                margin: 10,
+                marginHorizontal: 10,
             }}
-            // onPress={() => {
-            //     handleCurrentGoalClick();
-            // }}
+        // onPress={() => {
+        //     handleCurrentGoalClick();
+        // }}
         >
             <View
                 style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    paddingRight: 5,
+                    // opacity: 0,
                 }}
             >
-                <Text
-                    key={'_currGoal_header'}
-                    style={styles.headerText}
-                >Current Goal</Text>
-                <Ionicons
-                    name="eye-outline"
-                    color="black"
-                    size={22}
-                    onPress={() => {
-                        handleCurrentGoalClick();
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        paddingRight: 5,
                     }}
+                >
+                    <Text
+                        key={'_currGoal_header'}
+                        style={styles.headerText}
+                    >Current Goal</Text>
+                    <Ionicons
+                        name="eye-outline"
+                        color="black"
+                        size={22}
+                        onPress={() => {
+                            handleCurrentGoalClick();
+                        }}
+                    />
+                </View>
+                <View
+                    key={'_currGoal_msg'}
+                    style={{
+                        flex: 1,
+                        flexDirection: 'row'
+                    }}
+                >
+                    <Text
+                        style={{
+                            ...styles.headerText,
+                            fontSize: 40,
+                            alignSelf: 'center',
+                        }}
+                    >
+                        {visited}
+                    </Text>
+                    <Text
+                        style={{
+                            ...styles.headerText,
+                            fontSize: 14,
+                            marginLeft: 5,
+                            color: 'darkgray',
+                            alignSelf: 'center'
+                        }}
+                    >
+                        {`visited out of ${totalBeachGoal} beaches`}
+                    </Text>
+                </View>
+                <LinearProgress
+                    key={'_currGoal_progress'}
+                    style={{
+                        width: '100%',
+                        height: 6,
+                        marginBottom: 10,
+                        borderRadius: 10,
+                    }}
+                    value={progress}
+                    variant="determinate"
                 />
-            </View>
-            <View
-                key={'_currGoal_msg'}
-                style={{
-                    flex: 1,
-                    flexDirection: 'row'
-                }}
-            >
                 <Text
+                    key={'_currGoal_caption'}
                     style={{
-                        ...styles.headerText,
-                        fontSize: 40,
-                        alignSelf: 'center',
+                        ...styles.statsTitle,
+                        flexWrap: 'wrap'
                     }}
                 >
-                    {visited}
-                </Text>
-                <Text
-                    style={{
-                        ...styles.headerText,
-                        fontSize: 14,
-                        marginLeft: 5,
-                        color: 'darkgray',
-                        alignSelf: 'center'
-                    }}
-                >
-                    {`visited out of ${totalBeachGoal} beaches`}
+                    {caption}
                 </Text>
             </View>
-            <LinearProgress
-                key={'_currGoal_progress'}
-                style={{
-                    width: '100%',
-                    height: 6,
-                    marginBottom: 10,
-                    borderRadius: 10,
-                }}
-                value={progress}
-                variant="determinate"
-            />
-            <Text
-                key={'_currGoal_caption'}
-                style={{
-                    ...styles.statsTitle,
-                    flexWrap: 'wrap'
-                }}
-            >
-                {caption}
-            </Text>
         </Pressable>
     )
 }
@@ -140,7 +146,8 @@ const renderStatCard = (data) => {
                 backgroundColor: 'papayawhip',
                 borderRadius: 10,
                 padding: 15,
-                margin: 10,
+                marginHorizontal: 10,
+                marginTop: 10,
             }}
         >
             <Text style={styles.headerText}>{data.title}</Text>
@@ -185,6 +192,13 @@ const renderStatCard = (data) => {
 
 export default function ProgressListLayout() {
     const navigation = useNavigation();
+
+    const [recentVisitedBeaches, setRecentVisitedBeaches] = useState([]);
+    const [beachesWithManyPhotos, setBeachesWithManyPhotos] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const isLoading = useRef(true);
+    const isReloadingData = useRef(false);
     const totalCounts = useRef({
         totalBeaches: 500,
         totalRegions: 500,
@@ -197,11 +211,7 @@ export default function ProgressListLayout() {
         visitedProvinces: 0,
         visitedMunicipalities: 0,
     });
-    const [recentVisitedBeaches, setRecentVisitedBeaches] = useState([]);
-    const [beachesWithManyPhotos, setBeachesWithManyPhotos] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
-    const isLoading = useRef(true);
-    const isReloadingData = useRef(false);
+    const currentGoal = useRef([]);
 
     const subscribeToAppLifecycle = async () => {
         navigation.addListener('focus', async () => {
@@ -280,7 +290,9 @@ export default function ProgressListLayout() {
         const data = await DatabaseActions.getGeneralGoalStats();
         const recentVisitedBeaches = await DatabaseActions.getRecentVisitedBeaches();
         const topBeachesWithPhotos = await DatabaseActions.getTopBeachesWithManyPhotos();
+        const goals = await DatabaseActions.getLatestGoal();
 
+        currentGoal.current = goals;
         totalCounts.current = {
             totalBeaches: data?.totalBeaches,
             totalRegions: data?.totalRegions,
@@ -330,6 +342,7 @@ export default function ProgressListLayout() {
                     style={{
                         flex: 1,
                         flexDirection: 'column',
+                        paddingBottom: 15,
                     }}
                 >
                     <View
@@ -352,7 +365,10 @@ export default function ProgressListLayout() {
                     </View>
                     <View
                         key={'_stat_container'}
-                        style={styles.statsContainer}
+                        style={{
+                            ...styles.statsContainer,
+                            marginBottom: 20,
+                        }}
                     >
                         {Object.keys(generalGoalStats).map((statKey) => {
                             if (statKey !== 'visitedBeaches') {
@@ -364,7 +380,7 @@ export default function ProgressListLayout() {
                             }
                         })}
                     </View>
-                    {renderCurrentGoal(navigation)}
+                    {renderCurrentGoal(currentGoal.current, navigation)}
                     {recentVisitedBeaches.length > 0 &&
                         renderStatCard({
                             title: 'Last visited beaches',

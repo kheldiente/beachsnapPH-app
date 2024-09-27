@@ -17,6 +17,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import NewBeachSnapModal from '../beach/addbeach-modal';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { Ionicons } from '@expo/vector-icons';
+import { dateToUnixTimestamp } from '@/constants/Utils';
 
 const minBeachesToSelect = 5;
 const onboardingSteps = [
@@ -54,6 +55,12 @@ const onboardingSteps = [
     },
 ];
 
+const skipListItem = {
+    id: 'skip-list-item',
+    name: 'None of the above',
+    province: 'Skip province',
+}
+
 export default function OnboardingLayout() {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
@@ -69,6 +76,7 @@ export default function OnboardingLayout() {
     const pagerViewRef = useRef();
     const beaches = useRef([]);
     const selectedBeachesRef = useRef([]);
+    const selectedBeachWithSnap = useRef(null);
 
     const marginBottom = Platform.select({
         ios: insets.bottom - 20,
@@ -90,11 +98,46 @@ export default function OnboardingLayout() {
 
     const handleOnboardingCtaClick = () => {
         const currentPageData = onboardingSteps[currentPageRef.current];
-        if (currentPageData.actionKey !== undefined) {
-            handleOnboardingAction(currentPageData.actionKey);
+        
+        if (currentPageData.actionKey === myProgressLayoutKeys.GOAL_LIST) {
+            handleSaveGoal();
             return;
         }
 
+        if (currentPageData.actionKey !== undefined) {
+            const skippedAddingBeachSnap = currentPageData.actionKey === snapsLayoutKeys.NEW_BEACH_SNAP
+                && selectedBeachWithSnap.current.id === skipListItem.id;
+                
+            if (skippedAddingBeachSnap) {
+                goToNextPage();
+            } else {
+                handleOnboardingAction(currentPageData.actionKey);
+            }
+            return;
+        }
+
+        goToNextPage();
+    }
+
+    const handleSaveGoal = async () => {
+        const goal = {
+            name: `My goal+${new Date().toLocaleDateString()}`,
+            createdAt: dateToUnixTimestamp(new Date()),
+            items: selectedBeachesRef.current.map((beach) => (
+                {
+                    ...beach,
+                    dateVisited: dateToUnixTimestamp(new Date()),
+                    targetDateToVisit: dateToUnixTimestamp(new Date()),
+                    createdAt: dateToUnixTimestamp(new Date()),
+                    notes: '',
+                }
+            )),
+        }
+        await DatabaseActions.saveGoal(goal);
+        goToNextPage();
+    }
+
+    const goToNextPage = () => {
         const nextPage = currentPageRef.current + 1;
         if (nextPage >= onboardingSteps.length) {
             navigation.replace(homeLayoutKeys.HOME)
@@ -105,25 +148,32 @@ export default function OnboardingLayout() {
     }
 
     const renderBeachCheckboxPage = (step) => {
-        const only5Beaches = beaches.current.slice(0, minBeachesToSelect);
+        const only5Beaches = [
+            ...beaches.current.slice(0, minBeachesToSelect),
+            skipListItem,
+        ]
 
         const handleOnBeachCheckboxChange = (index) => {
+            selectedBeachWithSnap.current = only5Beaches[index];
             setVisitedBeachIndex(index);
         }
 
         return (
             <View
+                key={step.page + 1}
                 style={{
                     justifyContent: 'center',
+                    paddingRight: 20,
+                    marginHorizontal: 5,
                 }}
-                key={step.page + 1}
             >
                 <View>
                     <Text
                         style={{
                             ...styles.text,
                             textAlign: 'left',
-                            marginHorizontal: 20,
+                            marginHorizontal: 10,
+                            marginBottom: 10,
                         }}
                     >
                         {`Now, these are the top visited beaches in the Philippines!\r\n\r\nSelect if you have been to one of them 😎`}
@@ -136,14 +186,17 @@ export default function OnboardingLayout() {
                         {only5Beaches.map((beach, index) => (
                             <CheckBox
                                 containerStyle={{
-                                    backgroundColor: 'white',
+                                    backgroundColor: visitedBeachIndex === index ? 'papayawhip' : 'white',
                                     paddingVertical: 5,
                                     width: '100%',
+                                    borderColor: 'lightgray',
+                                    borderWidth: 0.5,
+                                    borderRadius: 5,
                                 }}
                                 titleProps={{
                                     style: {
                                         fontFamily: DefaultFont.fontFamilyBold,
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         marginLeft: 10,
                                     }
                                 }}
@@ -192,6 +245,7 @@ export default function OnboardingLayout() {
 
         return (
             <View
+                key={step.page + 1}
                 style={{
                     justifyContent: 'center',
                     paddingHorizontal: 10,
@@ -215,7 +269,16 @@ export default function OnboardingLayout() {
                         marginHorizontal: 12,
                         marginTop: 25,
                     }}
-                >{`Select ${minBeachesToSelect} beaches to visit 😎`}</Text>
+                >{`Let's pick ${minBeachesToSelect} beaches for you to visit 😎`}</Text>
+                <Text
+                    style={{
+                        ...styles.text,
+                        fontSize: 12,
+                        color: 'gray',
+                        textAlign: 'left',
+                        marginHorizontal: 12,
+                    }}
+                >Instruction: Press a beach below to select/deselect</Text>
                 <View
                     style={{
                         flexDirection: 'row',
@@ -360,6 +423,11 @@ export default function OnboardingLayout() {
         ]
         const data = await DatabaseActions.getBeachesWithIds(topFiveFamousBeacheIds);
         beaches.current = data;
+
+        // Preselect 5 beaches
+        selectedBeachesRef.current = data.slice(0, minBeachesToSelect);
+        // Preselect first beach to add snap
+        selectedBeachWithSnap.current = data[0]
 
         setIsLoading(false);
     }

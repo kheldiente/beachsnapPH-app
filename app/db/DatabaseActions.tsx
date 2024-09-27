@@ -35,6 +35,7 @@ export const saveSnap = async (snap) => {
     const snapParams = {
         ...snap,
         dateVisited: dateToUnixTimestamp(new Date(snap.dateVisited)),
+        createdAt: dateToUnixTimestamp(new Date()),
     }
     await UserDatabase.openDb();
     const result = await UserDatabase.saveSnap(snapParams);
@@ -105,4 +106,20 @@ export const getBeachesWithIds = async (ids) => {
     await ReadOnlyDatabase.closeDb();
 
     return beaches;
+}
+
+export const saveGoal = async (goal) => {
+    await UserDatabase.openDb();
+    const result = await UserDatabase.saveGoal(goal);
+    await UserDatabase.closeDb();
+
+    return result;
+}
+
+export const getLatestGoal = async () => {
+    await UserDatabase.openDb();
+    const goal = await UserDatabase.getLatestGoal();
+    await UserDatabase.closeDb();
+
+    return goal;
 }

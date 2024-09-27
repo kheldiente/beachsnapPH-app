@@ -15,11 +15,6 @@ export default function MyProgressLayout(props) {
                 component={ProgressListLayout}
                 options={defaultHeaderBar('Track your progress')}
             />
-            <Stack.Screen
-                name={`${myProgressLayoutKeys.GOAL_LIST}`}
-                component={GoalListLayout}
-                options={defaultHeaderBar('')}
-            />
         </Stack.Navigator>
     )
 }

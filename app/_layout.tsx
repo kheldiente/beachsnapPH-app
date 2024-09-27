@@ -7,14 +7,15 @@ import 'react-native-reanimated';
 import { AppFonts } from '@/constants/Fonts';
 import TabLayout from './(tabs)/_layout';
 import NewBeachSnapLayout from './beach/addbeach-page';
-import { homeLayoutKeys, snapsLayoutKeys } from '@/constants/Global';
+import { homeLayoutKeys, myProgressLayoutKeys, snapsLayoutKeys } from '@/constants/Global';
 import { NavigationContainer } from '@react-navigation/native';
 import ProfileLayout from './beach/[profile]';
-import { defaultHeaderWithBackBar } from '@/constants/SharedComponent';
+import { defaultHeaderBar, defaultHeaderWithBackBar } from '@/constants/SharedComponent';
 import PhotoPostLayout from '@/app/post';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import OnboardingLayout from '@/app/onboarding';
+import GoalListLayout from './progress/goals';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -77,6 +78,11 @@ export default function RootLayout() {
                             },
                             presentation: 'fullScreenModal',
                         }}
+                    />
+                    <Stack.Screen
+                        name={`${myProgressLayoutKeys.GOAL_LIST}`}
+                        component={GoalListLayout}
+                        options={defaultHeaderBar('')}
                     />
                     <Stack.Screen
                         name={`${snapsLayoutKeys.BEACH_PROFILE}`}
