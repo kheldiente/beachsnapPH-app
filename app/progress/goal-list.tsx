@@ -26,7 +26,7 @@ export default function GoalListLayout({ navigation, route }) {
         }
 
         const renderRightCta = () => {
-            return (item.photoCount !== undefined
+            return (item.photoCount > 0
                 ? <Text style={{
                     fontFamily: DefaultFont.fontFamilyBold,
                     fontSize: 14,
@@ -105,20 +105,25 @@ export default function GoalListLayout({ navigation, route }) {
 
         beachList.current = beachList.current.map((beach, index) => ({
             ...beach,
+            photoCount: beach.photoCount === undefined ? 0 : beach.photoCount,
             beach: details.filter((detail) => beach.beachId === detail.id)[0]
-        }))
+        }));
+        beachList.current.sort((bch1, bch2) => bch2.photoCount - bch1.photoCount);
+
+
+        const visited = beachList.current.filter((item) => item.photoCount > 0).length
+        setStyling(visited, beachList.current.length)
 
         setIsLoading(false);
     }
 
-    const setStyling = () => {
+    const setStyling = (progress, maxProgress) => {
         navigation.setOptions(
-            secondaryHeaderBar(headerTitle)
+            secondaryHeaderBar(`${headerTitle} (${progress}/${maxProgress})`)
         )
     }
 
     useEffect(() => {
-        setStyling();
         fetchData();
     }, [])
 
