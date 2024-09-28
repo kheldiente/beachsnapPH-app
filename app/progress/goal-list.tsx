@@ -1,8 +1,9 @@
 import { DefaultFont } from '@/constants/Fonts';
 import { items, myProgressLayoutKeys, snapsLayoutKeys } from '@/constants/Global';
 import { dateStringToMDY } from '@/constants/Utils';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+    RefreshControl,
     ScrollView,
     StyleSheet,
     Text,
@@ -15,8 +16,28 @@ import { secondaryHeaderBar } from '@/constants/SharedComponent';
 
 export default function GoalListLayout({ navigation, route }) {
     const headerTitle = 'Current goal'
-    const beachList = useRef(route.params.data);
-    const [isLoading, setIsLoading] = useState(true);
+    const beachListRef = useRef([]);
+
+    const [beachList, setBeachList] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const isLoading = useRef(true);
+    const isReloadingData = useRef(false);
+
+    const subscribeToAppLifecycle = async () => {
+        navigation.addListener('focus', async () => {
+            console.log(`reloading data in current goal page... ${isLoading.current} ${isReloadingData.current}`);
+            if (!isLoading.current && !isReloadingData.current) {
+                isReloadingData.current = true;
+                setTimeout(async () => {
+                    console.log('Reloading data in current goal page...');
+                    await fetchData();
+                    isReloadingData.current = false;
+                }, 200)
+            }
+        });
+    }
+
 
     const renderBeachCardItem = (item) => {
         const handleOnClickCardItem = () => {
@@ -98,23 +119,24 @@ export default function GoalListLayout({ navigation, route }) {
     }
 
     const fetchData = async () => {
-        setIsLoading(true);
+        isLoading.current = true;
 
-        const beachIds = beachList.current.map((goal) => goal.beachId)
+        beachListRef.current = await DatabaseActions.getLatestGoal();
+        const beachIds = beachListRef.current.map((goal) => goal.beachId)
         const details = await DatabaseActions.getBeachesWithIds(beachIds);
 
-        beachList.current = beachList.current.map((beach, index) => ({
+        beachListRef.current = beachListRef.current.map((beach) => ({
             ...beach,
             photoCount: beach.photoCount === undefined ? 0 : beach.photoCount,
             beach: details.filter((detail) => beach.beachId === detail.id)[0]
         }));
-        beachList.current.sort((bch1, bch2) => bch2.photoCount - bch1.photoCount);
+        beachListRef.current.sort((bch1, bch2) => bch2.photoCount - bch1.photoCount);
 
+        const visited = beachListRef.current.filter((item) => item.photoCount > 0).length
+        setStyling(visited, beachListRef.current.length)
 
-        const visited = beachList.current.filter((item) => item.photoCount > 0).length
-        setStyling(visited, beachList.current.length)
-
-        setIsLoading(false);
+        isLoading.current = false;
+        setBeachList(beachListRef.current);
     }
 
     const setStyling = (progress, maxProgress) => {
@@ -123,19 +145,42 @@ export default function GoalListLayout({ navigation, route }) {
         )
     }
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(async () => {
+            await fetchData();
+            setRefreshing(false);
+        }, 500)
+    })
+
     useEffect(() => {
-        fetchData();
+        setTimeout(() => {
+            fetchData();
+        }, 200);
+
+        subscribeToAppLifecycle();
     }, [])
 
     return (
         <SafeAreaView
             style={styles.container} edges={['right', 'left']}
         >
-            {!isLoading &&
-                <ScrollView>
-                    {beachList.current.map((item) => renderBeachCardItem(item))}
-                </ScrollView>
-            }
+            <ScrollView
+                style={styles.root}
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
+                {(!isLoading.current && beachList.length > 0) &&
+                    <ScrollView>
+                        {beachList.map((item) => renderBeachCardItem(item))}
+                    </ScrollView>
+                }
+            </ScrollView>
         </SafeAreaView>
     );
 }

@@ -44,9 +44,7 @@ const renderCurrentGoal = (currentGoal, navigation) => {
     const progress = visited / totalBeachGoal;
 
     const handleOnShowGoalListClick = () => {
-        navigation.navigate(myProgressLayoutKeys.GOAL_LIST, {
-            data: currentGoal
-        });
+        navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
     }
 
     const handleOnCreateNewGoal = () => {
