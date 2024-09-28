@@ -40,8 +40,24 @@ const progressWheelOptions = (progress) => {
 const renderCurrentGoal = (currentGoal, navigation) => {
     const visited = currentGoal.filter((goal) => goal.photoCount > 0).length;
     const totalBeachGoal = currentGoal.length;
-    const caption = `Complete your goal this month and unlock achievements. Share it with your friends!`;
+    const captions = [
+        'Use Sunscreen. Wear SPF, sunglasses, and a hat. Reapply often.',
+        'Check Tides/Weather. Know the tide schedule and weather before going.',
+        'Bring Essentials. Pack towels, chairs, water, snacks, and shade.',
+        'Respect Nature. Don’t disturb wildlife; clean up after yourself.',
+        'Swim Safely. Stick to lifeguarded areas and watch for rip currents.',
+        'Wear Flip-Flops. Protect your feet from hot sand.',
+        'Use Waterproof Bags. Keep valuables dry.',
+        'Pack Snacks. Bring easy, non-messy food.',
+        'Bring a Trash Bag. Clean up after yourself.',
+        'Plan for Shade. Bring a tent or umbrella for sun protection.',
+    ]
     const progress = visited / totalBeachGoal;
+
+    const getRandomTip = () => {
+        const randomIndex = Math.floor(Math.random() * captions.length);
+        return captions[randomIndex];
+    }
 
     const handleOnShowGoalListClick = () => {
         navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
@@ -63,7 +79,6 @@ const renderCurrentGoal = (currentGoal, navigation) => {
                             fontFamily: DefaultFont.fontFamily,
                             fontSize: 14,
                             color: 'darkviolet',
-                            // textDecorationLine: 'underline',
                         }}>Set new goal</Text>
                     </TouchableOpacity>)
                     : (<TouchableOpacity
@@ -86,15 +101,8 @@ const renderCurrentGoal = (currentGoal, navigation) => {
                 padding: 15,
                 marginHorizontal: 10,
             }}
-        // onPress={() => {
-        //     handleCurrentGoalClick();
-        // }}
         >
-            <View
-                style={{
-                    // opacity: 0,
-                }}
-            >
+            <View>
                 <View
                     style={{
                         flex: 1,
@@ -156,7 +164,7 @@ const renderCurrentGoal = (currentGoal, navigation) => {
                         flexWrap: 'wrap'
                     }}
                 >
-                    {caption}
+                    {`Tip: ${getRandomTip()}`}
                 </Text>
             </View>
         </Pressable>
