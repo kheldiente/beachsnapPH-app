@@ -98,7 +98,7 @@ export default function OnboardingLayout() {
 
     const handleOnboardingCtaClick = () => {
         const currentPageData = onboardingSteps[currentPageRef.current];
-        
+
         if (currentPageData.actionKey === myProgressLayoutKeys.GOAL_LIST) {
             handleSaveGoal();
             return;
@@ -107,7 +107,7 @@ export default function OnboardingLayout() {
         if (currentPageData.actionKey !== undefined) {
             const skippedAddingBeachSnap = currentPageData.actionKey === snapsLayoutKeys.NEW_BEACH_SNAP
                 && selectedBeachWithSnap.current.id === skipListItem.id;
-                
+
             if (skippedAddingBeachSnap) {
                 goToNextPage();
             } else {
@@ -176,8 +176,18 @@ export default function OnboardingLayout() {
                             marginBottom: 10,
                         }}
                     >
-                        {`Now, these are the top visited beaches in the Philippines!\r\n\r\nSelect if you have been to one of them 😎`}
+                        {`Now, these are the top visited beaches in the Philippines!`}
                     </Text>
+
+                    <Text
+                        style={{
+                            ...styles.textBold,
+                            fontSize: 18,
+                            textAlign: 'left',
+                            marginHorizontal: 10,
+                            marginBottom: 10,
+                        }}
+                    >Select if you've been to one of them 😎</Text>
                     <View
                         style={{
                             marginTop: 10,
@@ -195,12 +205,15 @@ export default function OnboardingLayout() {
                                 }}
                                 titleProps={{
                                     style: {
-                                        fontFamily: DefaultFont.fontFamilyBold,
+                                        fontFamily: DefaultFont.fontFamily,
                                         fontSize: 18,
                                         marginLeft: 10,
                                     }
                                 }}
-                                title={beach.name}
+                                title={beach.id === skipListItem.id
+                                    ? skipListItem.name
+                                    : `${beach.name}, ${beach.province}`
+                                }
                                 key={`beach_checkbox+${beach.id}`}
                                 checked={visitedBeachIndex === index}
                                 checkedIcon={
@@ -406,6 +419,31 @@ export default function OnboardingLayout() {
         }, 300);
     }
 
+    const renderOnboardingCta = () => {
+        const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.GOAL_LIST;
+        const isBeachGoalSet = selectedBeachesRef.current.length === 5;
+        const noBeachWithSnap = onboardingSteps[currentPageIndex].actionKey === snapsLayoutKeys.NEW_BEACH_SNAP
+            && selectedBeachWithSnap.current.id === skipListItem.id;
+        var buttonTitle = onboardingSteps[currentPageIndex].buttonTitle
+
+        if (noBeachWithSnap) {
+            buttonTitle = 'Skip for now'
+        }
+
+        return (
+            <Button
+                titleStyle={styles.buttonTitle}
+                buttonStyle={{
+                    ...styles.button,
+                    // opacity: (isSettingGoalList && !isBeachGoalSet) ? 0.5 : 1,
+                }}
+                title={buttonTitle}
+                onPress={handleOnboardingCtaClick}
+                disabled={isSettingGoalList && !isBeachGoalSet}
+            />
+        )
+    }
+
     const fetchData = async () => {
         setIsLoading(true);
 
@@ -459,16 +497,7 @@ export default function OnboardingLayout() {
                             bottom: marginBottom,
                         }}
                     >
-                        <Button
-                            titleStyle={styles.buttonTitle}
-                            buttonStyle={{
-                                ...styles.button,
-                                // opacity: (isSettingGoalList && !isBeachGoalSet) ? 0.5 : 1,
-                            }}
-                            title={onboardingSteps[currentPageIndex].buttonTitle}
-                            onPress={handleOnboardingCtaClick}
-                            disabled={isSettingGoalList && !isBeachGoalSet}
-                        />
+                        {renderOnboardingCta()}
                     </View>
                     <NewBeachSnapModal
                         showSkipButton={true}
