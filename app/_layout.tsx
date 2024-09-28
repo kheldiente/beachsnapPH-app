@@ -94,7 +94,7 @@ export default function RootLayout() {
                         }}
                     />
                     <Stack.Screen
-                        name={`${myProgressLayoutKeys.GOAL_LIST}`}
+                        name={`${myProgressLayoutKeys.BEACH_GOAL_PICKER}`}
                         component={SelectBeachGoalListLayout}
                         options={defaultHeaderBar('')}
                     />

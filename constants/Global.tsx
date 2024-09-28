@@ -37,7 +37,8 @@ export const snapsLayoutKeys = {
 
 export const myProgressLayoutKeys = {
     PROGRESS_LIST: "_ProgressList",
-    GOAL_LIST: "_GoalList",
+    BEACH_GOAL_PICKER: "_BeachGoalPicker",
+    GOAL_LIST: "_GoalList"
 }
 
 export const editorLayoutKeys = {

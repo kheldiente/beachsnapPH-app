@@ -45,7 +45,7 @@ const onboardingSteps = [
         buttonTitle: "Yes, I want to go there!",
         imageRes: require('@/assets/images/onboarding/onboarding-step-4.png'),
         text: `Pick your next ${minBeachesToSelect} beaches to visit!`,
-        actionKey: myProgressLayoutKeys.GOAL_LIST,
+        actionKey: myProgressLayoutKeys.BEACH_GOAL_PICKER,
     },
     {
         page: 4,
@@ -100,7 +100,7 @@ export default function OnboardingLayout() {
     const handleOnboardingCtaClick = () => {
         const currentPageData = onboardingSteps[currentPageRef.current];
 
-        if (currentPageData.actionKey === myProgressLayoutKeys.GOAL_LIST) {
+        if (currentPageData.actionKey === myProgressLayoutKeys.BEACH_GOAL_PICKER) {
             handleSaveGoal();
             return;
         }
@@ -341,7 +341,7 @@ export default function OnboardingLayout() {
     const renderOnboardingPage = () => {
         const renderStep = (step) => {
             const selectBeachPage = step.actionKey === snapsLayoutKeys.NEW_BEACH_SNAP;
-            const pickBeachesPage = step.actionKey === myProgressLayoutKeys.GOAL_LIST;
+            const pickBeachesPage = step.actionKey === myProgressLayoutKeys.BEACH_GOAL_PICKER;
 
             return (
                 selectBeachPage ? renderBeachCheckboxPage(step)
@@ -422,7 +422,7 @@ export default function OnboardingLayout() {
     }
 
     const renderOnboardingCta = () => {
-        const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.GOAL_LIST;
+        const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.BEACH_GOAL_PICKER;
         const isBeachGoalSet = selectedBeachesRef.current.length === 5;
         const noBeachWithSnap = onboardingSteps[currentPageIndex].actionKey === snapsLayoutKeys.NEW_BEACH_SNAP
             && selectedBeachWithSnap.current.id === skipListItem.id;
@@ -482,7 +482,7 @@ export default function OnboardingLayout() {
     }, [])
 
 
-    const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.GOAL_LIST;
+    const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.BEACH_GOAL_PICKER;
     const isBeachGoalSet = selectedBeachesRef.current.length === 5;
 
     return (
