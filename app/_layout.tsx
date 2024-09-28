@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'react-native-reanimated';
 import { AppFonts } from '@/constants/Fonts';
 import TabLayout from './(tabs)/_layout';
@@ -16,6 +16,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import OnboardingLayout from '@/app/onboarding';
 import SelectBeachGoalListLayout from './progress/select-beach-goal';
+import * as LocalStorage from '@/app/storage/LocalStorage';
+import { View } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -23,7 +25,10 @@ SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator()
 
 export default function RootLayout() {
-    const [loaded] = useFonts(AppFonts);
+    const [fontLoaded] = useFonts(AppFonts);
+    const isOnboardingCompleted = useRef(false);
+
+    const [isLoading, setIsLoading] = useState(true);
 
     const waitToProceed = () => {
         setTimeout(() => {
@@ -31,35 +36,44 @@ export default function RootLayout() {
         }, 500);
     }
 
-    const setupDbs = async () => {
-        await DatabaseActions.setupAllDbs();
+    const setupDbAndStorage = async () => {
+        setIsLoading(true);
+
+        isOnboardingCompleted.current = await LocalStorage.isOnboardingCompleted();
+        if (!isOnboardingCompleted.current) {
+            await DatabaseActions.setupAllDbs();
+        }
+
+        setIsLoading(false);
+        waitToProceed();
     }
 
     useEffect(() => {
-        if (loaded) {
-            setupDbs();
-            waitToProceed();
+        if (fontLoaded) {
+            setupDbAndStorage();
         }
-    }, [loaded]);
+    }, [fontLoaded]);
 
-    if (!loaded) {
-        return null;
+    if (!fontLoaded) {
+        return <View />;
     }
 
-    return (
-        <GestureHandlerRootView>
+    return (isLoading ? <View />
+        : <GestureHandlerRootView>
             <NavigationContainer
                 independent={true}
             >
                 <Stack.Navigator>
-                    <Stack.Screen
-                        name={`${homeLayoutKeys.ONBOARDING}`}
-                        component={OnboardingLayout}
-                        options={{
-                            headerShown: false,
-                            animation: 'fade',
-                        }}
-                    />
+                    {!isOnboardingCompleted.current &&
+                        <Stack.Screen
+                            name={`${homeLayoutKeys.ONBOARDING}`}
+                            component={OnboardingLayout}
+                            options={{
+                                headerShown: false,
+                                animation: 'fade',
+                            }}
+                        />
+                    }
                     <Stack.Screen
                         name={`${homeLayoutKeys.HOME}`}
                         component={TabLayout}

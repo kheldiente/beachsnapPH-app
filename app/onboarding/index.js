@@ -18,6 +18,7 @@ import NewBeachSnapModal from '../beach/addbeach-modal';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { Ionicons } from '@expo/vector-icons';
 import { dateToUnixTimestamp } from '@/constants/Utils';
+import * as LocalStorage from '@/app/storage/LocalStorage';
 
 const minBeachesToSelect = 5;
 const onboardingSteps = [
@@ -137,9 +138,10 @@ export default function OnboardingLayout() {
         goToNextPage();
     }
 
-    const goToNextPage = () => {
+    const goToNextPage = async () => {
         const nextPage = currentPageRef.current + 1;
         if (nextPage >= onboardingSteps.length) {
+            await LocalStorage.setOnboardingCompleted();
             navigation.replace(homeLayoutKeys.HOME)
         } else {
             pagerViewRef.current.setPage(nextPage);
@@ -444,9 +446,11 @@ export default function OnboardingLayout() {
         )
     }
 
-    const fetchData = async () => {
-        setIsLoading(true);
+    const initDb = async () => {
+        await DatabaseActions.setupAllDbs();
+    }
 
+    const fetchData = async () => {
         const topFiveFamousBeacheIds = [
             'LBABACAB87D2',
             'LBABACOREA14',
@@ -459,6 +463,9 @@ export default function OnboardingLayout() {
             'LBARAGUI8D28',
             'LBATAPUN562C',
         ]
+
+        setIsLoading(true);
+        
         const data = await DatabaseActions.getBeachesWithIds(topFiveFamousBeacheIds);
         beaches.current = data;
 

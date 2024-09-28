@@ -54,26 +54,27 @@ const renderCurrentGoal = (currentGoal, navigation) => {
     const renderCurrentGoalRightCta = () => {
         const isCurrentGoalCompleted = visited === totalBeachGoal;
         return (
-            isCurrentGoalCompleted
-                ? (<TouchableOpacity
-                    onPress={handleOnCreateNewGoal}
-                >
-                    <Text style={{
-                        fontFamily: DefaultFont.fontFamily,
-                        fontSize: 14,
-                        color: 'darkviolet',
-                        // textDecorationLine: 'underline',
-                    }}>Set new goal</Text>
-                </TouchableOpacity>)
-                : (<TouchableOpacity
-                    onPress={handleOnShowGoalListClick}
-                >
-                    <Ionicons
-                        name="eye-outline"
-                        color="black"
-                        size={22}
-                    />
-                </TouchableOpacity>)
+            totalBeachGoal === 0 ? <View />
+                : isCurrentGoalCompleted
+                    ? (<TouchableOpacity
+                        onPress={handleOnCreateNewGoal}
+                    >
+                        <Text style={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontSize: 14,
+                            color: 'darkviolet',
+                            // textDecorationLine: 'underline',
+                        }}>Set new goal</Text>
+                    </TouchableOpacity>)
+                    : (<TouchableOpacity
+                        onPress={handleOnShowGoalListClick}
+                    >
+                        <Ionicons
+                            name="eye-outline"
+                            color="black"
+                            size={22}
+                        />
+                    </TouchableOpacity>)
         )
     }
     return (
