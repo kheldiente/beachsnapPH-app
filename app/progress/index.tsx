@@ -1,5 +1,5 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { LinearProgress } from '@rneui/themed';
+import { Button, LinearProgress } from '@rneui/themed';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
     View,
@@ -7,7 +7,8 @@ import {
     StyleSheet,
     ScrollView,
     Platform,
-    Pressable
+    Pressable,
+    TouchableOpacity
 } from 'react-native';
 import AnimatedProgressWheel from 'react-native-progress-wheel';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
@@ -42,10 +43,39 @@ const renderCurrentGoal = (currentGoal, navigation) => {
     const caption = `Complete your goal this month and unlock achievements. Share it with your friends!`;
     const progress = visited / totalBeachGoal;
 
-    const handleCurrentGoalClick = () => {
-        // navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
+    const handleOnShowGoalListClick = () => {
+        console.log('show goal list');
     }
 
+    const handleOnCreateNewGoal = () => {
+        navigation.navigate(myProgressLayoutKeys.GOAL_LIST);
+    }
+
+    const renderCurrentGoalRightCta = () => {
+        const isCurrentGoalCompleted = visited === totalBeachGoal;
+        return (
+            isCurrentGoalCompleted
+                ? (<TouchableOpacity
+                    onPress={handleOnCreateNewGoal}
+                >
+                    <Text style={{
+                        fontFamily: DefaultFont.fontFamily,
+                        fontSize: 14,
+                        color: 'darkviolet',
+                        // textDecorationLine: 'underline',
+                    }}>Set new goal</Text>
+                </TouchableOpacity>)
+                : (<TouchableOpacity
+                    onPress={handleOnShowGoalListClick}
+                >
+                    <Ionicons
+                        name="eye-outline"
+                        color="black"
+                        size={22}
+                    />
+                </TouchableOpacity>)
+        )
+    }
     return (
         <Pressable
             key={'_currGoal'}
@@ -69,21 +99,15 @@ const renderCurrentGoal = (currentGoal, navigation) => {
                         flex: 1,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
-                        paddingRight: 5,
+                        alignItems: 'center',
+                        paddingRight: 2,
                     }}
                 >
                     <Text
                         key={'_currGoal_header'}
                         style={styles.headerText}
                     >Current Goal</Text>
-                    <Ionicons
-                        name="eye-outline"
-                        color="black"
-                        size={22}
-                        onPress={() => {
-                            handleCurrentGoalClick();
-                        }}
-                    />
+                    {renderCurrentGoalRightCta()}
                 </View>
                 <View
                     key={'_currGoal_msg'}

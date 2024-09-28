@@ -1,80 +1,43 @@
 import { DefaultFont } from '@/constants/Fonts';
-import { secondaryHeaderBar, secondaryHeaderWithBackBar, secondaryHeaderWithDoneButton } from '@/constants/SharedComponent';
+import { secondaryHeaderWithDoneButton } from '@/constants/SharedComponent';
 import { useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
-    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import { CreateGoalListLayout } from './create-goal-list';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { SearchSelectBeachLayout } from './search-select-beach';
 import { Divider } from '@rneui/themed';
 import { Ionicons } from '@expo/vector-icons';
+import { dateToUnixTimestamp } from '@/constants/Utils';
+import * as DatabaseActions from '@/app/db/DatabaseActions';
 
-export default function GoalListLayout() {
+export default function SelectBeachGoalListLayout() {
     const headerTitle = 'Pick your next 5 beaches';
     const navigation = useNavigation();
-    const insets = useSafeAreaInsets();
 
     const [selectedBeaches, setSelectedBeaches] = useState([])
     const createGoalListRef = useRef(null);
 
-    const renderStatCard = (data) => {
-        return (
-            <View
-                key={`goal_list+${data.key}`}
-                style={{
-                    backgroundColor: 'papayawhip',
-                    borderRadius: 10,
-                    padding: 15,
-                    marginHorizontal: 10,
-                    marginVertical: 5,
-                }}
-            >
-                <Text style={styles.headerText}>{data.title}</Text>
-                {data.list.map((item) => (
-                    <View
-                        key={`_visited_bchList+${data.key}+${item.beach.id}}`}
-                        style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                        }}
-                    >
-                        <View style={{
-                            flex: 1,
-                            flexDirection: 'column',
-                            marginTop: 10,
-                        }}>
-                            <Text style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontSize: 15,
-                                color: 'black',
-                            }}>{item.beach.name}</Text>
-                            <Text style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontSize: 10,
-                                color: 'gray'
-                            }}>Date</Text>
-                        </View>
-                        <Text style={{
-                            fontFamily: DefaultFont.fontFamilyBold,
-                            fontSize: 12,
-                            alignSelf: 'center',
-                            color: 'black',
-                        }}>{item.photoCount === 1
-                            ? '1 snap'
-                            : `${item.photoCount} snaps`
-                            }</Text>
-                    </View>
-                ))}
-            </View>
-        )
-    }
+    const handleOnDonePress = async () => {
+        const goal = {
+            name: `My goal+${new Date().toLocaleDateString()}`,
+            createdAt: dateToUnixTimestamp(new Date()),
+            items: selectedBeaches.map((beach) => (
+                {
+                    ...beach,
+                    dateVisited: dateToUnixTimestamp(new Date()),
+                    targetDateToVisit: dateToUnixTimestamp(new Date()),
+                    createdAt: dateToUnixTimestamp(new Date()),
+                    notes: '',
+                }
+            )),
+        }
+        await DatabaseActions.saveGoal(goal);
 
-    const handleOnDonePress = () => {
         navigation.goBack()
     }
 
@@ -203,9 +166,7 @@ export default function GoalListLayout() {
                     // paddingVertical: 10,
                 }}
             >
-                {/* {goalItems.map((item) => renderStatCard(item))} */}
-
-                <CreateGoalListLayout
+                <SearchSelectBeachLayout
                     onChangeSelectedBeaches={handleOnUpdateSelectedBeaches}
                     ref={createGoalListRef}
                 />

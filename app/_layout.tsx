@@ -15,7 +15,7 @@ import PhotoPostLayout from '@/app/post';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import OnboardingLayout from '@/app/onboarding';
-import GoalListLayout from './progress/goals';
+import SelectBeachGoalListLayout from './progress/select-beach-goal';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -81,7 +81,7 @@ export default function RootLayout() {
                     />
                     <Stack.Screen
                         name={`${myProgressLayoutKeys.GOAL_LIST}`}
-                        component={GoalListLayout}
+                        component={SelectBeachGoalListLayout}
                         options={defaultHeaderBar('')}
                     />
                     <Stack.Screen

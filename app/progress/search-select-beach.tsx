@@ -6,13 +6,13 @@ import {
     TouchableOpacity,
     Text,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { FlashList } from '@shopify/flash-list';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { DefaultFont } from '@/constants/Fonts';
 import { Ionicons } from '@expo/vector-icons';
 
-export const CreateGoalListLayout = forwardRef((props: any, ref) => {
+export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
     const estListSize = 500;
 
     const [matchedBeaches, setMatchedBeaches] = useState(null);
@@ -157,8 +157,6 @@ export const CreateGoalListLayout = forwardRef((props: any, ref) => {
                     backgroundColor: 'white',
                     paddingHorizontal: 5,
                 }}
-                // {...props}
-                // ref={ref}
             >
                 <View
                     style={{
@@ -190,6 +188,5 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
-        // backgroundColor: 'white'
     },
 });
