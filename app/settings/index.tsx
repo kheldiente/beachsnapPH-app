@@ -14,6 +14,7 @@ const items = [
         id: '_addBeach',
         title: 'Request a new beach',
         action: 'link',
+        url: 'https://forms.gle/FVf2Tckruf3euQ4z6',
     },
     {
         id: '_reqFeature',
@@ -43,6 +44,7 @@ export default function SettingsLayout() {
 
         return (
             <View
+                key={`settings+item_${item.id}`}
                 style={{
                     flexDirection: 'column',
                     backgroundColor: 'white',
@@ -50,7 +52,6 @@ export default function SettingsLayout() {
             >
                 <Divider />
                 <TouchableOpacity
-                    key={`settings+item_${item.id}`}
                     onPress={handleOnItemClick}
                 >
                     <Text
