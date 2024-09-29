@@ -43,7 +43,19 @@ export const secondaryHeaderWithDoneButton = (navigation, title = '', onDonePres
     return {
         headerBackVisible: false,
         headerShadowVisible: false,
-        headerLeft: (props) => (
+        headerTitleAlign: 'center',
+        headerLeft: () => (
+            <Ionicons
+                name="chevron-back-outline"
+                size={20}
+                style={{
+                    backgroundColor: 'transparent',
+                    color: 'black'
+                }}
+                onPress={() => navigation.goBack()}
+            />
+        ),
+        headerTitle: (props) => (
             <Text
                 style={{
                     fontFamily: DefaultFont.fontFamilyBold,

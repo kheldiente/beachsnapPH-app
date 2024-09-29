@@ -69,19 +69,11 @@ const renderCurrentGoal = (currentGoal, navigation) => {
 
     const renderCurrentGoalRightCta = () => {
         const isCurrentGoalCompleted = visited === totalBeachGoal;
-        return (
-            totalBeachGoal === 0 ? <View />
-                : isCurrentGoalCompleted
+
+        const renderIncompleteGoalCta = () => {
+            return (
+                visited > 0
                     ? (<TouchableOpacity
-                        onPress={handleOnCreateNewGoal}
-                    >
-                        <Text style={{
-                            fontFamily: DefaultFont.fontFamily,
-                            fontSize: 14,
-                            color: 'darkviolet',
-                        }}>Set new goal</Text>
-                    </TouchableOpacity>)
-                    : (<TouchableOpacity
                         onPress={handleOnShowGoalListClick}
                     >
                         <Ionicons
@@ -90,6 +82,35 @@ const renderCurrentGoal = (currentGoal, navigation) => {
                             size={22}
                         />
                     </TouchableOpacity>)
+                    : (<TouchableOpacity
+                        onPress={handleOnShowGoalListClick}
+                    >
+                        <Text style={{
+                            fontFamily: DefaultFont.fontFamily,
+                            fontSize: 14,
+                            color: 'darkviolet',
+                        }}>Add first snap</Text>
+                    </TouchableOpacity>)
+            )
+        }
+
+        const renderCompleteGoalCta = () => {
+            return (<TouchableOpacity
+                onPress={handleOnCreateNewGoal}
+            >
+                <Text style={{
+                    fontFamily: DefaultFont.fontFamily,
+                    fontSize: 14,
+                    color: 'darkviolet',
+                }}>Set new goal</Text>
+            </TouchableOpacity>)
+        }
+
+        return (
+            totalBeachGoal === 0 ? <View />
+                : isCurrentGoalCompleted
+                    ? renderCompleteGoalCta()
+                    : renderIncompleteGoalCta()
         )
     }
     return (

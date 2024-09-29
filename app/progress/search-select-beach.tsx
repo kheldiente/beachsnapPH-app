@@ -18,9 +18,14 @@ export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
     const [matchedBeaches, setMatchedBeaches] = useState(null);
     const [selectedBeaches, setSelectedBeaches] = useState([]);
     var selectedBeachesRef = useRef([]);
+    var allBeachesRef = useRef([]);
+    var visitedBeachesRef = useRef([]);
 
     const getBeachesFromDb = async (keyword = '') => {
-        const beaches = await DatabaseActions.getBeachesFromDb({ keyword: keyword, applyLimit: false });
+        const { beaches, visited } = await DatabaseActions.getRemainingBeachesToVisit();
+
+        allBeachesRef.current = beaches;
+        visitedBeachesRef.current = visited;
         setMatchedBeaches(beaches);
     }
 
@@ -63,60 +68,66 @@ export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
 
     const renderBeachList = () => {
         const renderItem = (item, extraData) => {
-            const isPrevSelected = extraData.filter((selected) => selected.id === item.id).length > 0;
+            const isPrevSelected = extraData.selectedBeaches.filter((selected) => selected.id === item.id).length > 0;
+            const visited = extraData.visited.filter((visBeach) => visBeach.beachId === item.id).length > 0;
+
             return (
-                <TouchableOpacity
-                    key={item.id}
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingHorizontal: 10,
-                        marginHorizontal: 5,
-                        marginVertical: 2,
-                        borderRadius: 5,
-                        backgroundColor: isPrevSelected ? 'papayawhip' : 'transparent',
-                        borderWidth: 0.2,
-                        borderColor: 'lightgray',
-                    }}
-                    onPress={() => {
-                        handleOnClickBeach(item, isPrevSelected)
-                    }}
-                >
-                    <View style={{
-                        borderRadius: 5,
-                        shadowColor: "transparent",
-                        paddingVertical: 8,
-                        flexDirection: "row",
-                        alignItems: 'center'
-                    }}>
-                        <View style={{
-                            // marginHorizontal: 5,
-                        }}>
-                            <Text style={{
-                                fontFamily: DefaultFont.fontFamily,
-                            }}>{item.name}</Text>
-                            <Text style={{
-                                fontFamily: DefaultFont.fontFamily,
-                                fontSize: 10,
-                                color: 'gray'
+                visited
+                    ? null
+                    : (
+                        <TouchableOpacity
+                            key={item.id}
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                paddingHorizontal: 10,
+                                marginHorizontal: 5,
+                                marginVertical: 2,
+                                borderRadius: 5,
+                                backgroundColor: isPrevSelected ? 'papayawhip' : 'transparent',
+                                borderWidth: 0.2,
+                                borderColor: 'lightgray',
+                            }}
+                            onPress={() => {
+                                handleOnClickBeach(item, isPrevSelected)
+                            }}
+                        >
+                            <View style={{
+                                borderRadius: 5,
+                                shadowColor: "transparent",
+                                paddingVertical: 8,
+                                flexDirection: "row",
+                                alignItems: 'center'
                             }}>
-                                {item.municipality}, {item.province}
-                            </Text>
-                        </View>
-                    </View>
-                    <View
-                        style={{
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Ionicons
-                            name="checkmark-circle"
-                            color="green"
-                            size={20}
-                            opacity={isPrevSelected ? 1 : 0}
-                        />
-                    </View>
-                </TouchableOpacity>
+                                <View style={{
+                                    // marginHorizontal: 5,
+                                }}>
+                                    <Text style={{
+                                        fontFamily: DefaultFont.fontFamily,
+                                    }}>{item.name}</Text>
+                                    <Text style={{
+                                        fontFamily: DefaultFont.fontFamily,
+                                        fontSize: 10,
+                                        color: 'gray'
+                                    }}>
+                                        {item.municipality}, {item.province}
+                                    </Text>
+                                </View>
+                            </View>
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Ionicons
+                                    name="checkmark-circle"
+                                    color="green"
+                                    size={20}
+                                    opacity={isPrevSelected ? 1 : 0}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    )
             )
         }
 
@@ -129,14 +140,45 @@ export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
                 data={matchedBeaches}
                 renderItem={({ item, index, target, extraData }) => renderItem(item, extraData)}
                 estimatedItemSize={estListSize}
-                extraData={selectedBeaches}
+                extraData={{
+                    selectedBeaches: selectedBeaches,
+                    visited: visitedBeachesRef.current,
+                }}
             />
         )
     }
 
-    useImperativeHandle(ref, () => ({
-        forceUpdateBeaches
-    }));
+    const renderRemainingBeachesText = () => {
+        const remaining = allBeachesRef.current.length - visitedBeachesRef.current.length
+        return (
+            <View
+                style={{
+                    flexDirection: 'row',
+                    marginHorizontal: 8,
+                    marginVertical: 4,
+                }}
+            >
+                <Text
+                    style={{
+                        fontFamily: DefaultFont.fontFamily,
+                        fontSize: 12,
+                        color: 'gray',
+                        alignSelf: 'flex-start'
+                    }}
+                >{`Remaining beaches to visit:`}</Text>
+                <Text
+                    style={{
+                        fontFamily: DefaultFont.fontFamilyBold,
+                        fontSize: 12,
+                        color: 'black',
+                        marginLeft: 4,
+                    }}
+                >{remaining}</Text>
+            </View>
+        )
+    }
+
+    useImperativeHandle(ref, () => ({ forceUpdateBeaches }));
 
     useEffect(() => {
         getBeachesFromDb()
@@ -178,6 +220,7 @@ export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
                         onChangeText={handleSearchInputChange}
                     />
                 </View>
+                {renderRemainingBeachesText()}
                 {renderBeachList()}
             </View>
         </SafeAreaView>

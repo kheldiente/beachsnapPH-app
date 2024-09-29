@@ -407,6 +407,31 @@ export const getTopBeachesWithManyPhotos = async () => {
     return beaches;
 }
 
+export const getRemainingBeachesToVisit = async () => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    var result = {};
+    try {
+        const visitedBeaches = await db.getAllAsync(`
+            SELECT DISTINCT(beachId) FROM snap
+        `);
+
+        await ReadOnlyDatabase.openDb();
+        const allBeaches = await ReadOnlyDatabase.getMatchingBeaches({ applyLimit: false });
+        await ReadOnlyDatabase.closeDb();
+
+        result = {
+            beaches: allBeaches,
+            visited: visitedBeaches
+        }
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
+}
 
 ////////// DANGER!!! //////////
 

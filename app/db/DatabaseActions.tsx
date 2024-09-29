@@ -123,3 +123,11 @@ export const getLatestGoal = async () => {
 
     return goal;
 }
+
+export const getRemainingBeachesToVisit = async () => {
+    await UserDatabase.openDb();
+    const beaches = await UserDatabase.getRemainingBeachesToVisit();
+    await UserDatabase.closeDb();
+
+    return beaches;
+}
