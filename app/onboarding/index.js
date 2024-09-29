@@ -512,6 +512,7 @@ export default function OnboardingLayout() {
                         onClose={handleOnAddBeachSnapFinish}
                         onSave={handleOnAddBeachSnapFinish}
                         onSkip={handleOnAddBeachSnapFinish}
+                        preselectedBeach={beaches.current[visitedBeachIndex]}
                     />
                 </View>
             }

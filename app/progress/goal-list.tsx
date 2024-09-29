@@ -48,12 +48,15 @@ export default function GoalListLayout({ navigation, route }) {
 
         const renderRightCta = () => {
             return (item.photoCount > 0
-                ? <Text style={{
-                    fontFamily: DefaultFont.fontFamilyBold,
-                    fontSize: 14,
-                    alignSelf: 'center',
-                    color: 'black',
-                }}>
+                ? <Text
+                    key={`withSnaps+${item.id}`}
+                    style={{
+                        fontFamily: DefaultFont.fontFamilyBold,
+                        fontSize: 14,
+                        alignSelf: 'center',
+                        color: 'black',
+                    }}
+                >
                     {item.photoCount === 1
                         ? '1 snap'
                         : `${item.photoCount} snaps`
@@ -61,6 +64,7 @@ export default function GoalListLayout({ navigation, route }) {
                 </Text>
                 : (
                     <TouchableOpacity
+                        key={`addSnap+${item.id}`}
                         style={{
                             alignSelf: 'center',
                         }}

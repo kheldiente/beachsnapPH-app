@@ -74,7 +74,7 @@ export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
 
             return (
                 visited
-                    ? <View key={`${item.id}+${dateToUnixTimestamp(new Date())}`} />
+                    ? <View key={item.id} />
                     : (
                         <TouchableOpacity
                             key={item.id}
