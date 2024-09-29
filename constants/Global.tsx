@@ -45,6 +45,10 @@ export const editorLayoutKeys = {
     EDITOR: "_Editor"
 }
 
+export const moreLayoutKeys = {
+    SETTINGS: "_Settings",
+}
+
 export const items = [
     {
         title: 'Beach name',

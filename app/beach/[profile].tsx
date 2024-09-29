@@ -540,7 +540,7 @@ export default function ProfileLayout({ navigation, route }) {
                                 }}
                             >
                                 <Text
-                                    key={item.key}
+                                    key={`menu+item_${item.key}`}
                                     style={{
                                         fontFamily: DefaultFont.fontFamilyBold,
                                         fontSize: 15,
@@ -556,6 +556,7 @@ export default function ProfileLayout({ navigation, route }) {
 
             return (
                 <View
+                    key={'confirmationMenu+container'}
                     style={{
                         flex: 1,
                         flexDirection: 'column',
@@ -599,7 +600,7 @@ export default function ProfileLayout({ navigation, route }) {
                             }}
                         >
                             <Text
-                                key={item.key}
+                                key={`++item_${item.key}`}
                                 style={{
                                     fontFamily: DefaultFont.fontFamilyBold,
                                     fontSize: 15,
@@ -636,6 +637,7 @@ export default function ProfileLayout({ navigation, route }) {
                         ? renderConfirmationMenu(confirmationAction.current)
                         : (
                             <View
+                                key={'menuModel+container'}
                                 style={{
                                     flex: 1,
                                     flexDirection: 'column',

@@ -1,25 +1,19 @@
-import { DefaultFont } from '@/constants/Fonts';
-import {
-    View,
-    Text,
-    StyleSheet
-} from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function MoreLayout() {
+import { moreLayoutKeys } from "@/constants/Global";
+import { defaultHeaderBar } from '@/constants/SharedComponent';
+import SettingsLayout from '@/app/settings';
+
+const Stack = createNativeStackNavigator()
+
+export default function MyProgressLayout(props) {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>More</Text>
-        </View>
-    );
+        <Stack.Navigator>
+            <Stack.Screen
+                name={`${moreLayoutKeys.SETTINGS}`}
+                component={SettingsLayout}
+                options={defaultHeaderBar('Settings')}
+            />
+        </Stack.Navigator>
+    )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    text: {
-        fontFamily: DefaultFont.fontFamily
-    }
-});
