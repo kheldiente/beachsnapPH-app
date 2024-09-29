@@ -11,9 +11,10 @@ import { FlashList } from '@shopify/flash-list';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { DefaultFont } from '@/constants/Fonts';
 import { Ionicons } from '@expo/vector-icons';
+import { dateToUnixTimestamp } from '@/constants/Utils';
 
 export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
-    const estListSize = 500;
+    const estListSize = 20;
 
     const [matchedBeaches, setMatchedBeaches] = useState(null);
     const [selectedBeaches, setSelectedBeaches] = useState([]);
@@ -73,7 +74,7 @@ export const SearchSelectBeachLayout = forwardRef((props: any, ref) => {
 
             return (
                 visited
-                    ? null
+                    ? <View key={`${item.id}+${dateToUnixTimestamp(new Date())}`} />
                     : (
                         <TouchableOpacity
                             key={item.id}

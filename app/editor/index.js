@@ -44,7 +44,7 @@ export default function BeachSnapEditor(props) {
         ? props.preselectedBeach
         : { name: '' }
     const insets = useSafeAreaInsets();
-    const estListSize = 500;
+    const estListSize = 20;
     var imageContainerH = 350; // Measured in console.logs
 
     const beachPageDisplayed = useRef(false);

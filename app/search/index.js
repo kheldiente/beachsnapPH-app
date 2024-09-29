@@ -15,7 +15,7 @@ import { snapsLayoutKeys } from '@/constants/Global';
 import { Divider } from '@rneui/themed';
 
 export default function SearchLayout({ navigation, route }) {
-    const estListSize = 500;
+    const estListSize = 20;
     const headerTitle = 'Beaches';
     const insets = useSafeAreaInsets();
 

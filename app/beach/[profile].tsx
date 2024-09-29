@@ -27,6 +27,7 @@ const cardCalcWidth = Dimensions.get('window').width / 3;
 const listCalcHeight = Dimensions.get('window').height;
 const listOffset = Platform.OS === 'ios' ? 250 : 210;
 const cardMargin = 0;
+const estListSize = 10
 
 export default function ProfileLayout({ navigation, route }) {
     const {
@@ -414,7 +415,7 @@ export default function ProfileLayout({ navigation, route }) {
                 showsVerticalScrollIndicator={false}
                 data={snaps}
                 renderItem={({ item }) => renderPhotoListItem(item)}
-                estimatedItemSize={snaps.length + 20} // Allowance of 20 items
+                estimatedItemSize={estListSize} 
             />
     }
 
