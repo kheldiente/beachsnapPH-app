@@ -26,6 +26,7 @@ const items = [
         id: '_bugReport',
         title: 'Bug report',
         action: 'link',
+        url: 'https://forms.gle/YxqRu2Shf7aa5FJG9',
     }
 ]
 
