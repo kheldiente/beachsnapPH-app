@@ -24,10 +24,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.midien.beachsnapph",
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "package": "com.midien.beachsnapph"
     },
     "web": {
       "bundler": "metro",
