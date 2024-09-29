@@ -42,21 +42,27 @@ export default function SettingsLayout() {
         }
 
         return (
-            <TouchableOpacity
-                key={`settings+item_${item.id}`}
-                onPress={handleOnItemClick}
+            <View
+                style={{
+                    flexDirection: 'column',
+                    backgroundColor: 'white',
+                }}
             >
-                <Text
-                    style={{
-                        ...styles.text,
-                        fontSize: 16,
-                        paddingHorizontal: 15,
-                        paddingVertical: 10,
-                        backgroundColor: 'white',
-                    }}
-                >{item.title}</Text>
                 <Divider />
-            </TouchableOpacity>
+                <TouchableOpacity
+                    key={`settings+item_${item.id}`}
+                    onPress={handleOnItemClick}
+                >
+                    <Text
+                        style={{
+                            ...styles.text,
+                            fontSize: 16,
+                            paddingHorizontal: 15,
+                            paddingVertical: 10,
+                        }}
+                    >{item.title}</Text>
+                </TouchableOpacity>
+            </View>
         )
     }
 
@@ -103,8 +109,8 @@ export default function SettingsLayout() {
                     flexDirection: 'column',
                 }}
             >
-                <Divider />
                 {items.map((item) => renderSettingsItem(item))}
+                <Divider />
                 {renderFooter()}
             </View>
         </SafeAreaView>
