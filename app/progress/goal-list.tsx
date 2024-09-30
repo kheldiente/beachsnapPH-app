@@ -84,7 +84,7 @@ export default function GoalListLayout({ navigation, route }) {
 
         return (
             <View
-                key={`visited_bchList+${item.id}`}
+                key={`visited_bchList+${item.beachId}`}
                 style={{
                     backgroundColor: 'papayawhip',
                     borderRadius: 10,
@@ -94,7 +94,7 @@ export default function GoalListLayout({ navigation, route }) {
                 }}
             >
                 <View
-                    key={`_goal_bchList+${item.id}`}
+                    key={`_goal_bchList+${item.beachId}`}
                     style={{
                         flex: 1,
                         flexDirection: 'row',

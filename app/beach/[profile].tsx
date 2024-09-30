@@ -415,7 +415,7 @@ export default function ProfileLayout({ navigation, route }) {
                 showsVerticalScrollIndicator={false}
                 data={snaps}
                 renderItem={({ item }) => renderPhotoListItem(item)}
-                estimatedItemSize={estListSize} 
+                estimatedItemSize={estListSize}
             />
     }
 
@@ -522,9 +522,10 @@ export default function ProfileLayout({ navigation, route }) {
 
             const renderMenuItem = (item) => {
                 return (
-                    <View>
+                    <View
+                        key={item.key}
+                    >
                         <TouchableOpacity
-                            key={item.key}
                             style={{
                                 flexDirection: 'row',
                                 justifyContent: 'center',
@@ -564,6 +565,7 @@ export default function ProfileLayout({ navigation, route }) {
                     }}
                 >
                     <Text
+                        key={'confirmationMenu+title'}
                         style={{
                             fontFamily: DefaultFont.fontFamilyBold,
                             fontSize: 15,
@@ -582,9 +584,10 @@ export default function ProfileLayout({ navigation, route }) {
 
         const renderItem = (item) => {
             return (
-                <View>
+                <View
+                    key={item.key}
+                >
                     <TouchableOpacity
-                        key={item.key}
                         style={{
                             flexDirection: 'row',
                             justifyContent: 'center',
@@ -638,7 +641,7 @@ export default function ProfileLayout({ navigation, route }) {
                         ? renderConfirmationMenu(confirmationAction.current)
                         : (
                             <View
-                                key={'menuModel+container'}
+                                key={'menuModal+container'}
                                 style={{
                                     flex: 1,
                                     flexDirection: 'column',
