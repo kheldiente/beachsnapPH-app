@@ -64,6 +64,19 @@ export default function SnapsAlbumLayout(props: any) {
         });
     };
 
+    const handleOnClickRightCta = (item) => {
+        if (item.name === '') {
+            return;
+        }
+
+        navigation.navigate({
+            name: `${snapsLayoutKeys.VISITED_BEACHES}`,
+            params: {
+                province: item
+            },
+        });
+    }
+
     const fetchData = async () => {
         isLoading.current = true;
 
@@ -100,6 +113,7 @@ export default function SnapsAlbumLayout(props: any) {
                                 gridItemArray: snaps,
                             }}
                             onClick={(key: string) => handleOnBeachItemClick(key)}
+                            onClickRightCta={(item) => handleOnClickRightCta(item)}
                         />
                     </View>
                 </ScrollView>

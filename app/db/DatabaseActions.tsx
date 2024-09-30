@@ -131,3 +131,11 @@ export const getRemainingBeachesToVisit = async () => {
 
     return beaches;
 }
+
+export const getVisitedAndNotVisitedBeaches = async (provinceId) => {
+    await UserDatabase.openDb();
+    const beaches = await UserDatabase.getVisitedAndNotVisitedBeaches(provinceId);
+    await UserDatabase.closeDb();
+
+    return beaches;
+}

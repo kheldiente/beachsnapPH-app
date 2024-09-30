@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { getThumbnail } from "@/data/beach";
 import { DefaultFont } from "@/constants/Fonts";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function PhotoGrid(props) {
     const data = props.data.gridItemArray;
@@ -144,7 +145,10 @@ export default function PhotoGrid(props) {
             {data &&
                 Object.keys(data).map((key) => {
                     const item = data[key];
-                    const provinceName = item['beaches'][0]['province'];
+                    const firstItem = item['beaches'][0]
+                    const provinceName = firstItem['province'];
+                    const regionId = firstItem['regionId']
+                    const regionName = firstItem['metadata'];
                     const visited = item['beaches'].length;
                     const beachesCount = item['totalBeaches'];
 
@@ -159,9 +163,40 @@ export default function PhotoGrid(props) {
                                     flexDirection: 'column',
                                     justifyContent: 'flex-end',
                                 }}>
-                                    <Text style={styles.subHeader}>
-                                        Visited: {visited}/{beachesCount}
-                                    </Text>
+                                    <TouchableOpacity
+                                        style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            marginRight: 15,
+                                            backgroundColor: 'lightgray',
+                                            // paddingHorizontal: 10,
+                                            paddingLeft: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 5,
+                                        }}
+                                        onPress={() => {
+                                            props.onClickRightCta({
+                                                id: item.id,
+                                                name: provinceName,
+                                            })
+                                        }}
+                                    >
+                                        <Text style={{
+                                            ...styles.subHeader,
+                                            color: 'black',
+                                            // marginLeft: 6,
+                                        }}>
+                                            {visited} / {beachesCount}
+                                        </Text>
+                                        <Ionicons
+                                            name="chevron-forward"
+                                            size={14}
+                                            style={{
+                                                backgroundColor: 'transparent',
+                                                color: 'black',
+                                            }}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                             {renderItem(item)}
@@ -191,10 +226,9 @@ const styles = StyleSheet.create({
         color: 'darkgray',
     },
     subHeader: {
-        fontFamily: DefaultFont.fontFamily,
+        fontFamily: DefaultFont.fontFamilyBold,
         fontSize: 12,
-        marginRight: 25,
-        color: 'darkviolet',
+        color: 'black',
     },
     gridItemImg: {
         width: '100%',

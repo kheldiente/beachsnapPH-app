@@ -27,8 +27,8 @@ export const importDbToFileSystem = async () => {
             //     .getInfoAsync(`${FileSystem.documentDirectory}SQLite/${readOnlyDbName}`);
 
             // if (fileInfo.exists) {
-                // console.log(`DB ${readOnlyDbName} is in the file system`);
-                // return;
+            // console.log(`DB ${readOnlyDbName} is in the file system`);
+            // return;
             // }
 
             // ALWAYS IMPORT DB ON STARTUP!!!
@@ -292,6 +292,26 @@ export const getWeatherWithId = async (weatherId) => {
     }
 
     return weathers[0];
+}
+
+export const getBeachesFromProvince = async (provinceId) => {
+    if (!db) {
+        console.log(`Database ${readOnlyDbName} not initialized!`);
+        return;
+    }
+
+    var beaches = [];
+    try {
+        beaches = await db.getAllAsync(
+            `SELECT beach.*, province.name as province
+            FROM beach
+            INNER JOIN province ON beach.provinceId = province.id
+            WHERE provinceId = '${provinceId}'`
+        )
+    } catch (e) {
+        console.log(e);
+    }
+    return beaches;
 }
 
 export const closeDb = async () => {

@@ -6,6 +6,7 @@ import { defaultHeaderWithRightBar } from '@/constants/SharedComponent';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import NewBeachSnapLayout from '../beach/addbeach-page';
+import VisitedBeachesLayout from '../province/visited-not-visited';
 
 const Stack = createNativeStackNavigator()
 
@@ -46,6 +47,13 @@ export default function SnapsLayout(props) {
                     presentation: 'fullScreenModal',
                 }}
             /> */}
+            <Stack.Screen
+                name={`${snapsLayoutKeys.VISITED_BEACHES}`}
+                component={VisitedBeachesLayout}
+                options={defaultHeaderWithRightBar({
+                    title: 'My snaps',
+                })} 
+            />
         </Stack.Navigator>
     )
 }

@@ -433,6 +433,38 @@ export const getRemainingBeachesToVisit = async () => {
     return result;
 }
 
+export const getVisitedAndNotVisitedBeaches = async (provinceId) => {
+    if (!db) {
+        console.log('Database not initialized!');
+        return;
+    }
+
+    var result = {};
+    try {
+        const visitedBeachWithSnapIds = await db.getAllAsync(`
+            SELECT DISTINCT(beachId) 
+            FROM snap
+            WHERE provinceId = '${provinceId}'
+        `);
+
+        await ReadOnlyDatabase.openDb();
+        const allBeaches = await ReadOnlyDatabase.getBeachesFromProvince(provinceId);
+        await ReadOnlyDatabase.closeDb();
+
+        // console.log(`snapIds: ${JSON.stringify(visitedBeachWithSnapIds)}`)
+        // console.log(`allBeaches: ${JSON.stringify(allBeaches[0])}`)
+
+        const visitedIds = visitedBeachWithSnapIds.map((v) => v.beachId);
+        result = {
+            visited: allBeaches?.filter((beach) => visitedIds.includes(beach.id)),
+            notVisited: allBeaches?.filter((beach) => !visitedIds.includes(beach.id))
+        }
+    } catch (e) {
+        console.log(e);
+    }
+    return result;
+}
+
 ////////// DANGER!!! //////////
 
 // export const removeAllSnaps = async () => {

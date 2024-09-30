@@ -33,6 +33,7 @@ export const snapsLayoutKeys = {
     NEW_BEACH_SNAP: "_NewBeachSnap",
     BEACH_PROFILE: "_BeachProfile",
     PHOTO_POST: "_PhotoPost",
+    VISITED_BEACHES: "_VisitedBeaches",
 }
 
 export const myProgressLayoutKeys = {
