@@ -101,19 +101,29 @@ export default function VisitedBeachesLayout({ navigation, route }) {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
             >
-                {filters.map((filter) => (
-                    <Chip
-                        title={filter.title}
-                        key={`_chip_${filter.id}`}
-                        color={
-                            selected === filter.id ? styles.chipFilterContainer.color
-                                : styles.chipFilterDisabled.color
-                        }
-                        onPress={() => handleChipClick(filter.id)}
-                        containerStyle={styles.chipFilterContainer}
-                        titleStyle={styles.chipFilterTitle}
-                    />
-                ))}
+                {filters.map((filter) => {
+                    const visited = filter.id === FILTER_VISITED
+                    var title = `${filter.title}`
+                    if (visited) {
+                        title = title + ` (${visitedBeaches.current.length})`
+                    } else {
+                        title = title + ` (${notVisitedBeaches.current.length})`
+                    }
+
+                    return (
+                        <Chip
+                            title={title}
+                            key={`_chip_${filter.id}`}
+                            color={
+                                selected === filter.id ? styles.chipFilterContainer.color
+                                    : styles.chipFilterDisabled.color
+                            }
+                            onPress={() => handleChipClick(filter.id)}
+                            containerStyle={styles.chipFilterContainer}
+                            titleStyle={styles.chipFilterTitle}
+                        />
+                    )
+                })}
             </ScrollView>
         );
     }
