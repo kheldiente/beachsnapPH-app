@@ -213,7 +213,7 @@ export const getLatestGoal = async () => {
             SELECT goalList.createdAt as goalListCreatedAt, 
             goal.*
             FROM goal
-            LEFT JOIN goalList ON goal.goalListId = (SELECT id FROM goalList ORDER BY createdAt DESC LIMIT 1)
+            LEFT JOIN goalList ON goal.goalListId = (SELECT id FROM goalList ORDER BY id DESC LIMIT 1)
             ORDER BY goalList.createdAt DESC
             LIMIT ${goalLimit}
         `);
