@@ -5,10 +5,11 @@ import {
     Text,
     StyleSheet,
     ScrollView,
+    RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Chip } from '@rneui/themed';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { secondaryHeaderBar } from '@/constants/SharedComponent';
 import { snapsLayoutKeys } from '@/constants/Global';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
@@ -29,23 +30,49 @@ const filters = [
     }
 ]
 
+const FILTER_VISITED = filters[0].id
+
 export default function VisitedBeachesLayout({ navigation, route }) {
     const { id, name } = route.params.province;
     const headerTitle = `${name}`
 
     const visitedBeaches = useRef([]);
     const notVisitedBeaches = useRef([]);
-    const [selectedFilter, setSelectedFilter] = useState(filters[0].id);
+    const [selectedFilter, setSelectedFilter] = useState(FILTER_VISITED);
     const [beaches, setBeaches] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
-    const getVisitedAndNotVisitedBeaches = async () => {
+    const isLoading = useRef(true);
+    const isReloadingData = useRef(false);
+    const selectedFilterRef = useRef(FILTER_VISITED);
+
+    const subscribeToAppLifecycle = async () => {
+        navigation.addListener('focus', async () => {
+            console.log(`reloading data in progress page... ${isLoading.current} ${isReloadingData.current}`);
+            if (!isLoading.current && !isReloadingData.current) {
+                isReloadingData.current = true;
+                setTimeout(async () => {
+                    console.log('Reloading data in goals page...');
+                    await fetchData();
+                    isReloadingData.current = false;
+                }, 200)
+            }
+        });
+    }
+
+    const fetchData = async () => {
+        isLoading.current = true;
+
         const visitedAndNotVisitedBeaches = await DatabaseActions.getVisitedAndNotVisitedBeaches(id);
 
         visitedBeaches.current = visitedAndNotVisitedBeaches?.visited;
         notVisitedBeaches.current = visitedAndNotVisitedBeaches?.notVisited;
 
-        // console.log(`getVisitedAndNotVisited: ${JSON.stringify(visitedAndNotVisitedBeaches)}`)
-        setBeaches(visitedBeaches.current);
+        isLoading.current = false;
+
+        const beachesToShow = selectedFilterRef.current === FILTER_VISITED
+            ? visitedBeaches.current : notVisitedBeaches.current;
+        setBeaches(beachesToShow);
     }
 
     const handleOnClickCard = (item) => {
@@ -67,7 +94,7 @@ export default function VisitedBeachesLayout({ navigation, route }) {
         );
     }
 
-    const renderChipFilters = (selected = filters[0].id) => {
+    const renderChipFilters = (selected = FILTER_VISITED) => {
         return (
             <ScrollView
                 key={'_chipFilters'}
@@ -92,17 +119,34 @@ export default function VisitedBeachesLayout({ navigation, route }) {
     }
 
     const handleChipClick = (id) => {
-        const beachesToShow = id === filters[0].id ? visitedBeaches.current : notVisitedBeaches.current;
+        const beachesToShow = id === FILTER_VISITED ? visitedBeaches.current : notVisitedBeaches.current;
 
+        selectedFilterRef.current = id;
         setSelectedFilter(id);
         setBeaches(beachesToShow);
     }
 
-    useEffect(() => {
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(async () => {
+            await fetchData();
+            setRefreshing(false);
+        }, 500)
+    })
+
+    const setStyling = () => {
         navigation.setOptions(
             secondaryHeaderBar(headerTitle)
-        )
-        getVisitedAndNotVisitedBeaches();
+        );
+    }
+
+    useEffect(() => {
+        setStyling();
+        setTimeout(() => {
+            fetchData();
+        }, 200);
+
+        subscribeToAppLifecycle();
     }, []);
 
     return (
@@ -110,9 +154,15 @@ export default function VisitedBeachesLayout({ navigation, route }) {
             style={styles.container}
             edges={['right', 'left']}
         >
-            {beaches.length > 0 &&
+            {(!isLoading.current && beaches.length > 0) &&
                 <ScrollView
                     showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
                 >
                     {renderChipFilters(selectedFilter)}
                     {renderBeachList(beaches)}

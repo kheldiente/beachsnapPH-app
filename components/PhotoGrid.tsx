@@ -186,11 +186,11 @@ export default function PhotoGrid(props) {
                                             color: 'black',
                                             // marginLeft: 6,
                                         }}>
-                                            {visited} / {beachesCount}
+                                            {visited} out of {beachesCount}
                                         </Text>
                                         <Ionicons
-                                            name="chevron-forward"
-                                            size={14}
+                                            name="chevron-forward-outline"
+                                            size={12}
                                             style={{
                                                 backgroundColor: 'transparent',
                                                 color: 'black',
@@ -226,8 +226,8 @@ const styles = StyleSheet.create({
         color: 'darkgray',
     },
     subHeader: {
-        fontFamily: DefaultFont.fontFamilyBold,
-        fontSize: 12,
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 10,
         color: 'black',
     },
     gridItemImg: {
