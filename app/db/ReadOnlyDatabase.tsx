@@ -15,7 +15,6 @@ export const dbFileSystemUrl = () => {
 
 // Download db from assets to file system
 export const importDbToFileSystem = async () => {
-
     try {
         await FileSystem.makeDirectoryAsync(`${FileSystem.documentDirectory}SQLite`, {
             intermediates: true

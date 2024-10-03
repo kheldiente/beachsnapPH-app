@@ -21,6 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { defaultWeather, items } from '@/constants/Global';
 import * as DatabaseActions from '@/app/db/DatabaseActions';
 import { FlashList } from '@shopify/flash-list';
+import { askMediaLbraryPermission } from '../directory';
 
 const imgDimension = 300;
 const modalBorderRadius = 10;
@@ -76,18 +77,22 @@ export default function BeachSnapEditor(props) {
         // No permissions request is necessary 
         // for launching the image library
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
         });
         const isValid = !result.canceled;
 
         if (isValid) {
             const isImage = result.assets[0].type === 'image';
             if (isImage && checkIfDiffImg(result)) {
-                imageRef.current = result.assets[0].uri;
+                await askMediaLbraryPermission();
 
+                var img = Platform.select({
+                    ios: `ph://${result.assets[0].assetId}`,
+                    default: result.assets[0].uri,
+                })
+
+                imageRef.current = img;
                 setImage(imageRef.current);
                 handleOnUpdatedBeachData();
             }

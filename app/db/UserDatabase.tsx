@@ -1,6 +1,7 @@
 import { userDbName, userDbVersions } from '@/constants/Global';
 import * as SQLite from 'expo-sqlite';
 import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase'
+import { saveImageToDevice } from '../directory';
 
 var db: SQLite.SQLiteDatabase;
 
@@ -253,10 +254,15 @@ export const getLatestGoal = async () => {
     return goals;
 }
 
-export const saveSnap = async (snap) => {
+export const saveSnap = async (snapParams) => {
     if (!db) {
         console.log('Database not initialized!');
         return;
+    }
+
+    const snap = {
+        ...snapParams,
+        // photoUrl: await saveImageToDevice(snapParams.photoUrl),
     }
 
     console.log(`saving snap: ${JSON.stringify(snap)}`)
