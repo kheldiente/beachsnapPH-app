@@ -2,6 +2,7 @@ import { readOnlyDbName, readOnlyDbVersions } from '@/constants/Global';
 import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
+import * as LocalStorage from '@/app/storage/LocalStorage';
 
 var db: SQLite.SQLiteDatabase;
 
@@ -319,4 +320,8 @@ export const closeDb = async () => {
 
 export const initDb = async () => {
     await importDbToFileSystem();
+}
+
+export const reimportDb = async () => {
+    return await LocalStorage.isToReimportReadOnlyDb(readOnlyDbName)
 }

@@ -446,10 +446,6 @@ export default function OnboardingLayout() {
         )
     }
 
-    const initDb = async () => {
-        await DatabaseActions.setupAllDbs();
-    }
-
     const fetchData = async () => {
         const topFiveFamousBeacheIds = [
             'LBABACAB87D2',

@@ -18,6 +18,7 @@ import OnboardingLayout from '@/app/onboarding';
 import SelectBeachGoalListLayout from './progress/select-beach-goal';
 import * as LocalStorage from '@/app/storage/LocalStorage';
 import { View } from 'react-native';
+import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -40,7 +41,9 @@ export default function RootLayout() {
         setIsLoading(true);
 
         isOnboardingCompleted.current = await LocalStorage.isOnboardingCompleted();
-        if (!isOnboardingCompleted.current) {
+        const isToReimportReadOnlyDb = await ReadOnlyDatabase.reimportDb();
+        
+        if (!isOnboardingCompleted.current || isToReimportReadOnlyDb) {
             await DatabaseActions.setupAllDbs();
         }
 

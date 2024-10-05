@@ -1,10 +1,10 @@
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
-import DeviceInfo from 'react-native-device-info';
+// import DeviceInfo from 'react-native-device-info';
 
-export const isEmulatorSync = async () => {
-    return await DeviceInfo.isEmulator();
-}
+// export const isEmulatorSync = async () => {
+//     return await DeviceInfo.isEmulator();
+// }
 
 export const askMediaLbraryPermission = async () => {
     const permission = await MediaLibrary.requestPermissionsAsync();

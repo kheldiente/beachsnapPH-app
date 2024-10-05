@@ -1,10 +1,14 @@
 import * as UserDatabase from '@/app/db/UserDatabase';
 import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase';
 import { dateToUnixTimestamp } from '@/constants/Utils';
+import * as LocalStorage from '@/app/storage/LocalStorage';
+import { readOnlyDbName } from '@/constants/Global';
 
 export const setupAllDbs = async () => {
     await ReadOnlyDatabase.initDb();
     await UserDatabase.initDb();
+
+    await LocalStorage.setNewReadOnlyDbName(readOnlyDbName)
 }
 
 export const getBeachesFromDb = async (params) => {
