@@ -203,7 +203,18 @@ export const getMatchingBeaches = async ({
                 beach.provinceId, beach.regionId, beach.description
                 FROM province
                 INNER JOIN beach ON province.id = beach.provinceId 
-                WHERE beach.name LIKE "${keyword}%" ORDER BY beach.name`
+                WHERE beach.name LIKE "${keyword}%"
+                OR province.name LIKE "${keyword}%"
+                OR municipality LIKE "${keyword}%"
+                ORDER BY beach.name`
+
+        // var statement = `SELECT beach.id, beach.name, beach.municipality, province.name as province,
+        //         beach.provinceId, beach.regionId, beach.description
+        //         FROM province
+        //         INNER JOIN beach ON province.id = beach.provinceId 
+        //         WHERE beach.name LIKE "${keyword}%"
+        //         OR WHERE province.name LIKE "${keyword}%"
+        //         ORDER BY beach.name DESC, province.name`
 
         if (applyLimit) {
             statement = statement + ` LIMIT ${limit} OFFSET ${offset}`
