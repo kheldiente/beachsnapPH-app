@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'beach-snap-ph'
+rootProject.name = 'BeachSnap PH'
 
 dependencyResolutionManagement {
   versionCatalogs {
