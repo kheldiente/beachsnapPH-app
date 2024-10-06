@@ -461,7 +461,7 @@ export default function OnboardingLayout() {
         ]
 
         setIsLoading(true);
-        
+
         const data = await DatabaseActions.getBeachesWithIds(topFiveFamousBeacheIds);
         beaches.current = data;
 
@@ -483,7 +483,8 @@ export default function OnboardingLayout() {
 
     return (
         <SafeAreaView
-            style={styles.container} edges={['right', 'left']}
+            style={styles.container}
+            edges={['right', 'left']}
         >
             {!isLoading &&
                 <View style={{
@@ -541,9 +542,10 @@ const styles = StyleSheet.create({
     button: {
         color: 'white',
         backgroundColor: 'green',
+        width: '100%',
         borderRadius: 10,
         padding: 10,
-        width: '100%',
+        marginBottom: 10,
     },
     page: {
         flex: 1,
