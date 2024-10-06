@@ -477,10 +477,6 @@ export default function OnboardingLayout() {
         fetchData();
     }, [])
 
-
-    const isSettingGoalList = onboardingSteps[currentPageIndex].actionKey === myProgressLayoutKeys.BEACH_GOAL_PICKER;
-    const isBeachGoalSet = selectedBeachesRef.current.length === 5;
-
     return (
         <SafeAreaView
             style={styles.container}
