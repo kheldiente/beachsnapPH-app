@@ -1,10 +1,10 @@
 // Put all configs here
 export const appName = 'BeachSnap PH'
-export const readOnlyDbName = 'beachsnap-v1.db'
+export const readOnlyDbName = 'beachsnap-v1.0.1.db'
 export const readOnlyDbVersions = [
     {
-        name: 'beachsnap-v1',
-        version: '1.0.0',
+        name: 'beachsnap-v1.0.1',
+        version: '1.0.1',
         fileUrl: require('@/assets/db/beachsnap-v1.db'),
     }
 ]

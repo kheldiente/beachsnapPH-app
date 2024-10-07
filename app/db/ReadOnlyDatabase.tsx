@@ -127,7 +127,7 @@ export const getBeachesCountForProvinces = async (provinceIds) => {
         return;
     }
 
-    console.log(`beachesCount ids: ${provinceIds}`)
+    // console.log(`beachesCount ids: ${provinceIds}`)
     var result = [];
     try {
         result = await db.getAllAsync(

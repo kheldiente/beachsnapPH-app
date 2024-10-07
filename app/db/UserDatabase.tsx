@@ -368,7 +368,7 @@ export const getRecentVisitedBeaches = async () => {
                 ...visitedBeaches[index],
                 beach: beachDetails?.filter((details) => details.id === beach.beachId)[0]
             }
-            console.log(`visitedBeaches: ${JSON.stringify(visitedBeaches[index])}`)
+            // console.log(`visitedBeaches: ${JSON.stringify(visitedBeaches[index])}`)
         })
     } catch (e) {
         console.log(e);
