@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Linking from 'expo-linking';
+import { Ionicons } from '@expo/vector-icons';
 
 const items = [
     {
@@ -27,6 +28,13 @@ const items = [
         title: 'Bug report',
         action: 'link',
         url: 'https://forms.gle/YxqRu2Shf7aa5FJG9',
+    },
+    {
+        id: '_social_instagram',
+        title: 'Follow us on Instagram',
+        action: 'link',
+        url: 'https://www.instagram.com/beachsnap.ph',
+        iconName: 'logo-instagram'
     }
 ]
 
@@ -53,16 +61,33 @@ export default function SettingsLayout() {
             >
                 <Divider />
                 <TouchableOpacity
+                    style={{
+                        flexDirection: 'row',
+                    }}
                     onPress={handleOnItemClick}
                 >
                     <Text
                         style={{
                             ...styles.text,
                             fontSize: 16,
-                            paddingHorizontal: 15,
+                            paddingLeft: 15,
                             paddingVertical: 10,
                         }}
                     >{item.title}</Text>
+                    {item.iconName &&
+                        <View
+                            style={{
+                                justifyContent: 'center',
+                                marginLeft: 5,
+                            }}
+                        >
+                            <Ionicons
+                                name={item.iconName}
+                                size={22}
+                                color='gray'
+                            />
+                        </View>
+                    }
                 </TouchableOpacity>
             </View>
         )
