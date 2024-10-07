@@ -27,7 +27,7 @@ const onboardingSteps = [
         buttonTitle: "Let's start!",
         imageRes: require('@/assets/images/onboarding/onboarding-step-1.png'),
         header: "Welcome to BeachSnap PH!",
-        text: "Almost 500 beaches in the Philippines\r\nare waiting to be discovered!"
+        text: "Almost a thousand beaches in the Philippines\r\nare waiting to be discovered!"
     },
     {
         page: 1,
