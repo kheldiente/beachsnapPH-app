@@ -11,6 +11,8 @@ import { useNavigation } from "expo-router";
 import { exploreLayoutKeys } from "@/constants/Global";
 import * as DatabaseActions from "@/app/db/DatabaseActions";
 
+const expectedRegionSize = 18;
+
 export default function RegionListLayout(props: any) {
     const navigation = useNavigation();
     const [regions, setRegions] = useState(null);
@@ -26,22 +28,24 @@ export default function RegionListLayout(props: any) {
         // Add empty region to show EVEN grid
         cRegions.push({ id: '', name: '' })
 
-        var result = [];
-        var index = 0;
-        var inc = 3;
-        while (index < cRegions.length) {
-            var row = [];
-            for (var k = index; k < index + inc; k++) {
-                if (k < cRegions.length) {
-                    row.push(cRegions[k]);
+        if (cRegions.length <= expectedRegionSize) {
+            var result = [];
+            var index = 0;
+            var inc = 3;
+            while (index < cRegions.length) {
+                var row = [];
+                for (var k = index; k < index + inc; k++) {
+                    if (k < cRegions.length) {
+                        row.push(cRegions[k]);
+                    }
                 }
+                result.push(row);
+                index = index + inc;
             }
-            result.push(row);
-            index = index + inc;
-        }
-        
-        if (result.length > 0) {
-            setRegions(result);
+            
+            if (result.length > 0) {
+                setRegions(result);
+            }
         }
     }
 
@@ -60,7 +64,6 @@ export default function RegionListLayout(props: any) {
         <SafeAreaView style={styles.container} edges={['right', 'left']}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
             >
                 {regions &&
                     <View style={styles.container1}>
