@@ -62,6 +62,20 @@ const skipListItem = {
     province: 'Skip province',
 }
 
+
+const topFiveFamousBeacheIds = [
+    'VRPMAWHI47FB', // White Beach, Boracay
+    'LRPELNAC8EC6', // Nacpan, El Nido
+    'VRPPAALO0BEF', // Alona, Panglao
+    'MCSGESIA52F1', // Siargao Islad
+    'LRPCOMAL2D40', // Malcapuya Island
+    'LBCVICALF8C4', // Calaguas
+    'VRPLAMAC7F0B', // Mactan Island
+    'VRPCAGIG7F7A', // Gigantes Norte
+    'VRPCAGIGE410', // Gigantes Sur
+    'VRPPAPAN138C', // Panglao Island
+]
+
 export default function OnboardingLayout() {
     const navigation = useNavigation();
     const insets = useSafeAreaInsets();
@@ -447,28 +461,19 @@ export default function OnboardingLayout() {
     }
 
     const fetchData = async () => {
-        const topFiveFamousBeacheIds = [
-            'LBABACAB87D2',
-            'LBABACOREA14',
-            'LBABAHINA255',
-            'LBABAPAN80AE',
-            'LBABAPIN4C51',
-            'LBABASOGF9AD',
-            'LBAMAILO7596',
-            'LBARABATE6E9',
-            'LBARAGUI8D28',
-            'LBATAPUN562C',
-        ]
-
         setIsLoading(true);
 
         const data = await DatabaseActions.getBeachesWithIds(topFiveFamousBeacheIds);
-        beaches.current = data;
+        const sortedData = topFiveFamousBeacheIds.map((id) =>
+            data.filter((beach) => beach.id === id)[0]
+        );
+
+        beaches.current = sortedData;
 
         // Preselect 5 beaches
-        selectedBeachesRef.current = data.slice(0, minBeachesToSelect);
+        selectedBeachesRef.current = sortedData.slice(0, minBeachesToSelect);
         // Preselect first beach to add snap
-        selectedBeachWithSnap.current = data[0]
+        selectedBeachWithSnap.current = sortedData[0];
 
         setIsLoading(false);
     }
