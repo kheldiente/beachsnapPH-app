@@ -159,11 +159,24 @@ export const getAllSnaps = async () => {
             }
         })
 
+        var order = [];
+        Object.keys(uniqueProvinceIds).forEach((provinceId) => {
+            order.push({
+                id: provinceId,
+                count: uniqueProvinceIds[provinceId]['beaches'].length,
+            })
+        })
+        order = order.sort((prov1, prov2) => prov2.count - prov1.count);
+
         console.log(`snaps available: ${allSnaps.length}`)
+        console.log(`snaps order: ${JSON.stringify(order)}`)
     } catch (e) {
         console.log(e);
     }
-    return uniqueProvinceIds;
+    return {
+        provinceWithSnaps: uniqueProvinceIds,
+        order: order,
+    };
 }
 
 export const saveGoal = async (goal) => {

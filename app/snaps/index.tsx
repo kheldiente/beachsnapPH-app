@@ -23,6 +23,7 @@ export default function SnapsAlbumLayout(props: any) {
     const [refreshing, setRefreshing] = useState(false);
     const isLoading = useRef(true);
     const isReloadingData = useRef(false);
+    const provinceOrder = useRef([]);
 
     const subscribeToAppLifecycle = async () => {
         navigation.addListener('focus', async () => {
@@ -77,13 +78,22 @@ export default function SnapsAlbumLayout(props: any) {
         });
     }
 
+    const getSortedProvinceByVisitedBeaches = (snaps) => {
+        var sortedProvinces = {};
+        provinceOrder.current.forEach((order) => {
+            sortedProvinces[order.id] = snaps[order.id]
+        })
+        return sortedProvinces;
+    }
+
     const fetchData = async () => {
         isLoading.current = true;
 
         const result = await DatabaseActions.getAllSnaps();
         isLoading.current = false;
 
-        setSnaps(result);
+        provinceOrder.current = result.order;
+        setSnaps(result.provinceWithSnaps);
     }
 
     const initData = async () => {
@@ -110,7 +120,7 @@ export default function SnapsAlbumLayout(props: any) {
                     <View style={styles.container1}>
                         <PhotoGrid
                             data={{
-                                gridItemArray: snaps,
+                                gridItemArray: getSortedProvinceByVisitedBeaches(snaps),
                             }}
                             onClick={(key: string) => handleOnBeachItemClick(key)}
                             onClickRightCta={(item) => handleOnClickRightCta(item)}
