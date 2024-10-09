@@ -40,7 +40,9 @@ export default function NewBeachSnapLayout(props: any) {
             generateParams(currSnapData)
         )
 
-        navigation.goBack();
+        setTimeout(() => {
+            navigation.goBack();
+        }, 200);
     }
 
     const hideKeyboard = () => {

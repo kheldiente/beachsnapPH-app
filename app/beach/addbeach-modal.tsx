@@ -117,7 +117,9 @@ export default function NewBeachSnapModal({
             generateParams(currSnapData)
         )
 
-        onSave();
+        setTimeout(() => {
+            onSave();
+        }, 200);
     }
 
     return (
