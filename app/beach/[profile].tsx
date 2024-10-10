@@ -40,6 +40,7 @@ export default function ProfileLayout({ navigation, route }) {
     const headerTitle = `${name}`
     const address = `${municipality}, ${province}`
 
+
     const [snaps, setSnaps] = useState([]);
     const [selectedTab, setSelectedTab] = useState(0);
     const [showModal, setShowModal] = useState(false);
