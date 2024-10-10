@@ -58,45 +58,4 @@
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
             android:exported="false" />
     </application>
-
-    <compatible-screens>
-        <!-- all small size screens -->
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="xxhdpi"
-            android:screenSize="small" />
-        <screen
-            android:screenDensity="xxxhdpi"
-            android:screenSize="small" />
-        <!-- all normal size screens -->
-        <screen
-            android:screenDensity="ldpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="mdpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="hdpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="xxhdpi"
-            android:screenSize="normal" />
-        <screen
-            android:screenDensity="xxxhdpi"
-            android:screenSize="normal" />
-    </compatible-screens>
 </manifest>
