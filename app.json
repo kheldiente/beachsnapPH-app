@@ -36,7 +36,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "To add a snap to BeachSnap PH, we would need to access your photo library."
         }
       ],
       [
