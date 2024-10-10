@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--    If we're gonna ask CAMERA, AUDIO and VIDEO access permission, please check the Manifest of the ff:-->
+    <!--    * expo-media-library - REMOVED AS OF OCT 11, 2024 -->
+    <!--    * expo-image-picker - REMOVED AS OF OCT 11, 2024 -->
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
