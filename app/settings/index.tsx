@@ -29,9 +29,19 @@ const items = [
         action: 'link',
         url: 'https://forms.gle/YxqRu2Shf7aa5FJG9',
     },
+]
+
+const socialMediaItems = [
+    {
+        id: '_social_facebook',
+        title: 'Facebook',
+        action: 'link',
+        url: 'https://www.facebook.com/beachsnap.ph',
+        iconName: 'logo-facebook'
+    },
     {
         id: '_social_instagram',
-        title: 'Follow us on Instagram',
+        title: 'Instagram',
         action: 'link',
         url: 'https://www.instagram.com/beachsnap.ph',
         iconName: 'logo-instagram'
@@ -39,9 +49,10 @@ const items = [
 ]
 
 export default function SettingsLayout() {
-    const renderSettingsItem = (item) => {
 
-        const handleOnItemClick = () => {
+    const renderSettingsItems = (items) => {
+
+        const handleOnItemClick = (item) => {
             try {
                 if (item.action === 'link' && item.url !== undefined) {
                     Linking.openURL(item.url)
@@ -51,44 +62,51 @@ export default function SettingsLayout() {
             }
         }
 
-        return (
-            <View
-                key={`settings+item_${item.id}`}
-                style={{
-                    flexDirection: 'column',
-                    backgroundColor: 'white',
-                }}
-            >
-                <Divider />
-                <TouchableOpacity
+        const renderItem = (item) => {
+            return (
+                <View
+                    key={`settings+item_${item.id}`}
                     style={{
-                        flexDirection: 'row',
+                        flexDirection: 'column',
+                        backgroundColor: 'white',
                     }}
-                    onPress={handleOnItemClick}
                 >
-                    <Text
+                    <Divider />
+                    <TouchableOpacity
                         style={{
-                            ...styles.text,
-                            fontSize: 16,
-                            paddingLeft: 15,
-                            paddingVertical: 10,
+                            flexDirection: 'row',
                         }}
-                    >{item.title}</Text>
-                    {item.iconName &&
-                        <View
+                        onPress={() => handleOnItemClick(item)}
+                    >
+                        <Text
                             style={{
-                                justifyContent: 'center',
-                                marginLeft: 5,
+                                ...styles.text,
+                                paddingLeft: 15,
+                                paddingVertical: 10,
                             }}
-                        >
-                            <Ionicons
-                                name={item.iconName}
-                                size={22}
-                                color='gray'
-                            />
-                        </View>
-                    }
-                </TouchableOpacity>
+                        >{item.title}</Text>
+                        {item.iconName &&
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                    marginLeft: 5,
+                                }}
+                            >
+                                <Ionicons
+                                    name={item.iconName}
+                                    size={22}
+                                    color='gray'
+                                />
+                            </View>
+                        }
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        return (
+            <View>
+                <Text style={styles.textBold}>Support</Text>
+                {items.map((_item) => renderItem(_item))}
             </View>
         )
     }
@@ -122,11 +140,71 @@ export default function SettingsLayout() {
         )
     }
 
+    const renderSocialMediaItems = (items) => {
+
+        const handleOnItemClick = (item) => {
+            try {
+                if (item.action === 'link' && item.url !== undefined) {
+                    Linking.openURL(item.url)
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
+        const renderItem = (item) => {
+            return (
+                <View
+                    key={`settings+item_${item.id}`}
+                    style={{
+                        flexDirection: 'column',
+                        backgroundColor: 'white',
+                    }}
+                >
+                    <Divider />
+                    <TouchableOpacity
+                        style={{
+                            flexDirection: 'row',
+                        }}
+                        onPress={() => handleOnItemClick(item)}
+                    >
+                        <Text
+                            style={{
+                                ...styles.text,
+                                paddingLeft: 15,
+                                paddingVertical: 10,
+                            }}
+                        >{item.title}</Text>
+                        {item.iconName &&
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                    marginLeft: 5,
+                                }}
+                            >
+                                <Ionicons
+                                    name={item.iconName}
+                                    size={22}
+                                    color='gray'
+                                />
+                            </View>
+                        }
+                    </TouchableOpacity>
+                </View>
+            )
+        }
+        return (
+            <View>
+                <Text style={styles.textBold}>Follow us</Text>
+                {items.map((_item) => renderItem(_item))}
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView
             style={{
                 ...styles.container,
-                paddingVertical: 20,
             }}
             edges={['right', 'left']}
         >
@@ -136,7 +214,9 @@ export default function SettingsLayout() {
                     flexDirection: 'column',
                 }}
             >
-                {items.map((item) => renderSettingsItem(item))}
+                {renderSettingsItems(items)}
+                <Divider />
+                {renderSocialMediaItems(socialMediaItems)}
                 <Divider />
                 {renderFooter()}
             </View>
@@ -150,6 +230,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text: {
-        fontFamily: DefaultFont.fontFamily
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 14,
+    },
+    textBold: {
+        fontFamily: DefaultFont.fontFamily,
+        fontSize: 16,
+        marginLeft: 15,
+        marginVertical: 8,
     }
 });
