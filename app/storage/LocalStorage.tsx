@@ -32,7 +32,7 @@ export const setNewReadOnlyDbName = async (newDbName) => {
 
 export const alwaysShowDataInformationIntercept = async () => {
     const alwaysShow = await getItem(alwaysShowDataInformationInterceptKey);
-    return alwaysShow !== null ? `${alwaysShow}` === 'true' : false;
+    return alwaysShow !== null ? `${alwaysShow}` === 'true' : true;
 }
 
 export const setShowInformationIntercept = async (value) => {
