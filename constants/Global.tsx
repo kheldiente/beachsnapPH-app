@@ -20,6 +20,7 @@ export const userDbVersions = [
 export const homeLayoutKeys = {
     ONBOARDING: "_Onboarding",
     HOME: "(tabs)",
+    INTERCEPT: "_Intercept",
 }
 
 export const exploreLayoutKeys = {

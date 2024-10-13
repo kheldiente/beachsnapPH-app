@@ -19,6 +19,7 @@ import SelectBeachGoalListLayout from './progress/select-beach-goal';
 import * as LocalStorage from '@/app/storage/LocalStorage';
 import { View } from 'react-native';
 import * as ReadOnlyDatabase from '@/app/db/ReadOnlyDatabase';
+import AppInterceptLayout from './intercept';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -42,7 +43,7 @@ export default function RootLayout() {
 
         isOnboardingCompleted.current = await LocalStorage.isOnboardingCompleted();
         const isToReimportReadOnlyDb = await ReadOnlyDatabase.reimportDb();
-        
+
         if (!isOnboardingCompleted.current || isToReimportReadOnlyDb) {
             await DatabaseActions.setupAllDbs();
         }
@@ -112,6 +113,17 @@ export default function RootLayout() {
                         options={{
                             headerShown: false,
                             presentation: 'transparentModal'
+                        }}
+                    />
+                    <Stack.Screen
+                        name={`${homeLayoutKeys.INTERCEPT}`}
+                        component={AppInterceptLayout}
+                        options={{
+                            headerShown: false,
+                            headerStyle: {
+                                backgroundColor: 'transparent'
+                            },
+                            presentation: 'transparentModal',
                         }}
                     />
                 </Stack.Navigator>

@@ -16,7 +16,8 @@ import { RefreshControl } from 'react-native-gesture-handler';
 import { dateStringToMDY } from '@/constants/Utils';
 import { useNavigation } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { myProgressLayoutKeys } from '@/constants/Global';
+import { homeLayoutKeys, myProgressLayoutKeys } from '@/constants/Global';
+import * as LocalStorage from '@/app/storage/LocalStorage';
 
 const progressWheelOptions = (progress) => {
     var fixedProgress = progress; // Only works for android
@@ -371,10 +372,21 @@ export default function ProgressListLayout() {
         await fetchData();
     }
 
+    const showInterceptIfApplicable = async () => {
+        const alwaysShow = await LocalStorage.alwaysShowDataInformationIntercept();
+        if (alwaysShow) {
+            navigation.push(homeLayoutKeys.INTERCEPT);
+        }
+    }
+
     useEffect(() => {
         setTimeout(() => {
             initData();
         }, 500)
+
+        setTimeout(() => {
+            showInterceptIfApplicable();
+        }, 600);
 
         subscribeToAppLifecycle();
     }, [])

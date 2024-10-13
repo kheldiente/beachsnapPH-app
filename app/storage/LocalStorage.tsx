@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const onBoardingKey = 'onboardingCompleted';
 const readOnlyDbNameKey = 'readOnlyDbNameKey'
+const alwaysShowDataInformationInterceptKey = 'alwaysShowDataInformationIntercept';
 
 export const setItem = async (key: string, value: string) => {
     await AsyncStorage.setItem(key, value);
@@ -27,4 +28,14 @@ export const isToReimportReadOnlyDb = async (newDbName) => {
 
 export const setNewReadOnlyDbName = async (newDbName) => {
     await setItem(readOnlyDbNameKey, newDbName);
+}
+
+export const alwaysShowDataInformationIntercept = async () => {
+    const alwaysShow = await getItem(alwaysShowDataInformationInterceptKey);
+    return alwaysShow !== null ? `${alwaysShow}` === 'true' : false;
+}
+
+export const setShowInformationIntercept = async (value) => {
+    console.log(`showIntercept set: ${value}`)
+    await setItem(alwaysShowDataInformationInterceptKey, `${value}`);
 }

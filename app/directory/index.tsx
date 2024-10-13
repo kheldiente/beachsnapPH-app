@@ -10,12 +10,12 @@ export const askMediaLbraryPermission = async () => {
     const permission = await MediaLibrary.requestPermissionsAsync();
     if (permission.status !== 'granted') {
         return { 
-            granted: true, 
+            granted: permission.granted, 
             title: "Media library permission not granted!"
         }
     }
     return { 
-        granted: true, 
+        granted: permission.granted, 
         title: "Media library permission granted!"
     }
 }
