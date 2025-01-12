@@ -5,17 +5,21 @@ This is your beach bucket list app 😎
 <br><br>
 Made with React Native with [Expo Framework](https://expo.dev/) 🧡
 
-[appstore]: https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-appstore.png
-[googlestore]: https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-googlestore.png
-
-![alt text][appstore](https://apps.apple.com/il/app/beaches-app/id1042413961)
-![alt text][googlestore](https://play.google.com/store/apps/details?id=com.midien.beachsnapph)
+[<img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-appstore.png">](https://apps.apple.com/il/app/beaches-app/id1042413961)[<img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-googlestore.png">](https://play.google.com/store/apps/details?id=com.midien.beachsnapph)
 
 
 ## Features
 - Add beach photos for each beach visited
 - Keep track of all visited beaches
 - See available beaches in each province in the Philippines
+
+## Screenshots
+<p float="left">
+   <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-1.jpeg" style="height:450px">
+   <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-2.jpeg" style="height:450px">
+   <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-3.jpeg" style="height:450px">
+   <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-4.jpeg" style="height:450px">
+</p>
 
 ## Dependencies
 
@@ -39,3 +43,11 @@ Made with React Native with [Expo Framework](https://expo.dev/) 🧡
    ```bash
     npm start
    ```
+## TODO
+
+- [ ] Add multiple beach photos in one snap entry
+- [ ] Edit snap caption
+- [ ] Add map view for showing beach location
+- [ ] Consistent UI image picker for iOS and android (module)
+- [ ] Consistent UI date picker for iOS and android (module)
+
