@@ -23,12 +23,18 @@ Made with React Native with [Expo Framework](https://expo.dev/) 🧡
 
 ## Dependencies
 
-- [Expo](https://expo.dev/)
+- [Expo File System](https://docs.expo.dev/versions/latest/sdk/filesystem/)
+- [Expo Image Picker](https://docs.expo.dev/versions/latest/sdk/imagepicker)
+- [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/imagepicker/)
 - [React Native Async Storage](https://reactnative.dev/docs/asyncstorage)
 - [React Navigation](https://reactnavigation.org/)
 - [React Native Elements](https://reactnativeelements.com/)
 - [Shopify FlashList](https://github.com/Shopify/flash-list)
 - [React Native Reanimated](https://docs.expo.dev/versions/latest/sdk/reanimated/)
+- [React Native Gesture Handler](https://docs.expo.dev/versions/latest/sdk/gesture-handler/)
+- [React Native Pager View](https://docs.expo.dev/versions/latest/sdk/view-pager/)
+- [React Native Progress Wheel](https://github.com/RobertFOConnor/react-native-progress-wheel)
+- [React Native Safe Area Context](https://docs.expo.dev/versions/latest/sdk/safe-area-context/)
 
 ## Get started
 
