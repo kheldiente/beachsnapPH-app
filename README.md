@@ -5,7 +5,7 @@ This is your beach bucket list app 😎
 <br><br>
 Made with React Native with [Expo Framework](https://expo.dev/) 🧡
 
-[<img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-appstore.png">](https://apps.apple.com/il/app/beaches-app/id1042413961)[<img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-googlestore.png">](https://play.google.com/store/apps/details?id=com.midien.beachsnapph)
+[<img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-appstore.png">](https://apps.apple.com/ph/app/beachsnap-ph/id6733219848)[<img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/download-in-googlestore.png">](https://play.google.com/store/apps/details?id=com.midien.beachsnapph)
 
 
 ## Features
