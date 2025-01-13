@@ -16,9 +16,15 @@ Made with React Native with [Expo Framework](https://expo.dev/) 🧡
 ## Screenshots
 <p float="left">
    <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-1.jpeg" style="height:450px">
+   &nbsp; &nbsp;
    <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-2.jpeg" style="height:450px">
+   &nbsp; &nbsp;
+</p>
+<p float="left">
    <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-3.jpeg" style="height:450px">
+   &nbsp; &nbsp;
    <img src="https://github.com/kheldiente/beach-snap-app-ph/blob/main/screenshots-and-gifs/ss-4.jpeg" style="height:450px">
+   &nbsp; &nbsp;
 </p>
 
 ## Dependencies
