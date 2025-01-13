@@ -38,17 +38,13 @@ Made with React Native with [Expo Framework](https://expo.dev/) 🧡
 
 ## Get started
 
-1. Install dependencies
+1. Install dependencies and start the app
 
    ```bash
    npm install
+   npm start
    ```
-
-2. Start the app
-
-   ```bash
-    npm start
-   ```
+      
 ## TODO
 
 - [ ] Add multiple beach photos in one snap entry
