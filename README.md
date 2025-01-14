@@ -60,3 +60,6 @@ Made with React Native with [Expo Framework](https://expo.dev/) 🧡
 - [ ] Consistent UI image picker for iOS and android (module)
 - [ ] Consistent UI date picker for iOS and android (module)
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
